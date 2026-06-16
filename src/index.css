@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Undercover Design System
+ * Inspired by Linear / Notion / Arc: calm surfaces, soft depth, decisive color.
+ * All color is expressed as space-separated RGB channels so Tailwind's
+ * `<alpha-value>` modifier works (e.g. text-ink/60).
+ */
+@layer base {
+  :root {
+    /* Light theme */
+    --c-canvas: 247 247 249;
+    --c-surface: 255 255 255;
+    --c-surface-2: 250 250 252;
+    --c-elevated: 255 255 255;
+    --c-border: 17 17 20;
+    --c-border-strong: 17 17 20;
+    --c-ink: 17 17 20;
+    --c-ink-2: 82 82 95;
+    --c-ink-3: 140 140 155;
+    --c-brand: 99 102 241; /* indigo 500 */
+    --c-brand-2: 139 92 246; /* violet 500 */
+    --c-brand-ink: 255 255 255;
+    --c-danger: 225 65 80;
+    --c-success: 34 170 113;
+    --c-warning: 230 160 40;
+
+    /* alpha overrides for borders in light mode */
+    --border-alpha: 0.08;
+    --border-strong-alpha: 0.16;
+    color-scheme: light;
+  }
+
+  .dark {
+    --c-canvas: 11 11 15;
+    --c-surface: 21 21 27;
+    --c-surface-2: 26 26 33;
+    --c-elevated: 32 32 40;
+    --c-border: 255 255 255;
+    --c-border-strong: 255 255 255;
+    --c-ink: 245 245 248;
+    --c-ink-2: 168 168 180;
+    --c-ink-3: 116 116 130;
+    --c-brand: 129 132 255;
+    --c-brand-2: 167 139 250;
+    --c-brand-ink: 12 12 16;
+    --c-danger: 255 99 112;
+    --c-success: 52 199 142;
+    --c-warning: 245 184 74;
+
+    --border-alpha: 0.1;
+    --border-strong-alpha: 0.2;
+    color-scheme: dark;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv11', 'ss01';
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Borders use the ink color at a low, theme-aware alpha. */
+  .border,
+  .border-t,
+  .border-b,
+  .border-l,
+  .border-r,
+  .border-x,
+  .border-y {
+    border-color: rgb(var(--c-border) / var(--border-alpha));
+  }
+
+  ::selection {
+    background: rgb(var(--c-brand) / 0.3);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--c-brand) / 0.6);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-3xl bg-surface border shadow-card;
+    border-color: rgb(var(--c-border) / var(--border-alpha));
+  }
+
+  .hairline {
+    border-color: rgb(var(--c-border) / var(--border-alpha));
+  }
+
+  .glass {
+    background: rgb(var(--c-surface) / 0.72);
+    backdrop-filter: saturate(1.4) blur(20px);
+    -webkit-backdrop-filter: saturate(1.4) blur(20px);
+  }
+
+  /* App layout: a centered phone-width column that scales to tablet/desktop. */
+  .app-frame {
+    @apply mx-auto w-full max-w-[480px] min-h-[100dvh] flex flex-col relative;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden bg-surface-2 rounded-xl;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--c-ink) / 0.06),
+      transparent
+    );
+  }
+}
+
+@layer utilities {
+  .pt-safe {
+    padding-top: max(env(safe-area-inset-top), 0.5rem);
+  }
+  .pb-safe {
+    padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .gradient-brand {
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--c-brand)),
+      rgb(var(--c-brand-2))
+    );
+  }
+  .text-gradient-brand {
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--c-brand)),
+      rgb(var(--c-brand-2))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Respect reduced-motion at the platform level. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,67 @@
+import type { CategoryGroup, CategoryId, CategoryMeta } from '@/types';
+
+/** Display metadata for every category, in UI order, grouped for Create Room. */
+export const CATEGORIES: CategoryMeta[] = [
+  // Food
+  { id: 'indian-food', label: 'Indian Food', emoji: '🍛', group: 'food', blurb: 'Golgappa to biryani' },
+  { id: 'regional-food', label: 'Regional Food', emoji: '🥘', group: 'food', blurb: 'State by state' },
+  { id: 'global-food', label: 'Global Food', emoji: '🍕', group: 'food', blurb: 'World on a plate' },
+  // India
+  { id: 'festivals', label: 'Festivals', emoji: '🪔', group: 'india', blurb: 'Lights & colours' },
+  { id: 'bollywood', label: 'Bollywood', emoji: '🎬', group: 'india', blurb: 'Filmy feels' },
+  { id: 'cricket', label: 'Cricket', emoji: '🏏', group: 'india', blurb: 'Gully to IPL' },
+  // Screen
+  { id: 'hollywood', label: 'Hollywood', emoji: '🎞️', group: 'screen', blurb: 'Big screen' },
+  { id: 'anime', label: 'Anime', emoji: '🍙', group: 'screen', blurb: 'Believe it' },
+  { id: 'cartoons', label: 'Cartoons', emoji: '📺', group: 'screen', blurb: 'Sunday mornings' },
+  // Play
+  { id: 'games', label: 'Games', emoji: '🎮', group: 'play', blurb: 'BGMI to Ludo' },
+  { id: 'animals', label: 'Animals', emoji: '🐾', group: 'play', blurb: 'Wild & pets' },
+  { id: 'music', label: 'Music', emoji: '🎧', group: 'play', blurb: 'Aux cord wars' },
+  // Web
+  { id: 'memes', label: 'Memes', emoji: '😂', group: 'web', blurb: 'Very online' },
+  { id: 'internet', label: 'Internet', emoji: '🌐', group: 'web', blurb: 'Wifi & woes' },
+  { id: 'social-media', label: 'Social Media', emoji: '📱', group: 'web', blurb: 'Stories & stalking' },
+  { id: 'creators', label: 'Creators', emoji: '🎥', group: 'web', blurb: 'Like & subscribe' },
+  // Work
+  { id: 'technology', label: 'Technology', emoji: '💡', group: 'work', blurb: 'Gadgets & glitches' },
+  { id: 'programming', label: 'Programming', emoji: '👨‍💻', group: 'work', blurb: 'Dev life' },
+  { id: 'engineering', label: 'Engineering', emoji: '⚙️', group: 'work', blurb: 'KT to viva' },
+  { id: 'office', label: 'Office', emoji: '🧑‍💼', group: 'work', blurb: 'Corporate life' },
+  { id: 'startup', label: 'Startup', emoji: '🚀', group: 'work', blurb: 'Pivot & burn' },
+  { id: 'brands', label: 'Brands', emoji: '🏷️', group: 'work', blurb: 'Logos we love' },
+  // Life
+  { id: 'relationships', label: 'Relationships', emoji: '💞', group: 'life', blurb: 'Seen zoned' },
+  { id: 'family', label: 'Family', emoji: '👨‍👩‍👧', group: 'life', blurb: 'Log kya kahenge' },
+  { id: 'college', label: 'College', emoji: '🎓', group: 'life', blurb: 'Hostel chaos' },
+  { id: 'daily-life', label: 'Daily Life', emoji: '☕', group: 'life', blurb: 'Little moments' },
+  { id: 'nostalgia', label: 'Nostalgia', emoji: '📼', group: 'life', blurb: '90s & 2000s' },
+  // World
+  { id: 'cities', label: 'Cities', emoji: '🏙️', group: 'world', blurb: 'Local to global' },
+  { id: 'countries', label: 'Countries', emoji: '🌍', group: 'world', blurb: 'Around the world' },
+  { id: 'travel', label: 'Travel', emoji: '✈️', group: 'world', blurb: 'Goa trip pending' },
+  { id: 'science', label: 'Science', emoji: '🔬', group: 'world', blurb: 'Powerhouse of the cell' },
+  { id: 'space', label: 'Space', emoji: '🚀', group: 'world', blurb: 'To the moon' },
+  { id: 'history', label: 'History', emoji: '🏛️', group: 'world', blurb: 'Then & now' },
+  // Wild
+  { id: 'chaos', label: 'Random Chaos', emoji: '🌀', group: 'wild', blurb: 'Beautifully absurd' },
+];
+
+export const CATEGORY_BY_ID: ReadonlyMap<CategoryId, CategoryMeta> = new Map(
+  CATEGORIES.map((c) => [c.id, c])
+);
+
+export const CATEGORY_GROUPS: { id: CategoryGroup; label: string; emoji: string }[] = [
+  { id: 'food', label: 'Food', emoji: '🍽️' },
+  { id: 'india', label: 'India', emoji: '🇮🇳' },
+  { id: 'screen', label: 'Screen', emoji: '🎬' },
+  { id: 'play', label: 'Play', emoji: '🎮' },
+  { id: 'web', label: 'Internet', emoji: '🌐' },
+  { id: 'work', label: 'Work', emoji: '💼' },
+  { id: 'life', label: 'Life', emoji: '💫' },
+  { id: 'world', label: 'World', emoji: '🌍' },
+  { id: 'wild', label: 'Wild', emoji: '🌀' },
+];
+
+/** All category ids — used by the "Everything" / "Mix Everything" selection. */
+export const ALL_CATEGORY_IDS: CategoryId[] = CATEGORIES.map((c) => c.id);
