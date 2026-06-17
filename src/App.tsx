@@ -6,6 +6,7 @@ import {
   HomeScreen,
   HowToScreen,
   PacksScreen,
+  PeopleScreen,
   PlayScreen,
   SettingsScreen,
   StatsScreen,
@@ -43,6 +44,8 @@ function RouteView({ route }: { route: Route }) {
       return <StatsScreen />;
     case 'packs':
       return <PacksScreen />;
+    case 'people':
+      return <PeopleScreen />;
     case 'how-to':
       return <HowToScreen />;
     default:

@@ -8,7 +8,7 @@ import type {
 } from '@/types';
 import { ALL_WORDS } from '@/data/words';
 import { ALL_CATEGORY_IDS } from '@/data/categories';
-import { makeRng, pick, weightedPick, type Rng } from './random';
+import { hashStr, makeRng, pick, shuffle, weightedPick, type Rng } from './random';
 
 /**
  * The content selection engine.
@@ -138,4 +138,34 @@ export function selectPairing(opts: SelectionOptions): WordPairing | null {
 /** Count of words currently playable under a config — shown in Create Room. */
 export function countPlayable(config: RoundConfig, mode: GameMode): number {
   return filterCorpus(config, mode).length;
+}
+
+/**
+ * The impostor's hint: a SINGLE evocative descriptor of the word (e.g. Maggi →
+ * "yellow", Golgappa → "crunch", UPSC → "dream"). One word only — enough to
+ * sense the vibe and bluff a clue, never enough to be handed talking points.
+ *
+ * It's drawn from the word's associative tags + broader semantic clusters, with
+ * any tag that echoes the word itself removed so we never give it away. Seeded
+ * by the word + round, so it's stable while the impostor peeks yet re-rolls
+ * every round for freshness.
+ */
+export function impostorVibeHint(word: WordEntry, roundIndex = 0): string {
+  const rng = makeRng(hashStr(`${word.id}#${roundIndex}`));
+  const prettify = (s: string) => s.replace(/[-_]/g, ' ').trim();
+
+  const wordTokens = word.text
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((t) => t.length > 2);
+  const isGiveaway = (tag: string) => {
+    const t = tag.toLowerCase();
+    return wordTokens.some((tok) => t.includes(tok) || tok.includes(t));
+  };
+
+  const pool = [...word.tags, ...word.semanticClusters]
+    .map(prettify)
+    .filter((t) => t && !isGiveaway(t));
+
+  return pick(shuffle(pool, rng), rng) ?? prettify(word.tags[0] ?? word.category);
 }

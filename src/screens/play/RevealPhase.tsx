@@ -6,7 +6,7 @@ import { useGame } from '@/store/gameStore';
 import { useSettings } from '@/store/settingsStore';
 import { useReducedMotion } from '@/hooks';
 import { MODE_BY_ID } from '@/data/modes';
-import { CATEGORY_BY_ID } from '@/data/categories';
+import { impostorVibeHint } from '@/lib/content';
 import { feedback } from '@/lib/feedback';
 import { cn } from '@/lib/cn';
 
@@ -42,7 +42,12 @@ export function RevealPhase() {
   const isImpostor = player.role === 'impostor';
   const mode = MODE_BY_ID.get(round.config.modeId)!;
   const isLast = revealIndex >= round.players.length - 1;
-  const category = CATEGORY_BY_ID.get(round.word.category);
+  // The impostor's vibe hint: a few evocative tags, not the bare category.
+  // Deterministic per word + round, so it's stable while they peek.
+  const impostorHint =
+    isImpostor && !mode.rules.blindImpostor && !mode.rules.impostorGetsDecoy
+      ? impostorVibeHint(round.word, round.index)
+      : null;
 
   const markRevealed = () => {
     if (!revealedOnce) {
@@ -144,9 +149,8 @@ export function RevealPhase() {
                 visible={viewing}
                 isImpostor={isImpostor}
                 word={player.shownWord}
-                blind={mode.rules.blindImpostor && isImpostor}
                 decoyHint={mode.rules.impostorGetsDecoy && isImpostor}
-                categoryHint={!isImpostor || !mode.rules.blindImpostor ? category?.label : undefined}
+                impostorHint={impostorHint}
                 holdMode={holdToReveal}
                 revealedOnce={revealedOnce}
                 handlers={holdToReveal ? holdHandlers : tapHandlers}
@@ -185,9 +189,9 @@ interface RoleCardProps {
   visible: boolean;
   isImpostor: boolean;
   word: string | null;
-  blind: boolean;
   decoyHint: boolean;
-  categoryHint?: string | undefined;
+  /** A single vibe word shown only to the impostor — civilians get none. */
+  impostorHint?: string | null;
   holdMode: boolean;
   revealedOnce: boolean;
   handlers: Record<string, (() => void) | undefined>;
@@ -197,9 +201,8 @@ function RoleCard({
   visible,
   isImpostor,
   word,
-  blind,
   decoyHint,
-  categoryHint,
+  impostorHint,
   holdMode,
   revealedOnce,
   handlers,
@@ -257,15 +260,27 @@ function RoleCard({
                 Your decoy word is
                 <span className="block mt-1 text-xl font-semibold text-white">{word}</span>
               </p>
+            ) : impostorHint ? (
+              <>
+                <p className="mt-5 text-[12px] uppercase tracking-[0.18em] text-white/45">
+                  Your only hint
+                </p>
+                <span className="mt-3 inline-block text-2xl font-bold text-white px-5 py-2 rounded-2xl bg-white/12 capitalize">
+                  {impostorHint}
+                </span>
+                <p className="mt-4 text-white/60 text-[14px] max-w-[15rem] text-balance">
+                  One word — that’s all. Bluff a clue that fits the vibe.
+                </p>
+              </>
             ) : (
-              <ul className="mt-5 space-y-1.5 text-white/70 text-[15px]">
-                <li>Blend in.</li>
-                <li>Observe carefully.</li>
-                <li>Don’t get caught.</li>
-              </ul>
-            )}
-            {blind && !decoyHint && (
-              <p className="mt-5 text-[12px] text-white/40">No word. No category. Pure bluff.</p>
+              <>
+                <ul className="mt-5 space-y-1.5 text-white/70 text-[15px]">
+                  <li>Blend in.</li>
+                  <li>Observe carefully.</li>
+                  <li>Don’t get caught.</li>
+                </ul>
+                <p className="mt-5 text-[12px] text-white/40">No word. No category. Pure bluff.</p>
+              </>
             )}
           </div>
         ) : (
@@ -279,11 +294,9 @@ function RoleCard({
             >
               {word}
             </motion.h3>
-            {categoryHint && (
-              <span className="mt-5 text-[13px] text-ink-3 px-3 py-1 rounded-full bg-surface-2">
-                {categoryHint}
-              </span>
-            )}
+            <p className="mt-5 text-[12px] text-ink-3 max-w-[15rem] text-balance">
+              Give a clue close enough to prove you know it — far enough to keep it hidden.
+            </p>
           </div>
         ))}
     </button>

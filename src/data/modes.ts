@@ -11,9 +11,9 @@ export const GAME_MODES: GameMode[] = [
     emoji: '🎭',
     tagline: 'The original',
     description:
-      'Everyone gets the secret word except the impostor. Give clues, discuss, vote out the faker.',
+      'Everyone gets the secret word except the impostor — who only sees a few vibe hints. Give clues, discuss, vote out the faker.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'word',
       suggestedTimer: 60,
@@ -28,10 +28,10 @@ export const GAME_MODES: GameMode[] = [
     emoji: '🕵️',
     tagline: 'Two liars',
     description:
-      'Two impostors are hidden in the group. They don’t know each other. Trust no one.',
+      'Two impostors are hidden in the group. They each see only a few vibe hints, and they don’t know each other. Trust no one.',
     rules: {
       impostors: 2,
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'word',
       suggestedTimer: 75,
@@ -99,7 +99,7 @@ export const GAME_MODES: GameMode[] = [
     description:
       'Clue order is reversed each turn and the timer is tight. Think fast, talk faster.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'word',
       suggestedTimer: 30,
@@ -115,7 +115,7 @@ export const GAME_MODES: GameMode[] = [
     tagline: 'No overthinking',
     description: 'Short timer, quick clues, instant votes. Great for big, rowdy groups.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'word',
       suggestedTimer: 30,
@@ -131,7 +131,7 @@ export const GAME_MODES: GameMode[] = [
     tagline: 'Pick wisely',
     description: 'Each player may give exactly ONE word as their clue. Choose it carefully.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'one-word',
       suggestedTimer: 45,
@@ -147,7 +147,7 @@ export const GAME_MODES: GameMode[] = [
     tagline: 'Silence is golden',
     description: 'Clues are given silently — gestures and expressions only. No words allowed.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'silent',
       suggestedTimer: 60,
@@ -163,7 +163,7 @@ export const GAME_MODES: GameMode[] = [
     tagline: 'Speak in symbols',
     description: 'Describe your word using only emojis, out loud or typed in your head.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'emoji',
       suggestedTimer: 60,
@@ -179,7 +179,7 @@ export const GAME_MODES: GameMode[] = [
     tagline: 'Charades energy',
     description: 'Give your clue by acting it out. The impostor has to improvise convincingly.',
     rules: {
-      blindImpostor: true,
+      blindImpostor: false,
       impostorGetsDecoy: false,
       clueStyle: 'gesture',
       suggestedTimer: 75,

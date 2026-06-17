@@ -65,13 +65,10 @@ export function HomeScreen() {
         >
           Play
         </Button>
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary" size="lg" onClick={() => navigate('packs')} leadingIcon={<Icon.Stack size={18} />}>
-            Packs
-          </Button>
-          <Button variant="secondary" size="lg" onClick={() => navigate('stats')} leadingIcon={<Icon.Chart size={18} />}>
-            Stats
-          </Button>
+        <div className="grid grid-cols-3 gap-3">
+          <HomeTile label="People" icon={<Icon.Users size={20} />} onClick={() => navigate('people')} />
+          <HomeTile label="Packs" icon={<Icon.Stack size={20} />} onClick={() => navigate('packs')} />
+          <HomeTile label="Stats" icon={<Icon.Chart size={20} />} onClick={() => navigate('stats')} />
         </div>
         <button
           onClick={() => navigate('how-to')}
@@ -81,5 +78,31 @@ export function HomeScreen() {
         </button>
       </motion.div>
     </Screen>
+  );
+}
+
+/** Compact icon-over-label tile for the home secondary actions. */
+function HomeTile({
+  label,
+  icon,
+  onClick,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 600, damping: 28 }}
+      onClick={() => {
+        feedback('tap');
+        onClick();
+      }}
+      className="flex flex-col items-center justify-center gap-1.5 h-[4.25rem] rounded-2xl bg-surface-2 border text-ink-2 hover:text-ink transition-colors"
+    >
+      {icon}
+      <span className="text-[13px] font-medium">{label}</span>
+    </motion.button>
   );
 }

@@ -31,6 +31,7 @@ export type Route =
   | 'settings'
   | 'stats'
   | 'packs'
+  | 'people'
   | 'how-to';
 
 const DEFAULT_CONFIG: RoundConfig = {

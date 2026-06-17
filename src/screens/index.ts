@@ -3,5 +3,6 @@ export { CreateRoomScreen } from './CreateRoomScreen';
 export { SettingsScreen } from './SettingsScreen';
 export { StatsScreen } from './StatsScreen';
 export { PacksScreen } from './PacksScreen';
+export { PeopleScreen } from './PeopleScreen';
 export { HowToScreen } from './HowToScreen';
 export { PlayScreen } from './play/PlayScreen';
