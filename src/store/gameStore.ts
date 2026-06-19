@@ -82,6 +82,7 @@ interface GameState {
   // ── match lifecycle ──
   startMatch: () => void;
   dealNext: () => void;
+  redealRound: () => void;
   revealCurrent: () => void;
   advanceReveal: () => void;
   startClues: () => void;
@@ -206,6 +207,38 @@ export const useGame = create<GameState>()(
         });
         set({
           round,
+          phase: 'reveal',
+          revealIndex: 0,
+          clueIndex: 0,
+          voterIndex: 0,
+          needsImpostorGuess: false,
+          pendingEjectedId: null,
+          discussionStartedAt: null,
+          lastGuessCorrect: null,
+          recentWordIds: [pairing.civilian.id, ...recentWordIds].slice(0, 40),
+        });
+      },
+
+      // Re-deal the *current* round during the reveal: a fresh word/role
+      // assignment without advancing the round counter. Used when a word repeats
+      // or the table doesn't like it and wants a do-over before clues begin. The
+      // outgoing word stays in `recentWordIds`, so the new draw won't repeat it.
+      redealRound: () => {
+        const { config, players, recentWordIds, round } = get();
+        if (!round) return;
+        const mode = MODE_BY_ID.get(config.modeId)!;
+        const pairing = selectPairing({ config, mode, recentIds: recentWordIds });
+        if (!pairing) return;
+        const fresh = dealRound({
+          players,
+          config,
+          mode,
+          word: pairing.civilian,
+          decoy: pairing.decoy ?? null,
+          roundIndex: round.index,
+        });
+        set({
+          round: fresh,
           phase: 'reveal',
           revealIndex: 0,
           clueIndex: 0,

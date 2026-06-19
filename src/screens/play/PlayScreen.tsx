@@ -21,25 +21,31 @@ import { feedback } from '@/lib/feedback';
 export function PlayScreen() {
   const phase = useGame((s) => s.phase);
   const quitToHome = useGame((s) => s.quitToHome);
+  const redealRound = useGame((s) => s.redealRound);
   const [confirmQuit, setConfirmQuit] = useState(false);
+  const [revealMenu, setRevealMenu] = useState(false);
 
   // Keep the screen awake during the active rounds (not while just naming).
   useWakeLock(phase !== 'lobby' && phase !== 'setup');
 
-  // The quit button is hidden during the secret reveal/vote to avoid mis-taps
-  // that could expose a role; it's available on the calmer phases.
+  // The plain quit button is available on the calmer phases. During the reveal a
+  // separate control opens a small menu so the table can bail out *or* re-roll a
+  // repeated/unwanted word before clues begin — previously you were stuck until
+  // everyone had peeked. The vote stays locked down to avoid mis-taps.
   const showQuit = phase === 'clue' || phase === 'discuss' || phase === 'result';
+  const showRevealMenu = phase === 'reveal';
 
   return (
     <div className="flex-1 flex flex-col relative">
-      {showQuit && (
+      {(showQuit || showRevealMenu) && (
         <div className="absolute top-0 right-0 z-40 pt-safe pr-2">
           <IconButton
-            label="Quit game"
+            label={showRevealMenu ? 'Round options' : 'Quit game'}
             variant="plain"
             onClick={() => {
               feedback('tap');
-              setConfirmQuit(true);
+              if (showRevealMenu) setRevealMenu(true);
+              else setConfirmQuit(true);
             }}
           >
             <Icon.Close size={20} />
@@ -63,6 +69,38 @@ export function PlayScreen() {
             variant="danger"
             onClick={() => {
               setConfirmQuit(false);
+              quitToHome();
+            }}
+          >
+            Leave game
+          </Button>
+        </div>
+      </Sheet>
+
+      <Sheet open={revealMenu} onClose={() => setRevealMenu(false)} title="Restart the round?">
+        <p className="text-ink-2 text-sm mb-5">
+          Word repeated or not a great fit? Deal a fresh word and start the reveal
+          over from the first player — or leave the game entirely.
+        </p>
+        <div className="grid gap-3">
+          <Button
+            fullWidth
+            leadingIcon={<Icon.Shuffle size={20} />}
+            onClick={() => {
+              setRevealMenu(false);
+              redealRound();
+            }}
+          >
+            New word & restart reveal
+          </Button>
+          <Button variant="secondary" fullWidth onClick={() => setRevealMenu(false)}>
+            Keep this word
+          </Button>
+          <Button
+            variant="danger"
+            fullWidth
+            onClick={() => {
+              setRevealMenu(false);
               quitToHome();
             }}
           >

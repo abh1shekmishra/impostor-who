@@ -3,9 +3,14 @@ import { Screen } from '@/components/Screen';
 import { AppBar, Button, Card, Chip, Sheet, Stepper, Toggle, Icon } from '@/components/ui';
 import { useGame } from '@/store/gameStore';
 import { GAME_MODES, MODE_BY_ID } from '@/data/modes';
-import { CATEGORIES, CATEGORY_GROUPS } from '@/data/categories';
+import {
+  CATEGORY_BY_ID,
+  CATEGORY_GROUPS,
+  LIVE_CATEGORIES,
+  wordsForCategory,
+} from '@/data/categories';
 import { countPlayable } from '@/lib/content';
-import type { CategoryGroup, Difficulty } from '@/types';
+import type { CategoryGroup, CategoryId, Difficulty } from '@/types';
 import { feedback } from '@/lib/feedback';
 import { cn } from '@/lib/cn';
 
@@ -36,6 +41,21 @@ export function CreateRoomScreen() {
 
   const [modeSheet, setModeSheet] = useState(false);
   const [catSheet, setCatSheet] = useState(false);
+  // Long-press a category chip to preview its words. 'everything' = all live words.
+  const [wordsSheet, setWordsSheet] = useState<CategoryId | 'everything' | null>(null);
+
+  const previewWords =
+    wordsSheet === 'everything'
+      ? LIVE_CATEGORIES.flatMap((c) => wordsForCategory(c.id)).sort((a, b) => a.localeCompare(b))
+      : wordsSheet
+        ? wordsForCategory(wordsSheet)
+        : [];
+  const previewTitle =
+    wordsSheet === 'everything'
+      ? 'Everything'
+      : wordsSheet
+        ? `${CATEGORY_BY_ID.get(wordsSheet)?.emoji ?? ''} ${CATEGORY_BY_ID.get(wordsSheet)?.label ?? ''}`
+        : '';
 
   const mode = MODE_BY_ID.get(config.modeId)!;
   const playable = useMemo(() => countPlayable(config, mode), [config, mode]);
@@ -114,23 +134,34 @@ export function CreateRoomScreen() {
             </span>
           </SectionLabel>
           <div className="flex flex-wrap gap-2">
-            <Chip selected={selectedCatCount === 0} onClick={() => setCategories([])} leading="✨">
+            <Chip
+              selected={selectedCatCount === 0}
+              onClick={() => setCategories([])}
+              onLongPress={() => setWordsSheet('everything')}
+              leading="✨"
+            >
               Everything
             </Chip>
-            {CATEGORIES.slice(0, 6).map((c) => (
+            {LIVE_CATEGORIES.slice(0, 8).map((c) => (
               <Chip
                 key={c.id}
                 selected={config.categories.includes(c.id)}
                 onClick={() => toggleCategory(c.id)}
+                onLongPress={() => setWordsSheet(c.id)}
                 leading={c.emoji}
               >
                 {c.label}
               </Chip>
             ))}
-            <Chip onClick={() => setCatSheet(true)} leading="➕">
-              More
-            </Chip>
+            {LIVE_CATEGORIES.length > 8 && (
+              <Chip onClick={() => setCatSheet(true)} leading="➕">
+                More
+              </Chip>
+            )}
           </div>
+          <p className="text-[12px] text-ink-3 mt-2 px-1">
+            Tip: press &amp; hold a category for 5s to preview its words.
+          </p>
         </section>
 
         {/* Difficulty */}
@@ -240,13 +271,20 @@ export function CreateRoomScreen() {
             <Button
               size="sm"
               variant="ghost"
-              onClick={() => setCategories(CATEGORIES.map((c) => c.id))}
+              onClick={() => setCategories(LIVE_CATEGORIES.map((c) => c.id))}
             >
               Select all
             </Button>
           </div>
-          {CATEGORY_GROUPS.map((group) => (
-            <CategoryGroupBlock key={group.id} group={group.id} label={`${group.emoji} ${group.label}`} />
+          {CATEGORY_GROUPS.filter((group) =>
+            LIVE_CATEGORIES.some((c) => c.group === group.id)
+          ).map((group) => (
+            <CategoryGroupBlock
+              key={group.id}
+              group={group.id}
+              label={`${group.emoji} ${group.label}`}
+              onPreview={setWordsSheet}
+            />
           ))}
         </div>
         <div className="pt-3">
@@ -255,14 +293,41 @@ export function CreateRoomScreen() {
           </Button>
         </div>
       </Sheet>
+
+      {/* Long-press preview: every word currently in a category */}
+      <Sheet
+        open={wordsSheet !== null}
+        onClose={() => setWordsSheet(null)}
+        title={previewTitle}
+      >
+        <p className="text-[12px] text-ink-3 mb-3">{previewWords.length} words in the deck</p>
+        <div className="max-h-[58vh] overflow-y-auto no-scrollbar flex flex-wrap gap-2 -mx-1 px-1">
+          {previewWords.map((w) => (
+            <span
+              key={w}
+              className="px-3 py-1.5 rounded-xl bg-surface-2 text-[13px] text-ink-2"
+            >
+              {w}
+            </span>
+          ))}
+        </div>
+      </Sheet>
     </Screen>
   );
 }
 
-function CategoryGroupBlock({ group, label }: { group: CategoryGroup; label: string }) {
+function CategoryGroupBlock({
+  group,
+  label,
+  onPreview,
+}: {
+  group: CategoryGroup;
+  label: string;
+  onPreview: (id: CategoryId) => void;
+}) {
   const config = useGame((s) => s.config);
   const toggleCategory = useGame((s) => s.toggleCategory);
-  const cats = CATEGORIES.filter((c) => c.group === group);
+  const cats = LIVE_CATEGORIES.filter((c) => c.group === group);
   return (
     <div>
       <p className="text-[12px] font-semibold uppercase tracking-wider text-ink-3 mb-2">{label}</p>
@@ -273,6 +338,7 @@ function CategoryGroupBlock({ group, label }: { group: CategoryGroup; label: str
             size="sm"
             selected={config.categories.includes(c.id)}
             onClick={() => toggleCategory(c.id)}
+            onLongPress={() => onPreview(c.id)}
             leading={c.emoji}
           >
             {c.label}

@@ -7,7 +7,7 @@ import type {
   WordPairing,
 } from '@/types';
 import { ALL_WORDS } from '@/data/words';
-import { ALL_CATEGORY_IDS } from '@/data/categories';
+import { LIVE_CATEGORY_IDS, LIVE_CATEGORY_SET } from '@/data/categories';
 import { hashStr, makeRng, pick, shuffle, weightedPick, type Rng } from './random';
 
 /**
@@ -31,10 +31,13 @@ export interface SelectionOptions {
 }
 
 function resolveCategories(config: RoundConfig): Set<CategoryId> {
-  if (config.mixEverything || config.categories.length === 0) {
-    return new Set(ALL_CATEGORY_IDS);
-  }
-  return new Set(config.categories);
+  const base =
+    config.mixEverything || config.categories.length === 0
+      ? LIVE_CATEGORY_IDS
+      : config.categories;
+  // Only ever deal from live (built-out) categories — never a hidden/thin one,
+  // even if a pack or stale config points at it.
+  return new Set(base.filter((id) => LIVE_CATEGORY_SET.has(id)));
 }
 
 export function filterCorpus(config: RoundConfig, mode: GameMode): WordEntry[] {
@@ -145,10 +148,10 @@ export function countPlayable(config: RoundConfig, mode: GameMode): number {
  * "yellow", Golgappa → "crunch", UPSC → "dream"). One word only — enough to
  * sense the vibe and bluff a clue, never enough to be handed talking points.
  *
- * It's drawn from the word's associative tags + broader semantic clusters, with
- * any tag that echoes the word itself removed so we never give it away. Seeded
- * by the word + round, so it's stable while the impostor peeks yet re-rolls
- * every round for freshness.
+ * It's drawn from the word's `tags` ONLY (never clusters), with any tag that
+ * echoes the word itself removed so we never give it away. This keeps the hint
+ * pool exactly equal to the authored, human-reviewed tags. Seeded by the word +
+ * round, so it's stable while the impostor peeks yet re-rolls every round.
  */
 export function impostorVibeHint(word: WordEntry, roundIndex = 0): string {
   const rng = makeRng(hashStr(`${word.id}#${roundIndex}`));
@@ -163,9 +166,8 @@ export function impostorVibeHint(word: WordEntry, roundIndex = 0): string {
     return wordTokens.some((tok) => t.includes(tok) || tok.includes(t));
   };
 
-  const pool = [...word.tags, ...word.semanticClusters]
-    .map(prettify)
-    .filter((t) => t && !isGiveaway(t));
+  // Tags only — the hint can never be a cluster or anything outside the tags.
+  const pool = word.tags.map(prettify).filter((t) => t && !isGiveaway(t));
 
   return pick(shuffle(pool, rng), rng) ?? prettify(word.tags[0] ?? word.category);
 }

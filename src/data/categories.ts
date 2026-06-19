@@ -1,4 +1,5 @@
 import type { CategoryGroup, CategoryId, CategoryMeta } from '@/types';
+import { ALL_WORDS } from './words';
 
 /** Display metadata for every category, in UI order, grouped for Create Room. */
 export const CATEGORIES: CategoryMeta[] = [
@@ -63,5 +64,44 @@ export const CATEGORY_GROUPS: { id: CategoryGroup; label: string; emoji: string 
   { id: 'wild', label: 'Wild', emoji: '🌀' },
 ];
 
-/** All category ids — used by the "Everything" / "Mix Everything" selection. */
+/** All category ids — the full catalogue (built and unbuilt). */
 export const ALL_CATEGORY_IDS: CategoryId[] = CATEGORIES.map((c) => c.id);
+
+/** Authored word counts per category, computed once from the corpus. */
+const WORD_COUNTS: Partial<Record<CategoryId, number>> = {};
+for (const w of ALL_WORDS) {
+  WORD_COUNTS[w.category] = (WORD_COUNTS[w.category] ?? 0) + 1;
+}
+
+export function categoryWordCount(id: CategoryId): number {
+  return WORD_COUNTS[id] ?? 0;
+}
+
+/** All words in a category, alphabetically — powers the long-press preview. */
+export function wordsForCategory(id: CategoryId): string[] {
+  return ALL_WORDS.filter((w) => w.category === id)
+    .map((w) => w.text)
+    .sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * A category becomes "live" once it has enough words to be playable without
+ * instant repeats. Below this it stays hidden from the UI and is never dealt.
+ */
+export const LIVE_MIN_WORDS = 25;
+
+/**
+ * Categories EXPOSED in the UI and the "Everything" pool, derived automatically
+ * from word count — no manual allowlist to maintain. Gameplay selection also
+ * respects this, so a thin/hidden category can never be dealt (even via a pack).
+ */
+export const LIVE_CATEGORY_IDS: CategoryId[] = CATEGORIES.map((c) => c.id).filter(
+  (id) => categoryWordCount(id) >= LIVE_MIN_WORDS
+);
+
+export const LIVE_CATEGORY_SET: ReadonlySet<CategoryId> = new Set(LIVE_CATEGORY_IDS);
+
+/** Display metadata for the live categories only, in catalogue order. */
+export const LIVE_CATEGORIES: CategoryMeta[] = CATEGORIES.filter((c) =>
+  LIVE_CATEGORY_SET.has(c.id)
+);
