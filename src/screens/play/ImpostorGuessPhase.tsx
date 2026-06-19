@@ -51,7 +51,7 @@ export function ImpostorGuessPhase() {
                     ejectedWasImpostor ? 'bg-success/15 text-success' : 'bg-danger/15 text-danger'
                   }`}
                 >
-                  {ejectedWasImpostor ? '🎯 An impostor!' : '😬 A civilian — the impostor slipped through'}
+                  {ejectedWasImpostor ? '🎯 A chor!' : '😬 Innocent — the chor slipped through'}
                 </div>
               </>
             ) : (
@@ -62,7 +62,7 @@ export function ImpostorGuessPhase() {
               </>
             )}
             <p className="mt-8 text-ink-3 max-w-[18rem] text-balance">
-              The impostor survived — and now gets one chance to guess the secret word.
+              The chor survived — and now gets one chance to guess the secret word.
             </p>
             <div className="mt-8 w-full max-w-sm pb-safe">
               <Button
@@ -74,7 +74,7 @@ export function ImpostorGuessPhase() {
                   setStage('guess');
                 }}
               >
-                Hand phone to the impostor
+                Hand phone to the chor
               </Button>
             </div>
           </motion.div>
@@ -86,12 +86,12 @@ export function ImpostorGuessPhase() {
             className="flex-1 flex flex-col"
           >
             <div className="pt-[max(env(safe-area-inset-top),1.5rem)] text-center">
-              <span className="text-5xl">🕵️</span>
+              <span className="text-5xl">😈</span>
               <h2 className="mt-4 font-display text-3xl font-semibold">Your final shot</h2>
               <p className="mt-2 text-ink-2 max-w-[18rem] mx-auto text-balance">
                 {survivingImpostors.length > 1
-                  ? 'Impostors, agree on the word.'
-                  : 'Impostor, what was the secret word?'}
+                  ? 'Chors, agree on the word.'
+                  : 'Chor, what was the secret word?'}
               </p>
             </div>
 

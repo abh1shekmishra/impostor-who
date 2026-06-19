@@ -46,6 +46,20 @@ export const festivals = buildWords(
       difficulty: 'medium',
       discussion: 80,
     },
+    {
+      text: 'Santa Claus',
+      tags: ['chimney', 'red suit', 'reindeer', 'gift', 'white beard', 'naughty list', 'sleigh', 'milk cookies', 'north pole', 'childhood'],
+      related: ['Christmas', 'Snowman', 'Christmas Tree'],
+      clusters: ['festival', 'christmas'],
+      culture: 'global',
+      language: 'en',
+      year: 'timeless',
+      difficulty: 'easy',
+      popularity: 95,
+      discussion: 82,
+      chaos: 45,
+      guess: 40,
+    },
   ]
 );
 

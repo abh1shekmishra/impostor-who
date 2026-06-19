@@ -300,6 +300,18 @@ export const games = buildWords(
       difficulty: 'medium',
       year: 'retro',
     },
+    {
+      text: 'Roleplay',
+      tags: ['gta server', 'dnd', 'dungeon master', 'dice', 'backstory', 'voice acting', 'immersion', 'in character', 'cringe', 'fantasy'],
+      related: ['GTA San Andreas', 'Minecraft', 'Cosplay'],
+      clusters: ['game', 'community'],
+      year: 'trending',
+      difficulty: 'medium',
+      popularity: 60,
+      discussion: 78,
+      chaos: 60,
+      guess: 62,
+    },
   ]
 );
 

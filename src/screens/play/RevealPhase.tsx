@@ -207,6 +207,9 @@ function RoleCard({
   revealedOnce,
   handlers,
 }: RoleCardProps) {
+  // The chor's "escape word" = the decoy (reverse modes) or the single vibe
+  // hint (normal modes). Null in blind/chaos → pure bluff, no escape word.
+  const escapeWord = decoyHint ? word : impostorHint;
   return (
     <button
       type="button"
@@ -243,59 +246,57 @@ function RoleCard({
 
       {visible &&
         (isImpostor ? (
+          // ── CHOR (impostor) ──
           <div className="flex flex-col items-center">
             <motion.span
               initial={{ scale: 0.6, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 240, damping: 16 }}
-              className="text-6xl"
+              className="text-5xl"
             >
-              🕵️
+              😈
             </motion.span>
-            <h3 className="mt-5 font-display text-3xl font-bold leading-tight">
-              You are the<br />Impostor
-            </h3>
-            {decoyHint && word ? (
-              <p className="mt-4 text-white/70 text-sm">
-                Your decoy word is
-                <span className="block mt-1 text-xl font-semibold text-white">{word}</span>
-              </p>
-            ) : impostorHint ? (
+            <motion.h3
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 240, damping: 16 }}
+              className="mt-3 font-display text-[2.6rem] leading-none font-bold"
+            >
+              You’re the Chor
+            </motion.h3>
+            {escapeWord ? (
               <>
-                <p className="mt-5 text-[12px] uppercase tracking-[0.18em] text-white/45">
-                  Your only hint
+                <p className="mt-6 text-[13px] uppercase tracking-[0.18em] text-white/45">
+                  Your escape word
                 </p>
-                <span className="mt-3 inline-block text-2xl font-bold text-white px-5 py-2 rounded-2xl bg-white/12 capitalize">
-                  {impostorHint}
+                <span className="mt-2 inline-block text-2xl font-bold text-white px-5 py-2 rounded-2xl bg-white/15 capitalize">
+                  {escapeWord}
                 </span>
-                <p className="mt-4 text-white/60 text-[14px] max-w-[15rem] text-balance">
-                  One word — that’s all. Bluff a clue that fits the vibe.
-                </p>
               </>
             ) : (
-              <>
-                <ul className="mt-5 space-y-1.5 text-white/70 text-[15px]">
-                  <li>Blend in.</li>
-                  <li>Observe carefully.</li>
-                  <li>Don’t get caught.</li>
-                </ul>
-                <p className="mt-5 text-[12px] text-white/40">No word. No category. Pure bluff.</p>
-              </>
+              <p className="mt-5 text-white/60 text-[15px]">No escape word — pure bluff.</p>
             )}
+            <p className="mt-5 text-white/70 text-[15px] max-w-[15rem] text-balance">
+              Blend in. Don’t get caught.
+            </p>
           </div>
         ) : (
+          // ── POLICE (civilian) ──
           <div className="flex flex-col items-center">
-            <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3">Your secret word</p>
+            <span className="text-5xl">👮</span>
+            <p className="mt-3 text-[13px] uppercase tracking-[0.22em] text-ink-3 font-semibold">
+              You’re Police
+            </p>
             <motion.h3
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 240, damping: 18 }}
-              className="mt-4 font-display text-4xl font-bold text-balance leading-tight"
+              className="mt-3 font-display text-[2.75rem] leading-none font-bold text-balance"
             >
               {word}
             </motion.h3>
-            <p className="mt-5 text-[12px] text-ink-3 max-w-[15rem] text-balance">
-              Give a clue close enough to prove you know it — far enough to keep it hidden.
+            <p className="mt-5 text-[15px] text-ink-2 max-w-[15rem] text-balance">
+              Find the chor among yourselves.
             </p>
           </div>
         ))}

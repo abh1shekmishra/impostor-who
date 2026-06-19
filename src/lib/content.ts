@@ -1,6 +1,5 @@
 import type {
   CategoryId,
-  Difficulty,
   GameMode,
   RoundConfig,
   WordEntry,
@@ -42,13 +41,12 @@ function resolveCategories(config: RoundConfig): Set<CategoryId> {
 
 export function filterCorpus(config: RoundConfig, mode: GameMode): WordEntry[] {
   const cats = resolveCategories(config);
-  const difficulties = new Set<Difficulty>(
-    config.difficulty.length ? config.difficulty : (['easy', 'medium', 'hard', 'evil'] as Difficulty[])
-  );
 
   return ALL_WORDS.filter((w) => {
     if (!cats.has(w.category)) return false;
-    if (!difficulties.has(w.difficulty)) return false;
+    // Difficulty filtering is disabled for now — every word is eligible
+    // regardless of its difficulty (the Create Room difficulty picker is inert
+    // until this is restored).
     // Family-safe hides anything not explicitly safe.
     if (config.familySafe && !w.safe) return false;
     // Adult content only when explicitly allowed.

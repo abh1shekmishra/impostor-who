@@ -212,6 +212,17 @@ export const brands = buildWords(
       culture: 'india',
       difficulty: 'medium',
     },
+    {
+      text: 'Oral-B',
+      tags: ['morning ritual', 'buzz', 'two minutes', 'round head', 'dentist', 'gum bleed', 'replace head', 'minty', 'manual vs electric', 'guilt'],
+      related: ['Colgate', 'Sensodyne', 'Listerine'],
+      clusters: ['brand', 'dental'],
+      difficulty: 'medium',
+      popularity: 78,
+      discussion: 70,
+      chaos: 38,
+      guess: 52,
+    },
   ]
 );
 

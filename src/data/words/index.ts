@@ -6,7 +6,7 @@ import { techWords } from './tech';
 import { lifeWords } from './life';
 import { worldWords } from './world';
 import { webWords } from './web';
-import { chaosWords } from './chaos';
+import { naughtyWords } from './naughty';
 
 /**
  * The complete seed corpus. New packs (including AI-generated ones) are simply
@@ -21,7 +21,7 @@ export const ALL_WORDS: readonly WordEntry[] = Object.freeze([
   ...lifeWords,
   ...worldWords,
   ...webWords,
-  ...chaosWords,
+  ...naughtyWords,
 ]);
 
 /** Fast lookup by id (used by stats, decoy selection, AI dedupe checks). */

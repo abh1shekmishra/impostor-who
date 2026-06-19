@@ -138,6 +138,18 @@ export const history = buildWords(
       clusters: ['history', 'prehistoric'],
       difficulty: 'easy',
     },
+    {
+      text: 'COVID',
+      tags: ['lockdown', 'mask', 'sanitizer', 'wfh', 'quarantine', 'vaccine', 'zoom', 'banana bread', 'isolation', 'social distance'],
+      related: ['Work From Home', 'Quarantine', 'Mask'],
+      clusters: ['pandemic', 'world-event'],
+      year: 'modern',
+      difficulty: 'easy',
+      popularity: 95,
+      discussion: 88,
+      chaos: 50,
+      guess: 45,
+    },
   ]
 );
 
@@ -159,6 +171,17 @@ export const animals = buildWords(
       clusters: ['animal', 'urban'],
       difficulty: 'medium',
       discussion: 80,
+    },
+    {
+      text: 'Duck',
+      tags: ['pond', 'quack', 'waddle', 'rubber', 'bread crumbs', 'feathers', 'swim', 'single file', 'park', 'cute'],
+      related: ['Swan', 'Goose', 'Pigeon'],
+      clusters: ['animal', 'bird'],
+      difficulty: 'easy',
+      popularity: 92,
+      discussion: 68,
+      chaos: 48,
+      guess: 38,
     },
   ]
 );

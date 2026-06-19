@@ -46,6 +46,8 @@ export const CATEGORIES: CategoryMeta[] = [
   { id: 'history', label: 'History', emoji: '🏛️', group: 'world', blurb: 'Then & now' },
   // Wild
   { id: 'chaos', label: 'Random Chaos', emoji: '🌀', group: 'wild', blurb: 'Beautifully absurd' },
+  // Spicy (18+)
+  { id: 'naughty', label: 'Naughty', emoji: '🌶️', group: 'spicy', blurb: 'Wink wink' },
 ];
 
 export const CATEGORY_BY_ID: ReadonlyMap<CategoryId, CategoryMeta> = new Map(
@@ -62,6 +64,7 @@ export const CATEGORY_GROUPS: { id: CategoryGroup; label: string; emoji: string 
   { id: 'life', label: 'Life', emoji: '💫' },
   { id: 'world', label: 'World', emoji: '🌍' },
   { id: 'wild', label: 'Wild', emoji: '🌀' },
+  { id: 'spicy', label: 'Spicy', emoji: '🌶️' },
 ];
 
 /** All category ids — the full catalogue (built and unbuilt). */
@@ -91,12 +94,22 @@ export function wordsForCategory(id: CategoryId): string[] {
 export const LIVE_MIN_WORDS = 25;
 
 /**
+ * Categories forced live regardless of word count — an explicit product
+ * override of the LIVE_MIN_WORDS floor. These are exposed and dealt even when
+ * thin, so they may repeat words within a match. Keep this list intentional.
+ */
+export const FORCE_LIVE_CATEGORY_IDS: ReadonlySet<CategoryId> = new Set<CategoryId>([
+  'naughty',
+]);
+
+/**
  * Categories EXPOSED in the UI and the "Everything" pool, derived automatically
  * from word count — no manual allowlist to maintain. Gameplay selection also
  * respects this, so a thin/hidden category can never be dealt (even via a pack).
+ * `FORCE_LIVE_CATEGORY_IDS` overrides the word-count floor.
  */
 export const LIVE_CATEGORY_IDS: CategoryId[] = CATEGORIES.map((c) => c.id).filter(
-  (id) => categoryWordCount(id) >= LIVE_MIN_WORDS
+  (id) => FORCE_LIVE_CATEGORY_IDS.has(id) || categoryWordCount(id) >= LIVE_MIN_WORDS
 );
 
 export const LIVE_CATEGORY_SET: ReadonlySet<CategoryId> = new Set(LIVE_CATEGORY_IDS);

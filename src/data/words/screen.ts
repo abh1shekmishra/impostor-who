@@ -36,6 +36,18 @@ export const hollywood = buildWords(
       clusters: ['antihero', 'drama'],
       difficulty: 'medium',
     },
+    {
+      text: 'Dracula',
+      tags: ['fangs', 'coffin', 'garlic', 'bats', 'cape', 'transylvania', 'blood', 'castle', 'spooky', 'no sunlight'],
+      related: ['Frankenstein', 'Werewolf', 'Vampire'],
+      clusters: ['horror', 'monster'],
+      year: 'timeless',
+      difficulty: 'easy',
+      popularity: 88,
+      discussion: 78,
+      chaos: 52,
+      guess: 42,
+    },
   ]
 );
 

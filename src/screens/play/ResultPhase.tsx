@@ -43,7 +43,7 @@ export function ResultPhase() {
   const ranked = [...players].sort((a, b) => b.score - a.score);
   const topScore = ranked[0]?.score ?? 0;
 
-  const headline = civiliansWon ? 'Civilians win!' : 'Impostor wins!';
+  const headline = civiliansWon ? 'Police win!' : 'Chor wins!';
   const subline = reasonCopy(result.reason, lastGuessCorrect);
 
   return (
@@ -60,7 +60,7 @@ export function ResultPhase() {
           transition={{ type: 'spring', stiffness: 240, damping: 16 }}
           className="text-6xl"
         >
-          {civiliansWon ? '🎉' : '🕵️'}
+          {civiliansWon ? '👮' : '😈'}
         </motion.div>
         <h1
           className={cn(
@@ -88,7 +88,7 @@ export function ResultPhase() {
         {/* Impostor reveal */}
         <Card>
           <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3 mb-3">
-            {impostors.length > 1 ? 'The impostors were' : 'The impostor was'}
+            {impostors.length > 1 ? 'The chors were' : 'The chor was'}
           </p>
           <div className="flex flex-wrap gap-2">
             {impostors.map((p) => (
@@ -144,15 +144,15 @@ export function ResultPhase() {
 function reasonCopy(reason: string, guessedCorrectly: boolean | null): string {
   switch (reason) {
     case 'impostor-ejected':
-      return 'You caught the impostor red-handed. Sharp work.';
+      return 'You caught the chor red-handed. Sharp work, Police.';
     case 'impostor-guessed-word':
-      return 'They survived the vote AND nailed the secret word. Ice cold.';
+      return 'The chor survived the vote AND guessed the word. Ice cold.';
     case 'impostor-survived':
-      return 'The impostor dodged the vote and got away with it.';
+      return 'The chor dodged the vote and got away with it.';
     case 'wrong-civilian-ejected':
       return guessedCorrectly === false
-        ? 'Wrong guess — but you voted out an innocent, so the impostor still wins.'
-        : 'You voted out an innocent. The impostor walks free.';
+        ? 'Wrong guess — but you caught an innocent, so the chor still wins.'
+        : 'You caught an innocent. The chor walks free.';
     default:
       return '';
   }

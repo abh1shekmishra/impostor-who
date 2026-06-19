@@ -66,7 +66,8 @@ export type CategoryId =
   | 'nostalgia'
   | 'cartoons'
   | 'animals'
-  | 'chaos';
+  | 'chaos'
+  | 'naughty';
 
 /**
  * A single playable secret word.
@@ -129,7 +130,8 @@ export type CategoryGroup =
   | 'work'
   | 'life'
   | 'world'
-  | 'wild';
+  | 'wild'
+  | 'spicy';
 
 /**
  * A Content Pack is a curated or generated bundle of categories + filters,
