@@ -41,7 +41,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
           exit={{ opacity: 0 }}
         >
           <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/66 backdrop-blur-md"
             onClick={onClose}
             aria-hidden
           />
@@ -53,7 +53,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', stiffness: 380, damping: 38 }}
-            className="relative w-full max-w-[480px] glass border-t rounded-t-3xl p-5 pb-safe"
+            className="relative w-full max-w-[480px] glass border-t rounded-t-[2rem] p-5 pb-safe shadow-float"
           >
             <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-ink/20" />
             <div className="flex items-center justify-between mb-3">

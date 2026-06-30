@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,18 +13,18 @@
 @layer base {
   :root {
     /* Light theme */
-    --c-canvas: 247 247 249;
-    --c-surface: 255 255 255;
-    --c-surface-2: 250 250 252;
+    --c-canvas: 247 245 242;
+    --c-surface: 255 252 249;
+    --c-surface-2: 249 243 238;
     --c-elevated: 255 255 255;
-    --c-border: 17 17 20;
-    --c-border-strong: 17 17 20;
-    --c-ink: 17 17 20;
-    --c-ink-2: 82 82 95;
-    --c-ink-3: 140 140 155;
-    --c-brand: 99 102 241; /* indigo 500 */
-    --c-brand-2: 139 92 246; /* violet 500 */
-    --c-brand-ink: 255 255 255;
+    --c-border: 24 20 18;
+    --c-border-strong: 24 20 18;
+    --c-ink: 24 20 18;
+    --c-ink-2: 96 86 81;
+    --c-ink-3: 155 141 134;
+    --c-brand: 245 64 46;
+    --c-brand-2: 255 141 79;
+    --c-brand-ink: 255 248 242;
     --c-danger: 225 65 80;
     --c-success: 34 170 113;
     --c-warning: 230 160 40;
@@ -34,18 +36,18 @@
   }
 
   .dark {
-    --c-canvas: 11 11 15;
-    --c-surface: 21 21 27;
-    --c-surface-2: 26 26 33;
-    --c-elevated: 32 32 40;
+    --c-canvas: 12 11 16;
+    --c-surface: 24 21 29;
+    --c-surface-2: 30 26 36;
+    --c-elevated: 36 31 44;
     --c-border: 255 255 255;
     --c-border-strong: 255 255 255;
-    --c-ink: 245 245 248;
-    --c-ink-2: 168 168 180;
-    --c-ink-3: 116 116 130;
-    --c-brand: 129 132 255;
-    --c-brand-2: 167 139 250;
-    --c-brand-ink: 12 12 16;
+    --c-ink: 248 245 242;
+    --c-ink-2: 177 170 176;
+    --c-ink-3: 118 111 120;
+    --c-brand: 245 64 46;
+    --c-brand-2: 255 146 84;
+    --c-brand-ink: 255 248 242;
     --c-danger: 255 99 112;
     --c-success: 52 199 142;
     --c-warning: 245 184 74;
@@ -71,6 +73,12 @@
     font-feature-settings: 'cv11', 'ss01';
     overscroll-behavior-y: none;
     -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(circle at 22% 0%, rgb(var(--c-brand) / 0.18), transparent 22%),
+      radial-gradient(circle at 88% 10%, rgb(255 255 255 / 0.05), transparent 18%),
+      radial-gradient(circle at 50% 110%, rgb(0 0 0 / 0.18), transparent 34%),
+      linear-gradient(180deg, rgb(var(--c-canvas)), rgb(var(--c-canvas)));
+    background-attachment: fixed;
   }
 
   /* Borders use the ink color at a low, theme-aware alpha. */
@@ -103,8 +111,9 @@
 
 @layer components {
   .panel {
-    @apply rounded-3xl bg-surface border shadow-card;
-    border-color: rgb(var(--c-border) / var(--border-alpha));
+    @apply rounded-[1.7rem] border shadow-card backdrop-blur-xl;
+    background-color: rgb(var(--c-surface) / 0.88);
+    border-color: rgb(var(--c-border) / calc(var(--border-alpha) + 0.02));
   }
 
   .hairline {
@@ -112,14 +121,22 @@
   }
 
   .glass {
-    background: rgb(var(--c-surface) / 0.72);
-    backdrop-filter: saturate(1.4) blur(20px);
-    -webkit-backdrop-filter: saturate(1.4) blur(20px);
+    background: linear-gradient(
+      180deg,
+      rgb(var(--c-surface) / 0.82),
+      rgb(var(--c-surface-2) / 0.72)
+    );
+    backdrop-filter: saturate(1.35) blur(22px);
+    -webkit-backdrop-filter: saturate(1.35) blur(22px);
   }
 
   /* App layout: a centered phone-width column that scales to tablet/desktop. */
   .app-frame {
-    @apply mx-auto w-full max-w-[480px] min-h-[100dvh] flex flex-col relative;
+    @apply mx-auto flex flex-col relative overflow-hidden;
+    width: min(100vw, 412px);
+    height: min(100vh, 892px);
+    background: radial-gradient(125% 75% at 50% -8%, #1b1a24 0%, #110f16 55%, #0b0a0f 100%);
+    box-shadow: 0 40px 120px -20px #000, 0 0 0 1px rgba(255, 255, 255, 0.04);
   }
 
   .skeleton {
@@ -171,7 +188,54 @@
     background-clip: text;
     color: transparent;
   }
+
+  .noise-overlay {
+    position: relative;
+  }
+
+  .noise-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image: radial-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.2;
+    mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.3), transparent 85%);
+  }
 }
+
+/*
+ * Undercover.dc keyframes — ported verbatim from the design so screens can use
+ * the same cinematic motion (floating pass card, impostor danger glow, ring
+ * pulse, pop-in cards).
+ */
+@keyframes uc-screenIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes uc-popIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes uc-floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes uc-dangerGlow {
+  0%, 100% { box-shadow: 0 0 0 1px #f5402e55, 0 0 40px -8px #f5402e88; }
+  50% { box-shadow: 0 0 0 1px #f5402eaa, 0 0 70px -4px #f5402ecc; }
+}
+@keyframes uc-ringPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.uc-screen-in { animation: uc-screenIn 0.4s ease both; }
+.uc-floaty { animation: uc-floaty 3.4s ease-in-out infinite; }
+.uc-pop { animation: uc-popIn 0.35s ease both; }
+.uc-danger-glow { animation: uc-popIn 0.35s ease both, uc-dangerGlow 2.6s ease-in-out infinite; }
 
 /* Respect reduced-motion at the platform level. */
 @media (prefers-reduced-motion: reduce) {

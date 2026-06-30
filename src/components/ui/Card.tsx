@@ -19,10 +19,10 @@ export function Card({
   return (
     <div
       className={cn(
-        'panel',
+        'panel noise-overlay',
         padded && 'p-5',
         interactive &&
-          'cursor-pointer transition-transform duration-200 ease-spring hover:-translate-y-0.5 active:translate-y-0',
+          'cursor-pointer transition-all duration-200 ease-spring hover:-translate-y-1 hover:shadow-float active:translate-y-0',
         className
       )}
       {...rest}

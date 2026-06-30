@@ -33,9 +33,9 @@ export function Toggle({
         onChange(!checked);
       }}
       className={cn(
-        'relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ease-spring outline-none',
+        'relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ease-spring outline-none border border-white/5',
         'disabled:opacity-40',
-        checked ? 'bg-brand' : 'bg-ink/15'
+        checked ? 'bg-brand shadow-glow' : 'bg-white/10'
       )}
     >
       <motion.span

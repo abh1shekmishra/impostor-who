@@ -1,126 +1,104 @@
 import { Screen } from '@/components/Screen';
-import { AppBar, Card, Icon } from '@/components/ui';
+import { UC, TopBar } from '@/components/uc';
 import { useGame } from '@/store/gameStore';
-import { CONTENT_PACKS, getSeasonalPackForToday } from '@/data/packs';
 import { ALL_WORDS } from '@/data/words';
-import { ALL_CATEGORY_IDS } from '@/data/categories';
-import type { ContentPack } from '@/types';
-import { feedback } from '@/lib/feedback';
 
-/** Count how many seed words a pack currently exposes (for the card subtitle). */
-function packSize(pack: ContentPack): number {
-  if (pack.categories.length === 0) return ALL_WORDS.length;
-  const cats = new Set(pack.categories);
-  return ALL_WORDS.filter((w) => cats.has(w.category)).length;
-}
+type PackState = 'active' | 'soon' | 'seasonal' | 'ai';
 
+const BADGE: Record<PackState, string> = {
+  active: UC.green,
+  soon: UC.muted,
+  seasonal: UC.blue,
+  ai: UC.purple,
+};
+
+const PACKS: { name: string; desc: string; emoji: string; status: string; state: PackState }[] = [
+  { name: 'Core Mix', desc: `The everyday party deck · ${ALL_WORDS.length} word pairs`, emoji: '🎲', status: 'Active', state: 'active' },
+  { name: 'Movies & TV', desc: 'Blockbusters, binges and cult classics', emoji: '🎬', status: 'Soon', state: 'soon' },
+  { name: 'After Dark', desc: 'Spicier prompts for grown-up tables · 18+', emoji: '🌙', status: 'Soon', state: 'soon' },
+  { name: 'Frostbite', desc: 'Limited seasonal winter drop', emoji: '❄️', status: 'Seasonal', state: 'seasonal' },
+  { name: 'Word Forge', desc: 'AI-generated packs on any theme you name', emoji: '✨', status: 'Beta', state: 'ai' },
+];
+
+/** Word Packs — a catalog that keeps growing. Ported from Undercover.dc. */
 export function PacksScreen() {
   const navigate = useGame((s) => s.navigate);
-  const patchConfig = useGame((s) => s.patchConfig);
-  const setCategories = useGame((s) => s.setCategories);
-  const seasonal = getSeasonalPackForToday();
-
-  const playPack = (pack: ContentPack) => {
-    feedback('select');
-    if (pack.categories.length === 0) {
-      setCategories([]); // Everything
-    } else {
-      setCategories(pack.categories);
-    }
-    if (pack.filter?.difficulty) patchConfig({ difficulty: pack.filter.difficulty });
-    if (pack.filter?.safeOnly) patchConfig({ familySafe: true });
-    navigate('create');
-  };
-
-  const core = CONTENT_PACKS.filter((p) => p.kind === 'core');
-  const fresh = CONTENT_PACKS.filter((p) => p.kind === 'seasonal' || p.kind === 'ai');
 
   return (
-    <Screen className="pb-safe">
-      <AppBar title="Content Packs" onBack={() => navigate('home')} subtitle={`${ALL_WORDS.length} words · ${ALL_CATEGORY_IDS.length} categories`} />
-      <div className="px-5 py-5 space-y-6 overflow-y-auto no-scrollbar">
-        {seasonal && (
-          <section>
-            <h2 className="text-[12px] font-semibold uppercase tracking-wider text-ink-3 mb-2 px-1 flex items-center gap-1.5">
-              <Icon.Sparkle size={13} /> Today’s pack
-            </h2>
-            <PackCard pack={seasonal} highlighted onPlay={() => playPack(seasonal)} />
-          </section>
-        )}
+    <Screen enter="up">
+      <section
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'auto',
+          minHeight: 0,
+          padding: 'max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px)',
+        }}
+        className="no-scrollbar"
+      >
+        <TopBar title="Word Packs" onBack={() => navigate('home')} marginBottom={6} />
+        <p style={{ margin: '0 0 16px 56px', font: "400 13px 'Space Grotesk'", color: UC.muted }}>
+          A catalog that keeps growing.
+        </p>
 
-        <section>
-          <h2 className="text-[12px] font-semibold uppercase tracking-wider text-ink-3 mb-2 px-1">
-            Curated
-          </h2>
-          <div className="space-y-3">
-            {core.map((pack) => (
-              <PackCard key={pack.id} pack={pack} onPlay={() => playPack(pack)} />
-            ))}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-[12px] font-semibold uppercase tracking-wider text-ink-3 mb-2 px-1">
-            Fresh & seasonal
-          </h2>
-          <div className="space-y-3">
-            {fresh.map((pack) => (
-              <PackCard key={pack.id} pack={pack} onPlay={() => playPack(pack)} />
-            ))}
-          </div>
-          <p className="text-[12px] text-ink-3 mt-3 px-1 leading-relaxed">
-            Seasonal & daily packs are designed to be refreshed by an automated
-            content pipeline — new IPL, festival and meme words drop in without an
-            app update.
-          </p>
-        </section>
-      </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 11, flex: 1 }}>
+          {PACKS.map((p) => {
+            const active = p.state === 'active';
+            const badgeC = BADGE[p.state];
+            return (
+              <div
+                key={p.name}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  padding: 16,
+                  borderRadius: 18,
+                  ...(active
+                    ? { border: '1px solid #36c98a44', background: 'linear-gradient(135deg,#102018,#12131a)' }
+                    : { border: '1px dashed #2f2d3a', background: UC.card3, opacity: 0.85 }),
+                }}
+              >
+                <span
+                  style={{
+                    flex: '0 0 auto',
+                    width: 52,
+                    height: 52,
+                    borderRadius: 15,
+                    display: 'grid',
+                    placeItems: 'center',
+                    fontSize: 26,
+                    background: active ? '#36c98a1a' : '#1d1c25',
+                    border: `1px solid ${active ? '#36c98a44' : UC.border2}`,
+                  }}
+                >
+                  {p.emoji}
+                </span>
+                <span style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  <span style={{ font: "700 16px 'Space Grotesk'", color: UC.ink }}>{p.name}</span>
+                  <span style={{ font: "400 12px 'Space Grotesk'", color: UC.muted, lineHeight: 1.35 }}>{p.desc}</span>
+                </span>
+                <span
+                  style={{
+                    flex: '0 0 auto',
+                    padding: '6px 12px',
+                    borderRadius: 999,
+                    font: "700 10px 'Space Mono'",
+                    letterSpacing: '.1em',
+                    textTransform: 'uppercase',
+                    color: badgeC,
+                    border: `1px solid ${badgeC}55`,
+                    background: `${badgeC}1a`,
+                  }}
+                >
+                  {p.status}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
     </Screen>
-  );
-}
-
-function PackCard({
-  pack,
-  onPlay,
-  highlighted,
-}: {
-  pack: ContentPack;
-  onPlay: () => void;
-  highlighted?: boolean;
-}) {
-  return (
-    <Card
-      interactive
-      onClick={onPlay}
-      className={highlighted ? 'shadow-glow' : ''}
-      style={highlighted ? { boxShadow: `0 8px 40px -8px rgb(${pack.accent} / 0.5)` } : undefined}
-    >
-      <div className="flex items-center gap-4">
-        <div
-          className="h-14 w-14 shrink-0 grid place-items-center rounded-2xl text-3xl"
-          style={{ background: `rgb(${pack.accent} / 0.16)` }}
-        >
-          {pack.emoji}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="text-[16px] font-semibold truncate">{pack.name}</h3>
-            {pack.kind === 'ai' && <Tag>AI</Tag>}
-            {pack.kind === 'seasonal' && <Tag>Seasonal</Tag>}
-          </div>
-          <p className="text-[13px] text-ink-3 mt-0.5 line-clamp-2">{pack.description}</p>
-          <p className="text-[12px] text-ink-3 mt-1">{packSize(pack)} words ready</p>
-        </div>
-        <Icon.ChevronRight className="text-ink-3 shrink-0" />
-      </div>
-    </Card>
-  );
-}
-
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md bg-brand/15 text-brand">
-      {children}
-    </span>
   );
 }

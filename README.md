@@ -28,6 +28,39 @@ Installable as a PWA (Add to Home Screen). Works offline after first load.
 
 ---
 
+## Analytics (PostHog)
+
+Analytics is wired through `src/lib/analytics.ts` and only initializes when a
+PostHog key is present.
+
+Create a `.env` (or `.env.local`) file in the project root:
+
+```bash
+VITE_POSTHOG_KEY=phc_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# Optional (defaults to PostHog Cloud)
+VITE_POSTHOG_HOST=https://app.posthog.com
+```
+
+No key set = analytics disabled (safe for local/dev).
+
+### Events emitted
+
+- `screen_view` — on route change (`home`, `create`, `play`, etc.)
+- `game_created` — when a match starts
+- `round_started` — when a round is dealt
+- `round_completed` — after vote resolution and after impostor guess resolution
+- `impostor_guess` — when the impostor submits their final guess
+- `settings_changed` — when a setting is updated/toggled
+
+### Where events are fired
+
+- `src/main.tsx` initializes analytics (`initAnalytics()`)
+- `src/App.tsx` tracks screen views via `page(route)`
+- `src/store/gameStore.ts` tracks gameplay lifecycle events
+- `src/store/settingsStore.ts` tracks settings changes
+
+---
+
 ## What's in the box
 
 - **Full game loop** — Home → Create Room → Lobby → Reveal → Clue → Discuss →

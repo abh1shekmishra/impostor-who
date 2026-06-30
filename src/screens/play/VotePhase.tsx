@@ -1,135 +1,141 @@
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState, type CSSProperties } from 'react';
 import { Screen } from '@/components/Screen';
-import { Avatar, Button, Icon } from '@/components/ui';
+import { Avatar } from '@/components/ui';
+import { UC, PrimaryButton } from '@/components/uc';
 import { useGame } from '@/store/gameStore';
 import { feedback } from '@/lib/feedback';
-import { cn } from '@/lib/cn';
-
-type Stage = 'pass' | 'choose';
 
 /**
- * Secret pass-and-play voting. Each player privately picks a suspect, then
- * passes on. A voter can't vote for themselves. When the last vote is in we
- * finalize, which routes to either the result or the impostor's last guess.
+ * Voting. Individual mode: each player privately picks a suspect (can't vote for
+ * self), then passes on. Group mode: one shared decision. Ported from Undercover.dc.
  */
 export function VotePhase() {
   const round = useGame((s) => s.round);
   const voterIndex = useGame((s) => s.voterIndex);
   const castVote = useGame((s) => s.castVote);
   const finalizeVotes = useGame((s) => s.finalizeVotes);
-  const [stage, setStage] = useState<Stage>('pass');
   const [picked, setPicked] = useState<string | null>(null);
 
-  const voters = round ? round.players.filter((p) => !p.eliminated) : [];
+  if (!round) return null;
+  const groupVote = round.config.groupVote;
+  const voters = round.players.filter((p) => !p.eliminated);
   const voter = voters[voterIndex];
 
-  // During the exit transition `round` may clear or the index can point past
-  // the last voter; the confirm handler already scheduled finalization.
-  if (!round || !voter) return null;
-
-  const candidates = round.players.filter((p) => !p.eliminated && p.id !== voter.id);
+  // Individual mode can't vote for the active voter.
+  const candidates = round.players.filter((p) => !p.eliminated && (groupVote || p.id !== voter?.id));
   const isLastVoter = voterIndex >= voters.length - 1;
+  const pickedName = picked ? round.players.find((p) => p.id === picked)?.name ?? '' : '';
+
+  const kicker = groupVote ? 'Decide together' : `Ballot ${voterIndex + 1} of ${voters.length}`;
+  const header = groupVote ? 'Group Vote' : voter?.name ?? 'Vote';
+  const sub = groupVote ? 'One final tap. No takebacks.' : 'Tap who you suspect, then pass the phone on.';
+  const confirmLabel = !picked ? 'Tap a player' : groupVote ? `Vote out ${pickedName}` : 'Lock in vote';
 
   const confirm = () => {
     if (!picked) return;
     feedback('vote');
+    if (groupVote) {
+      candidates.forEach(() => castVote(picked));
+      setTimeout(() => finalizeVotes(), 0);
+      return;
+    }
     castVote(picked);
     setPicked(null);
-    setStage('pass');
-    if (isLastVoter) {
-      // Defer to allow the cast to commit before resolving.
-      setTimeout(() => finalizeVotes(), 0);
-    }
+    if (isLastVoter) setTimeout(() => finalizeVotes(), 0);
+  };
+
+  const cardBase: CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 11,
+    padding: '18px 12px',
+    borderRadius: 18,
+    cursor: 'pointer',
   };
 
   return (
-    <Screen enter="fade" className="px-5 pb-safe">
-      <div className="pt-[max(env(safe-area-inset-top),1.25rem)] text-center">
-        <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3">Vote</p>
-        <p className="text-sm text-ink-2 mt-1">
-          {voterIndex + 1} of {voters.length} voting
-        </p>
-      </div>
+    <Screen enter="fade">
+      <section
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+          padding: 'max(env(safe-area-inset-top),26px) 22px max(env(safe-area-inset-bottom),22px)',
+        }}
+      >
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span style={{ font: "700 12px 'Space Mono'", letterSpacing: '.22em', textTransform: 'uppercase', color: UC.brand }}>
+            {kicker}
+          </span>
+          <h2 style={{ margin: 0, fontFamily: "'Anton'", fontSize: 38, lineHeight: 0.95, textTransform: 'uppercase', color: UC.ink }}>
+            {header}
+          </h2>
+          <span style={{ font: "500 13px 'Space Grotesk'", color: UC.ink3 }}>{sub}</span>
+        </div>
 
-      <AnimatePresence mode="wait">
-        {stage === 'pass' ? (
-          <motion.div
-            key={`pass-${voterIndex}`}
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            className="flex-1 flex flex-col items-center justify-center text-center"
-          >
-            <p className="text-ink-3 text-sm mb-6">Secret vote — pass to</p>
-            <Avatar name={voter.name} accent={voter.accent} size="lg" />
-            <h2 className="mt-5 font-display text-4xl font-semibold">{voter.name}</h2>
-            <p className="mt-3 text-ink-3 max-w-[15rem] text-balance">
-              Don’t let others see who you pick.
-            </p>
-            <div className="mt-10 w-full max-w-sm">
-              <Button
-                size="xl"
-                fullWidth
-                cue="flip"
-                leadingIcon={<Icon.Eye size={20} />}
+        <div
+          style={{
+            flex: 1,
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 11,
+            alignContent: 'center',
+            padding: '22px 0',
+            overflowY: 'auto',
+            minHeight: 0,
+          }}
+          className="no-scrollbar"
+        >
+          {candidates.map((c) => {
+            const selected = picked === c.id;
+            const accent = round.players.findIndex((p) => p.id === c.id);
+            return (
+              <button
+                key={c.id}
                 onClick={() => {
                   feedback('tap');
-                  setStage('choose');
+                  setPicked(c.id);
+                }}
+                style={{
+                  ...cardBase,
+                  border: `1px solid ${selected ? UC.brand : UC.border}`,
+                  background: selected ? '#f5402e1f' : UC.card,
+                  boxShadow: selected ? '0 0 32px -8px #f5402e' : undefined,
                 }}
               >
-                Cast my vote
-              </Button>
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key={`choose-${voterIndex}`}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="flex-1 flex flex-col"
-          >
-            <p className="text-center text-ink-2 mt-4 mb-4">
-              <span className="font-semibold text-ink">{voter.name}</span>, who is the impostor?
-            </p>
-            <div className="flex-1 overflow-y-auto no-scrollbar grid grid-cols-2 gap-3 content-start pb-4">
-              {candidates.map((c) => {
-                const active = picked === c.id;
-                return (
-                  <motion.button
-                    key={c.id}
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => {
-                      feedback('tap');
-                      setPicked(c.id);
+                <Avatar name={c.name} accent={accent} size="md" />
+                <span style={{ font: "700 17px 'Space Grotesk'", color: UC.ink }}>{c.name}</span>
+                {selected && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: 9,
+                      right: 9,
+                      width: 22,
+                      height: 22,
+                      borderRadius: '50%',
+                      background: UC.brand,
+                      display: 'grid',
+                      placeItems: 'center',
                     }}
-                    className={cn(
-                      'flex flex-col items-center gap-2.5 p-4 rounded-3xl border transition-colors',
-                      active ? 'bg-brand/12 border-brand ring-1 ring-brand' : 'bg-surface hover:bg-surface-2'
-                    )}
                   >
-                    <Avatar name={c.name} accent={c.accent} size="md" active={active} />
-                    <span className="font-medium text-[15px] truncate max-w-full">{c.name}</span>
-                  </motion.button>
-                );
-              })}
-            </div>
-            <div className="pb-safe">
-              <Button
-                size="xl"
-                fullWidth
-                cue="vote"
-                disabled={!picked}
-                onClick={confirm}
-                leadingIcon={<Icon.Check size={20} />}
-              >
-                {isLastVoter ? 'Lock in final vote' : 'Confirm & pass'}
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3">
+                      <path d="M5 12l5 5 9-11" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        <PrimaryButton onClick={confirm} disabled={!picked}>
+          {confirmLabel}
+        </PrimaryButton>
+      </section>
     </Screen>
   );
 }

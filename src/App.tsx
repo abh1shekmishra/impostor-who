@@ -1,5 +1,7 @@
 import { AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 import { useThemeEffect } from '@/hooks';
+import { page } from '@/lib/analytics';
 import { useGame, type Route } from '@/store/gameStore';
 import {
   CreateRoomScreen,
@@ -20,6 +22,10 @@ import {
 export default function App() {
   useThemeEffect();
   const route = useGame((s) => s.route);
+
+  useEffect(() => {
+    page(route);
+  }, [route]);
 
   return (
     <div className="app-frame">

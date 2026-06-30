@@ -29,7 +29,7 @@ export function ListRow({
       {trailing && <span className="shrink-0">{trailing}</span>}
     </>
   );
-  const cls = cn('flex items-center gap-3 py-3', className);
+  const cls = cn('flex items-center gap-3 py-3.5', className);
   if (onClick) {
     return (
       <button type="button" onClick={onClick} className={cn(cls, 'w-full active:opacity-70')}>

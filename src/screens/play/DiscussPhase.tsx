@@ -1,104 +1,119 @@
-import { useEffect } from 'react';
 import { Screen } from '@/components/Screen';
-import { Button, IconButton, ProgressRing, Icon } from '@/components/ui';
+import { UC } from '@/components/uc';
 import { useGame } from '@/store/gameStore';
 import { useCountdown } from '@/hooks';
 import { feedback } from '@/lib/feedback';
-import { formatTime } from '@/lib/format';
+
+const CIRC = 829.38; // 2π·132, the design's ring circumference
 
 /**
- * Free discussion with a drift-free timer. Unlimited timers just show a stopwatch
- * vibe with no pressure. When the timer expires we nudge (sound + haptic) but
- * never force — the host decides when to move to the vote.
+ * Free discussion with a drift-free ring timer. Starts paused; the host taps to
+ * run it, then calls the vote whenever the room is ready. Ported from Undercover.dc.
  */
 export function DiscussPhase() {
   const round = useGame((s) => s.round);
   const startVote = useGame((s) => s.startVote);
   const duration = round?.config.timerSeconds ?? null;
 
-  const { remaining, running, progress, start, pause, reset } = useCountdown(duration, () => {
-    feedback('lose');
-  });
-
-  // Auto-start the timer when the phase mounts.
-  useEffect(() => {
-    if (duration !== null) start();
-    return () => pause();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { remaining, running, start, pause } = useCountdown(duration, () => feedback('lose'));
 
   if (!round) return null;
-  const urgency = duration && remaining <= 5 ? 'danger' : duration && remaining <= 10 ? 'warn' : 'normal';
-  const expired = duration !== null && remaining <= 0;
+
+  const noTimer = duration === null;
+  const expired = !noTimer && remaining <= 0;
+  const progress = !noTimer && duration ? 1 - remaining / duration : 0;
+  const ringColor = !noTimer && remaining <= 10 ? UC.brand : UC.blue;
+  const timeLabel = noTimer ? '∞' : `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')}`;
+  const timeState = noTimer ? 'No timer' : expired ? 'Time’s up' : running ? 'On the clock' : 'Paused';
+  const btnLabel = noTimer ? 'Talk it out' : expired ? 'Time’s up' : running ? 'Pause' : 'Start timer';
+
+  const toggle = () => {
+    if (noTimer) return;
+    feedback('tap');
+    running ? pause() : start();
+  };
 
   return (
-    <Screen enter="fade" className="px-5 pb-safe">
-      <div className="pt-[max(env(safe-area-inset-top),1.25rem)] text-center">
-        <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3">Discuss</p>
-        <p className="text-sm text-ink-2 mt-1 max-w-[18rem] mx-auto text-balance">
-          Who sounded unsure? Compare clues. Find the impostor.
+    <Screen enter="fade">
+      <section
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          padding: 'max(env(safe-area-inset-top),30px) 24px max(env(safe-area-inset-bottom),24px)',
+        }}
+      >
+        <span style={{ fontFamily: "'Anton'", fontSize: 40, textTransform: 'uppercase', color: UC.ink, letterSpacing: '.02em' }}>
+          Discuss
+        </span>
+        <p style={{ margin: '8px 0 0', fontSize: 15, color: UC.ink3, textAlign: 'center', maxWidth: 250 }}>
+          Find the liar. Defend your word. Don’t overshare.
         </p>
-      </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center">
-        {duration === null ? (
-          <div className="flex flex-col items-center text-center">
-            <span className="text-6xl mb-4">🗣️</span>
-            <p className="text-xl font-semibold">Take your time</p>
-            <p className="text-ink-3 mt-2">No timer — vote whenever you’re ready.</p>
-          </div>
-        ) : (
-          <ProgressRing progress={progress} size={220} stroke={12} urgency={urgency}>
-            <div className="text-center">
-              <p
-                className={`font-display text-6xl font-bold tabular-nums ${
-                  urgency === 'danger' ? 'text-danger' : urgency === 'warn' ? 'text-warning' : 'text-ink'
-                }`}
-              >
-                {formatTime(remaining)}
-              </p>
-              <p className="text-[13px] text-ink-3 mt-1">{expired ? 'Time’s up!' : 'remaining'}</p>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+          <div style={{ position: 'relative', width: 268, height: 268, display: 'grid', placeItems: 'center' }}>
+            <svg width="268" height="268" viewBox="0 0 300 300" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+              <circle cx="150" cy="150" r="132" fill="none" stroke={UC.border} strokeWidth="14" />
+              <circle
+                cx="150"
+                cy="150"
+                r="132"
+                fill="none"
+                stroke={ringColor}
+                strokeWidth="14"
+                strokeLinecap="round"
+                strokeDasharray={CIRC}
+                strokeDashoffset={CIRC * progress}
+                style={{ transition: 'stroke-dashoffset 1s linear, stroke .3s' }}
+              />
+            </svg>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontFamily: "'Anton'", fontSize: 64, lineHeight: 1, color: UC.ink }}>{timeLabel}</span>
+              <span style={{ font: "700 11px 'Space Mono'", letterSpacing: '.2em', textTransform: 'uppercase', color: UC.muted }}>
+                {timeState}
+              </span>
             </div>
-          </ProgressRing>
-        )}
-
-        {duration !== null && (
-          <div className="mt-8 flex items-center gap-3">
-            <IconButton
-              label={running ? 'Pause timer' : 'Resume timer'}
-              onClick={() => (running ? pause() : start())}
-            >
-              {running ? <PauseIcon /> : <Icon.Play size={18} />}
-            </IconButton>
-            <IconButton label="Reset timer" onClick={() => reset()}>
-              <Icon.Shuffle size={18} />
-            </IconButton>
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className="pb-safe">
-        <Button
-          size="xl"
-          fullWidth
-          cue="vote"
-          variant={expired ? 'primary' : 'secondary'}
-          leadingIcon={<Icon.Users size={20} />}
-          onClick={() => {
-            feedback('select');
-            startVote();
-          }}
-        >
-          Go to vote
-        </Button>
-      </div>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <button
+            onClick={toggle}
+            style={{
+              width: '100%',
+              border: 0,
+              borderRadius: 18,
+              padding: 18,
+              background: UC.brand,
+              color: '#fff',
+              font: "700 17px 'Space Grotesk'",
+              cursor: 'pointer',
+              boxShadow: '0 12px 30px -12px #f5402ecc',
+            }}
+          >
+            {btnLabel}
+          </button>
+          <button
+            onClick={() => {
+              feedback('select');
+              startVote();
+            }}
+            style={{
+              width: '100%',
+              border: `1px solid ${UC.border2}`,
+              borderRadius: 18,
+              padding: 18,
+              background: 'transparent',
+              color: '#c9c6d4',
+              font: "700 16px 'Space Grotesk'",
+              cursor: 'pointer',
+            }}
+          >
+            Call the vote
+          </button>
+        </div>
+      </section>
     </Screen>
   );
 }
-
-const PauseIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <rect x="6" y="5" width="4" height="14" rx="1.2" />
-    <rect x="14" y="5" width="4" height="14" rx="1.2" />
-  </svg>
-);

@@ -16,6 +16,8 @@ const EMPTY: MatchStats = {
   timesImpostor: 0,
   timesCaught: 0,
   impostorWordGuesses: 0,
+  currentStreak: 0,
+  bestStreak: 0,
   fastestEjectionMs: null,
   favoriteCategory: null,
   categoryPlays: {},
@@ -50,6 +52,9 @@ export const useStats = create<StatsState>()(
             [round.word.category]: (s.categoryPlays[round.word.category] ?? 0) + 1,
           };
           const impostorEjected = result.reason === 'impostor-ejected';
+          const civWon = result.outcome === 'civilians-win';
+          const currentStreak = civWon ? s.currentStreak + 1 : 0;
+          const bestStreak = Math.max(s.bestStreak, currentStreak);
           const fastest =
             impostorEjected && ejectionMs != null
               ? s.fastestEjectionMs == null
@@ -64,6 +69,8 @@ export const useStats = create<StatsState>()(
             timesCaught: s.timesCaught + (impostorEjected ? 1 : 0),
             impostorWordGuesses:
               s.impostorWordGuesses + (result.guessedCorrectly ? 1 : 0),
+            currentStreak,
+            bestStreak,
             fastestEjectionMs: fastest,
             categoryPlays,
             favoriteCategory: computeFavorite(categoryPlays),
@@ -82,6 +89,8 @@ export const useStats = create<StatsState>()(
         timesImpostor: s.timesImpostor,
         timesCaught: s.timesCaught,
         impostorWordGuesses: s.impostorWordGuesses,
+        currentStreak: s.currentStreak,
+        bestStreak: s.bestStreak,
         fastestEjectionMs: s.fastestEjectionMs,
         favoriteCategory: s.favoriteCategory,
         categoryPlays: s.categoryPlays,

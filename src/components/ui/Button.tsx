@@ -21,19 +21,19 @@ export interface ButtonProps
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'bg-brand text-brand-ink shadow-soft hover:brightness-[1.05] active:brightness-95',
+    'bg-brand text-brand-ink shadow-glow hover:brightness-[1.03] active:brightness-95',
   secondary:
-    'bg-surface-2 text-ink border hover:bg-elevated active:bg-elevated',
-  ghost: 'bg-transparent text-ink-2 hover:bg-surface-2 active:bg-surface-2',
-  danger: 'bg-danger text-white shadow-soft hover:brightness-[1.05] active:brightness-95',
-  success: 'bg-success text-white shadow-soft hover:brightness-[1.05] active:brightness-95',
+    'bg-surface/80 text-ink border backdrop-blur-xl hover:bg-elevated active:bg-elevated',
+  ghost: 'bg-transparent text-ink-2 hover:bg-surface/70 active:bg-surface/70',
+  danger: 'bg-danger text-white shadow-soft hover:brightness-[1.03] active:brightness-95',
+  success: 'bg-success text-white shadow-soft hover:brightness-[1.03] active:brightness-95',
 };
 
 const SIZES: Record<Size, string> = {
   sm: 'h-9 px-3.5 text-sm rounded-xl gap-1.5',
   md: 'h-11 px-5 text-[15px] rounded-2xl gap-2',
   lg: 'h-[3.25rem] px-6 text-base rounded-2xl gap-2',
-  xl: 'h-16 px-7 text-lg rounded-3xl gap-2.5 font-medium',
+  xl: 'h-[4.25rem] px-7 text-[17px] rounded-[1.4rem] gap-2.5 font-semibold',
 };
 
 /**

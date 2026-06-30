@@ -24,7 +24,7 @@ export function Screen({ children, className, enter = 'right' }: ScreenProps) {
   }[enter];
 
   if (reduced) {
-    return <div className={cn('flex-1 flex flex-col', className)}>{children}</div>;
+    return <div className={cn('flex-1 flex flex-col min-h-0', className)}>{children}</div>;
   }
 
   return (
@@ -33,7 +33,7 @@ export function Screen({ children, className, enter = 'right' }: ScreenProps) {
       animate={variants.animate}
       exit={variants.exit}
       transition={{ type: 'spring', stiffness: 420, damping: 38, mass: 0.7 }}
-      className={cn('flex-1 flex flex-col', className)}
+      className={cn('flex-1 flex flex-col min-h-0', className)}
     >
       {children}
     </motion.div>

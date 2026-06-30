@@ -1,159 +1,141 @@
 import { useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Screen } from '@/components/Screen';
-import { Avatar, Button, Card, Icon } from '@/components/ui';
+import { UC, PrimaryButton } from '@/components/uc';
 import { useGame } from '@/store/gameStore';
-import { useConfetti } from '@/hooks';
-import { CATEGORY_BY_ID } from '@/data/categories';
 import { feedback } from '@/lib/feedback';
-import { cn } from '@/lib/cn';
 
 /**
- * Outcome screen: a clear verdict, the reveal of the word and impostor(s), a
- * running scoreboard, and the choice to play on. Civilians winning fires
- * confetti; the impostor stealing it gets its own sly treatment.
+ * Outcome screen: the verdict, the reveal of the impostor and secret word, the
+ * running civ/imp tally, and the choice to play on. Ported from Undercover.dc.
  */
 export function ResultPhase() {
   const round = useGame((s) => s.round);
-  const players = useGame((s) => s.players);
+  const matchScore = useGame((s) => s.matchScore);
   const nextRound = useGame((s) => s.nextRound);
-  const endMatch = useGame((s) => s.endMatch);
-  const lastGuessCorrect = useGame((s) => s.lastGuessCorrect);
-  const { canvasRef, fire } = useConfetti();
+  const navigate = useGame((s) => s.navigate);
+  const quitToHome = useGame((s) => s.quitToHome);
 
   const result = round?.result ?? null;
-  const civiliansWon = result?.outcome === 'civilians-win';
+  const civWon = result?.outcome === 'civilians-win';
 
   useEffect(() => {
     if (!result) return;
-    if (civiliansWon) {
-      feedback('win');
-      setTimeout(() => fire(), 120);
-    } else {
-      feedback('lose');
-    }
+    feedback(civWon ? 'win' : 'lose');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Exit transition after starting the next round can clear the result.
   if (!round || !result) return null;
 
-  const impostors = round.players.filter((p) => result.impostorIds.includes(p.id));
-  const category = CATEGORY_BY_ID.get(round.word.category);
-  const ranked = [...players].sort((a, b) => b.score - a.score);
-  const topScore = ranked[0]?.score ?? 0;
+  const color = civWon ? UC.blue : UC.brand;
+  const headline = civWon ? 'Civilians Win' : 'Impostor Wins';
+  const badge = civWon ? 'Justice served' : 'Got away with it';
+  const reason = civWon
+    ? result.reason === 'impostor-ejected'
+      ? 'The table unmasked the impostor.'
+      : 'The impostor guessed wrong — civilians escape.'
+    : result.reason === 'impostor-guessed-word'
+      ? 'The impostor stole the secret word.'
+      : 'The impostor slipped through the vote.';
 
-  const headline = civiliansWon ? 'Police win!' : 'Chor wins!';
-  const subline = reasonCopy(result.reason, lastGuessCorrect);
+  const impostorReveal = round.players.filter((p) => result.impostorIds.includes(p.id)).map((p) => p.name).join(' & ') || '—';
+  const votedOut = round.players.find((p) => p.id === result.ejectedId)?.name ?? '—';
+
+  const ghostBtn = {
+    flex: 1,
+    borderRadius: 16,
+    border: `1px solid ${UC.border2}`,
+    background: UC.card2,
+    color: '#c9c6d4',
+    font: "700 15px 'Space Grotesk'",
+    padding: 16,
+    cursor: 'pointer',
+  } as const;
 
   return (
-    <Screen enter="up" className="px-5 pb-safe relative">
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none fixed inset-0 w-full h-full z-50"
-        aria-hidden
-      />
-      <div className="pt-[max(env(safe-area-inset-top),2rem)] text-center">
-        <motion.div
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 240, damping: 16 }}
-          className="text-6xl"
-        >
-          {civiliansWon ? '👮' : '😈'}
-        </motion.div>
-        <h1
-          className={cn(
-            'mt-4 font-display text-4xl font-bold',
-            civiliansWon ? 'text-gradient-brand' : 'text-danger'
-          )}
-        >
-          {headline}
-        </h1>
-        <p className="mt-2 text-ink-2 text-balance max-w-[20rem] mx-auto">{subline}</p>
-      </div>
-
-      <div className="mt-6 space-y-3 overflow-y-auto no-scrollbar flex-1">
-        {/* Word reveal */}
-        <Card className="text-center">
-          <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3">The word was</p>
-          <p className="mt-2 font-display text-3xl font-bold">{round.word.text}</p>
-          {category && (
-            <span className="inline-block mt-3 text-[13px] text-ink-3 px-3 py-1 rounded-full bg-surface-2">
-              {category.emoji} {category.label}
+    <Screen enter="up">
+      <section
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: 'max(env(safe-area-inset-top),28px) 24px max(env(safe-area-inset-bottom),22px)',
+        }}
+      >
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 22 }}>
+          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }}>
+            <span
+              style={{
+                padding: '7px 15px',
+                borderRadius: 999,
+                border: `1px solid ${civWon ? '#46c2ff55' : '#f5402e55'}`,
+                background: civWon ? '#46c2ff1a' : '#f5402e1a',
+                color,
+                font: "700 11px 'Space Mono'",
+                letterSpacing: '.18em',
+                textTransform: 'uppercase',
+              }}
+            >
+              {badge}
             </span>
-          )}
-        </Card>
+            <h2 style={{ margin: 0, fontFamily: "'Anton'", fontSize: 60, lineHeight: 0.86, textTransform: 'uppercase', color }}>
+              {headline}
+            </h2>
+            <p style={{ margin: 0, maxWidth: 280, fontSize: 15, lineHeight: 1.45, color: UC.ink2 }}>{reason}</p>
+          </div>
 
-        {/* Impostor reveal */}
-        <Card>
-          <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3 mb-3">
-            {impostors.length > 1 ? 'The chors were' : 'The chor was'}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {impostors.map((p) => (
-              <div key={p.id} className="flex items-center gap-2 pr-3 pl-1.5 py-1.5 rounded-full bg-surface-2">
-                <Avatar name={p.name} accent={p.accent} size="sm" />
-                <span className="font-medium text-sm">{p.name}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, borderRadius: 16, border: '1px solid #f5402e44', background: '#1a0e0f' }}>
+              <span style={{ font: "700 11px 'Space Mono'", letterSpacing: '.14em', textTransform: 'uppercase', color: UC.brand, flex: 1 }}>
+                Impostor
+              </span>
+              <span style={{ font: "700 18px 'Space Grotesk'", color: UC.ink }}>{impostorReveal}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, borderRadius: 16, border: '1px solid #46c2ff44', background: '#0e1a22' }}>
+              <span style={{ font: "700 11px 'Space Mono'", letterSpacing: '.14em', textTransform: 'uppercase', color: UC.blue, flex: 1 }}>
+                Secret word
+              </span>
+              <span style={{ font: "700 18px 'Space Grotesk'", color: UC.ink }}>{round.word.text}</span>
+            </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <div style={{ flex: 1, padding: '15px 16px', borderRadius: 16, border: `1px solid ${UC.border}`, background: UC.card, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <span style={{ font: "600 11px 'Space Mono'", letterSpacing: '.1em', textTransform: 'uppercase', color: UC.muted }}>Voted out</span>
+                <span style={{ font: "700 16px 'Space Grotesk'", color: UC.ink }}>{votedOut}</span>
               </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Scoreboard */}
-        <Card>
-          <div className="flex items-center gap-2 mb-3">
-            <Icon.Trophy size={18} className="text-warning" />
-            <p className="text-[12px] uppercase tracking-[0.2em] text-ink-3">Scoreboard</p>
-          </div>
-          <div className="space-y-1">
-            {ranked.map((p, i) => (
-              <div key={p.id} className="flex items-center gap-3 py-1.5">
-                <span className="w-5 text-center text-sm text-ink-3 tabular-nums">{i + 1}</span>
-                <Avatar name={p.name} accent={p.accent} size="sm" />
-                <span className="flex-1 font-medium text-[15px] truncate">{p.name}</span>
-                {p.score === topScore && topScore > 0 && <span className="text-sm">👑</span>}
-                <span className="font-semibold tabular-nums text-ink">{p.score}</span>
+              <div style={{ flex: 1, padding: '15px 16px', borderRadius: 16, border: `1px solid ${UC.border}`, background: UC.card, display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <span style={{ font: "600 11px 'Space Mono'", letterSpacing: '.1em', textTransform: 'uppercase', color: UC.muted }}>Score · civ / imp</span>
+                <span style={{ font: "700 16px 'Space Grotesk'", color: UC.ink }}>
+                  {matchScore.civ} / {matchScore.imp}
+                </span>
               </div>
-            ))}
+            </div>
           </div>
-        </Card>
-      </div>
+        </div>
 
-      <div className="pt-3 pb-safe space-y-2.5">
-        <Button
-          size="xl"
-          fullWidth
-          cue="pop"
-          leadingIcon={<Icon.Shuffle size={20} />}
-          onClick={() => {
-            feedback('select');
-            nextRound();
-          }}
-        >
-          Next round
-        </Button>
-        <Button variant="ghost" size="md" fullWidth cue="tap" onClick={endMatch} leadingIcon={<Icon.Home size={18} />}>
-          End game
-        </Button>
-      </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <PrimaryButton
+            onClick={() => {
+              feedback('select');
+              nextRound();
+            }}
+          >
+            Next round
+          </PrimaryButton>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              style={ghostBtn}
+              onClick={() => {
+                useGame.setState({ phase: 'setup' });
+                navigate('create');
+              }}
+            >
+              New game
+            </button>
+            <button style={ghostBtn} onClick={quitToHome}>
+              Home
+            </button>
+          </div>
+        </div>
+      </section>
     </Screen>
   );
-}
-
-function reasonCopy(reason: string, guessedCorrectly: boolean | null): string {
-  switch (reason) {
-    case 'impostor-ejected':
-      return 'You caught the chor red-handed. Sharp work, Police.';
-    case 'impostor-guessed-word':
-      return 'The chor survived the vote AND guessed the word. Ice cold.';
-    case 'impostor-survived':
-      return 'The chor dodged the vote and got away with it.';
-    case 'wrong-civilian-ejected':
-      return guessedCorrectly === false
-        ? 'Wrong guess — but you caught an innocent, so the chor still wins.'
-        : 'You caught an innocent. The chor walks free.';
-    default:
-      return '';
-  }
 }

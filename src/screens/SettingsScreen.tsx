@@ -1,158 +1,164 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Screen } from '@/components/Screen';
-import {
-  AppBar,
-  Card,
-  Divider,
-  ListRow,
-  SegmentedControl,
-  Sheet,
-  Button,
-  Toggle,
-  Icon,
-} from '@/components/ui';
+import { UC, TopBar, Switch } from '@/components/uc';
 import { useGame } from '@/store/gameStore';
 import { useSettings } from '@/store/settingsStore';
 import { useStats } from '@/store/statsStore';
-import type { LanguagePreference, ThemePreference } from '@/types';
+import { useRoster } from '@/store/rosterStore';
 import { feedback } from '@/lib/feedback';
+
+const TOGGLES = [
+  { key: 'sound', label: 'Sound', desc: 'Cues, stings and the timer beep' },
+  { key: 'animations', label: 'Animations', desc: 'Motion and screen transitions' },
+  { key: 'haptics', label: 'Haptics', desc: 'A buzz on the big moments' },
+  { key: 'holdToReveal', label: 'Hold to reveal', desc: 'Press and hold to expose your role' },
+] as const;
+
+const sectionLabel = {
+  font: "700 11px 'Space Mono'",
+  letterSpacing: '.16em',
+  textTransform: 'uppercase',
+  color: UC.muted2,
+} as const;
 
 export function SettingsScreen() {
   const navigate = useGame((s) => s.navigate);
-  const s = useSettings();
-  const resetStats = useStats((st) => st.reset);
-  const [confirmReset, setConfirmReset] = useState(false);
+  const settings = useSettings();
+  const resetStats = useStats((s) => s.reset);
+  const clearRoster = useRoster((s) => s.clear);
+  const [armed, setArmed] = useState(false);
+
+  useEffect(() => {
+    if (!armed) return;
+    const t = setTimeout(() => setArmed(false), 3000);
+    return () => clearTimeout(t);
+  }, [armed]);
+
+  const onReset = () => {
+    feedback('tap');
+    if (!armed) {
+      setArmed(true);
+      return;
+    }
+    resetStats();
+    clearRoster();
+    setArmed(false);
+  };
 
   return (
-    <Screen className="pb-safe">
-      <AppBar title="Settings" onBack={() => navigate('home')} />
-      <div className="px-5 py-5 space-y-5 overflow-y-auto no-scrollbar">
-        <section>
-          <SectionLabel>Appearance</SectionLabel>
-          <Card>
-            <p className="text-[13px] text-ink-3 mb-3">Theme</p>
-            <SegmentedControl<ThemePreference>
-              ariaLabel="Theme"
-              value={s.theme}
-              onChange={(v) => s.set('theme', v)}
-              segments={[
-                { value: 'light', label: 'Light', icon: <Icon.Sun size={16} /> },
-                { value: 'dark', label: 'Dark', icon: <Icon.Moon size={16} /> },
-                { value: 'system', label: 'Auto' },
-              ]}
-            />
-          </Card>
-        </section>
+    <Screen enter="up">
+      <section
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0,
+          padding: 'max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px)',
+        }}
+      >
+        <TopBar title="Settings" onBack={() => navigate('home')} />
 
-        <section>
-          <SectionLabel>Feel</SectionLabel>
-          <Card padded={false} className="px-5">
-            <Toggle
-              id="set-sound"
-              label="Sound"
-              description="Tiny, pleasant cues"
-              checked={s.sound}
-              onChange={() => s.toggle('sound')}
-            />
-            <Divider />
-            <Toggle
-              id="set-anim"
-              label="Animations"
-              description="Card flips and transitions"
-              checked={s.animations}
-              onChange={() => s.toggle('animations')}
-            />
-            <Divider />
-            <Toggle
-              id="set-haptics"
-              label="Haptics"
-              description="Subtle vibration feedback"
-              checked={s.haptics}
-              onChange={() => s.toggle('haptics')}
-            />
-            <Divider />
-            <Toggle
-              id="set-hold"
-              label="Hold to reveal"
-              description="Press and hold your role card for privacy"
-              checked={s.holdToReveal}
-              onChange={() => s.toggle('holdToReveal')}
-            />
-          </Card>
-        </section>
-
-        <section>
-          <SectionLabel>Language</SectionLabel>
-          <Card>
-            <SegmentedControl<LanguagePreference>
-              ariaLabel="Language"
-              value={s.language}
-              onChange={(v) => s.set('language', v)}
-              segments={[
-                { value: 'en', label: 'English' },
-                { value: 'hinglish', label: 'Hinglish' },
-                { value: 'hi', label: 'हिंदी' },
-              ]}
-            />
-            <p className="text-[12px] text-ink-3 mt-3">
-              Affects interface labels. Word packs already mix English & Hinglish
-              based on your category and “English only” choices.
-            </p>
-          </Card>
-        </section>
-
-        <section>
-          <SectionLabel>Data</SectionLabel>
-          <Card padded={false} className="px-5">
-            <ListRow
-              title="Reset statistics"
-              subtitle="Clears your local play history"
-              leading={<Icon.Chart size={20} />}
-              trailing={<Icon.ChevronRight size={18} className="text-ink-3" />}
-              onClick={() => {
-                feedback('tap');
-                setConfirmReset(true);
+        <div className="no-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: 18, flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          {/* Appearance */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+            <span style={sectionLabel}>Appearance</span>
+            <div
+              style={{
+                padding: 16,
+                borderRadius: 16,
+                border: `1px solid ${UC.border}`,
+                background: UC.card,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
-            />
-          </Card>
-          <p className="text-[12px] text-ink-3 mt-3 px-1 leading-relaxed">
-            Undercover runs entirely on your device. No account, no login, no
-            data leaves your phone. Works fully offline once installed.
-          </p>
-        </section>
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <span style={{ font: "600 15px 'Space Grotesk'", color: UC.ink }}>Theme</span>
+                <span style={{ font: "400 12px 'Space Grotesk'", color: UC.muted }}>Tuned for dark rooms</span>
+              </div>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 7,
+                  padding: '9px 14px',
+                  borderRadius: 999,
+                  border: `1px solid ${UC.border2}`,
+                  color: '#c9c6d4',
+                  font: "600 13px 'Space Grotesk'",
+                }}
+              >
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#0b0a0f', border: '1px solid #555' }} />
+                Cinema dark
+              </span>
+            </div>
+          </div>
 
-        <p className="text-center text-[12px] text-ink-3 pt-2">Undercover · v1.0.0</p>
-      </div>
+          {/* Feel */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+            <span style={sectionLabel}>Feel</span>
+            <div style={{ padding: '2px 16px', borderRadius: 16, border: `1px solid ${UC.border}`, background: UC.card }}>
+              {TOGGLES.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => {
+                    feedback('tap');
+                    settings.toggle(t.key);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 16,
+                    width: '100%',
+                    background: 'transparent',
+                    border: 0,
+                    borderTop: `1px solid ${UC.border}`,
+                    padding: '16px 0',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                  }}
+                >
+                  <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <span style={{ font: "600 15px 'Space Grotesk'", color: UC.ink }}>{t.label}</span>
+                    <span style={{ font: "400 12px 'Space Grotesk'", color: UC.muted }}>{t.desc}</span>
+                  </span>
+                  <Switch on={settings[t.key]} />
+                </button>
+              ))}
+            </div>
+          </div>
 
-      <Sheet open={confirmReset} onClose={() => setConfirmReset(false)} title="Reset statistics?">
-        <p className="text-ink-2 text-sm mb-5">
-          This permanently clears your games played, win rates and records on this
-          device. This can’t be undone.
-        </p>
-        <div className="grid grid-cols-2 gap-3">
-          <Button variant="secondary" onClick={() => setConfirmReset(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="danger"
-            cue="lose"
-            onClick={() => {
-              resetStats();
-              setConfirmReset(false);
-            }}
-          >
-            Reset
-          </Button>
+          {/* Data */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+            <span style={sectionLabel}>Data</span>
+            <p style={{ margin: 0, font: "400 12px 'Space Grotesk'", color: UC.muted2, lineHeight: 1.5 }}>
+              Everything stays on this phone. No accounts, no tracking, no internet required.
+            </p>
+            <button
+              onClick={onReset}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                padding: 16,
+                borderRadius: 16,
+                border: '1px solid #3a2526',
+                background: '#1a0e0f',
+                color: '#f3a59c',
+                font: "600 15px 'Space Grotesk'",
+                cursor: 'pointer',
+              }}
+            >
+              {armed ? 'Tap again to confirm reset' : 'Reset stats & saved players'}
+            </button>
+          </div>
         </div>
-      </Sheet>
-    </Screen>
-  );
-}
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-[12px] font-semibold uppercase tracking-wider text-ink-3 mb-2 px-1">
-      {children}
-    </h2>
+        <span style={{ textAlign: 'center', font: "500 11px 'Space Mono'", color: '#4f4d5a', marginTop: 14 }}>
+          Undercover · v1.0 · made for the room
+        </span>
+      </section>
+    </Screen>
   );
 }

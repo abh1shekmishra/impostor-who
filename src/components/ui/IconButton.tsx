@@ -30,9 +30,9 @@ export function IconButton({
         onClick?.(e);
       }}
       className={cn(
-        'h-11 w-11 grid place-items-center rounded-2xl text-ink-2 outline-none',
-        variant === 'surface' && 'bg-surface-2 border hover:text-ink',
-        variant === 'plain' && 'hover:bg-surface-2 hover:text-ink',
+        'h-11 w-11 grid place-items-center rounded-2xl text-ink-2 outline-none transition-colors',
+        variant === 'surface' && 'bg-surface/80 border backdrop-blur-xl hover:text-ink hover:bg-surface',
+        variant === 'plain' && 'hover:bg-white/5 hover:text-ink',
         className
       )}
       {...rest}

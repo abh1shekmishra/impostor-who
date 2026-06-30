@@ -24,6 +24,7 @@ export default {
       },
       fontFamily: {
         sans: [
+          'Space Grotesk',
           'InterVariable',
           'Inter',
           'ui-sans-serif',
@@ -34,11 +35,19 @@ export default {
           'sans-serif',
         ],
         display: [
-          'ClashDisplay',
+          'Anton',
+          'Space Grotesk',
           'InterVariable',
           'Inter',
           'system-ui',
           'sans-serif',
+        ],
+        mono: [
+          'Space Mono',
+          'ui-monospace',
+          'SFMono-Regular',
+          'Menlo',
+          'monospace',
         ],
       },
       borderRadius: {
@@ -51,7 +60,7 @@ export default {
         soft: '0 1px 2px rgba(0,0,0,0.04), 0 8px 24px -8px rgba(0,0,0,0.12)',
         card: '0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 40px -12px rgba(0,0,0,0.45)',
         float: '0 24px 60px -20px rgba(0,0,0,0.55)',
-        glow: '0 0 0 1px rgb(var(--c-brand) / 0.35), 0 8px 40px -8px rgb(var(--c-brand) / 0.5)',
+        glow: '0 0 0 1px rgb(var(--c-brand) / 0.32), 0 14px 46px -14px rgb(var(--c-brand) / 0.62)',
       },
       spacing: {
         18: '4.5rem',

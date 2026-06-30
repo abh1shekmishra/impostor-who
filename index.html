@@ -21,7 +21,7 @@
       (function () {
         try {
           var raw = localStorage.getItem('uc.settings');
-          var theme = raw ? JSON.parse(raw)?.state?.theme : 'system';
+          var theme = raw ? JSON.parse(raw)?.state?.theme : 'dark';
           var dark =
             theme === 'dark' ||
             ((!theme || theme === 'system') &&

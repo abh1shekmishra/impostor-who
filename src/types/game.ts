@@ -80,9 +80,9 @@ export interface RoundConfig {
   modeId: GameModeId;
   familySafe: boolean;
   allowAdult: boolean;
-  englishOnly: boolean;
-  regional: boolean;
   mixEverything: boolean;
+  /** Use group voting (host decides) instead of individual secret votes. */
+  groupVote: boolean;
 }
 
 export interface VoteTally {

@@ -27,6 +27,33 @@ export function accentFor(index: number): string {
   return AVATAR_ACCENTS[index % AVATAR_ACCENTS.length]!;
 }
 
+/**
+ * The Undercover.dc avatar palette — solid, saturated tile colours used for the
+ * square initial avatars throughout the cinematic design.
+ */
+export const UC_PALETTE = [
+  '#f5402e',
+  '#e8b339',
+  '#46c2ff',
+  '#36c98a',
+  '#b083ff',
+  '#ff7ab0',
+  '#ffa14a',
+  '#5ad1c4',
+  '#ff6347',
+  '#7ed957',
+] as const;
+
+export function ucColor(index: number): string {
+  return UC_PALETTE[((index % UC_PALETTE.length) + UC_PALETTE.length) % UC_PALETTE.length]!;
+}
+
+/** First letter, uppercased — the single-glyph initial used by the design. */
+export function firstInitial(name: string): string {
+  const ch = name.trim()[0];
+  return ch ? ch.toUpperCase() : '?';
+}
+
 /** Deterministic initials for an avatar. */
 export function initials(name: string): string {
   const parts = name.trim().split(/\s+/);

@@ -71,11 +71,11 @@ export function Chip({
         onClick?.();
       }}
       className={cn(
-        'relative inline-flex items-center gap-1.5 font-medium border transition-colors duration-150 ease-spring whitespace-nowrap overflow-hidden',
+        'relative inline-flex items-center gap-1.5 font-medium border transition-colors duration-150 ease-spring whitespace-nowrap overflow-hidden backdrop-blur-xl',
         size === 'sm' ? 'h-8 px-3 text-[13px] rounded-xl' : 'h-10 px-4 text-sm rounded-2xl',
         selected
-          ? 'bg-brand text-brand-ink border-transparent shadow-soft'
-          : 'bg-surface-2 text-ink-2 hover:text-ink',
+          ? 'bg-brand text-brand-ink border-transparent shadow-glow'
+          : 'bg-surface/75 text-ink-2 hover:text-ink',
         className
       )}
     >

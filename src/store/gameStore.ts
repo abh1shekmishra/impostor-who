@@ -22,6 +22,7 @@ import {
   resolveVote,
   tallyVotes,
 } from '@/lib/game';
+import { track } from '@/lib/analytics';
 import { useStats } from './statsStore';
 
 export type Route =
@@ -35,17 +36,16 @@ export type Route =
   | 'how-to';
 
 const DEFAULT_CONFIG: RoundConfig = {
-  playerCount: 5,
+  playerCount: 6,
   impostorCount: 1,
-  timerSeconds: 60,
+  timerSeconds: 90,
   categories: [],
-  difficulty: ['easy', 'medium'],
+  difficulty: ['medium'],
   modeId: DEFAULT_MODE,
-  familySafe: false,
+  familySafe: true,
   allowAdult: false,
-  englishOnly: false,
-  regional: false,
   mixEverything: true,
+  groupVote: false,
 };
 
 interface GameState {
@@ -67,6 +67,8 @@ interface GameState {
   /** Wall-clock at which discussion began, for "fastest ejection" stat. */
   discussionStartedAt: number | null;
   lastGuessCorrect: boolean | null;
+  /** Running civilians-vs-impostors tally for the current match (Result screen). */
+  matchScore: { civ: number; imp: number };
 
   // ── navigation ──
   navigate: (route: Route) => void;
@@ -122,6 +124,7 @@ export const useGame = create<GameState>()(
       pendingEjectedId: null,
       discussionStartedAt: null,
       lastGuessCorrect: null,
+      matchScore: { civ: 0, imp: 0 },
 
       navigate: (route) => set({ route }),
 
@@ -153,26 +156,16 @@ export const useGame = create<GameState>()(
         })),
 
       toggleDifficulty: (d) =>
-        set((s) => {
-          const has = s.config.difficulty.includes(d);
-          let difficulty = has
-            ? s.config.difficulty.filter((x) => x !== d)
-            : [...s.config.difficulty, d];
-          if (difficulty.length === 0) difficulty = [d]; // never empty
-          return { config: { ...s.config, difficulty } };
-        }),
+        set((s) => ({ config: { ...s.config, difficulty: [d] } })),
 
       setMode: (id) =>
         set((s) => {
           const mode = MODE_BY_ID.get(id);
           if (!mode) return {};
-          const patch: Partial<RoundConfig> = { modeId: id };
-          if (mode.rules.impostors) patch.impostorCount = mode.rules.impostors;
-          // Adopt the mode's suggested timer if the host hasn't set unlimited.
-          if (s.config.timerSeconds !== null) {
-            patch.timerSeconds = mode.rules.suggestedTimer;
-          }
-          return { config: { ...s.config, ...patch } };
+          // Mirror the design: picking a mode resets the impostor default
+          // (Rivals → 2, everything else → 1). The stepper stays adjustable.
+          const impostorCount = clampImpostors(id === 'double-impostor' ? 2 : 1, s.config.playerCount);
+          return { config: { ...s.config, modeId: id, impostorCount } };
         }),
 
       setPlayerNames: (names) => set({ playerNames: names }),
@@ -181,12 +174,20 @@ export const useGame = create<GameState>()(
         const { config, playerNames } = get();
         const names = sanitizeNames(playerNames, config.playerCount);
         const players = names.map((n, i) => makePlayer(n, i));
+        track('game_created', {
+          player_count: config.playerCount,
+          impostor_count: config.impostorCount,
+          mode_id: config.modeId,
+          timer_seconds: config.timerSeconds,
+          group_vote: config.groupVote,
+        });
         useStats.getState().recordGameStart();
         set({
           players,
           playerNames: names,
           route: 'play',
           recentWordIds: [],
+          matchScore: { civ: 0, imp: 0 },
         });
         get().dealNext();
       },
@@ -216,6 +217,18 @@ export const useGame = create<GameState>()(
           discussionStartedAt: null,
           lastGuessCorrect: null,
           recentWordIds: [pairing.civilian.id, ...recentWordIds].slice(0, 40),
+        });
+        track('round_started', {
+          round_index: round.index,
+          mode_id: config.modeId,
+          player_count: round.players.length,
+          impostor_count: round.players.filter((p) => p.role === 'impostor').length,
+          category_count: config.categories.length,
+          mix_everything: config.mixEverything,
+          group_vote: config.groupVote,
+          timer_seconds: config.timerSeconds,
+          civilian_word_id: pairing.civilian.id,
+          decoy_word_id: pairing.decoy?.id ?? null,
         });
       },
 
@@ -316,11 +329,24 @@ export const useGame = create<GameState>()(
           const finished: RoundState = { ...withTally, result: outcome.result };
           const players = applyScores(get().players, outcome.result);
           useStats.getState().recordRound(finished, outcome.result, ejectionMs);
+          const ms = get().matchScore;
           set({
             round: finished,
             players: players.map((p) => ({ ...p })),
             phase: 'result',
             pendingEjectedId: outcome.ejectedId,
+            matchScore:
+              outcome.result.outcome === 'civilians-win'
+                ? { civ: ms.civ + 1, imp: ms.imp }
+                : { civ: ms.civ, imp: ms.imp + 1 },
+          });
+          track('round_completed', {
+            round_index: finished.index,
+            outcome: outcome.result.outcome,
+            reason: outcome.result.reason,
+            ejected_id: outcome.ejectedId,
+            vote_tie: tally.tie,
+            needs_impostor_guess: false,
           });
         } else {
           set({
@@ -329,6 +355,14 @@ export const useGame = create<GameState>()(
             needsImpostorGuess: true,
             pendingEjectedId: outcome.ejectedId,
           });
+          track('round_completed', {
+            round_index: withTally.index,
+            outcome: 'pending-impostor-guess',
+            reason: 'impostor-survived',
+            ejected_id: outcome.ejectedId,
+            vote_tie: tally.tie,
+            needs_impostor_guess: true,
+          });
         }
       },
 
@@ -336,17 +370,35 @@ export const useGame = create<GameState>()(
         const { round, pendingEjectedId, discussionStartedAt } = get();
         if (!round) return;
         const correct = isGuessCorrect(text, round.word);
+        track('impostor_guess', {
+          round_index: round.index,
+          guess: text,
+          correct,
+        });
         const result = resolveImpostorGuess(round, correct, pendingEjectedId);
         const ejectionMs = discussionStartedAt ? Date.now() - discussionStartedAt : null;
         const finished: RoundState = { ...round, result };
         const players = applyScores(get().players, result);
         useStats.getState().recordRound(finished, result, ejectionMs);
+        const ms = get().matchScore;
         set({
           round: finished,
           players: players.map((p) => ({ ...p })),
           phase: 'result',
           lastGuessCorrect: correct,
           needsImpostorGuess: false,
+          matchScore:
+            result.outcome === 'civilians-win'
+              ? { civ: ms.civ + 1, imp: ms.imp }
+              : { civ: ms.civ, imp: ms.imp + 1 },
+        });
+        track('round_completed', {
+          round_index: finished.index,
+          outcome: result.outcome,
+          reason: result.reason,
+          ejected_id: result.ejectedId,
+          guessed_correctly: !!result.guessedCorrectly,
+          needs_impostor_guess: false,
         });
       },
 
@@ -379,6 +431,43 @@ export const useGame = create<GameState>()(
     }),
     {
       name: 'uc.game',
+      // v5: reduced to the three Undercover.dc modes (classic/blind/double-impostor)
+      // and added matchScore. Bumped so any stale modeId/config resets cleanly.
+      version: 5,
+      migrate: (_persistedState, _version) => {
+        const migrated: {
+          config: RoundConfig;
+          playerNames: string[];
+          players: Player[];
+          round: RoundState | null;
+          phase: Phase;
+          route: Route;
+          recentWordIds: string[];
+          revealIndex: number;
+          clueIndex: number;
+          voterIndex: number;
+          needsImpostorGuess: boolean;
+          pendingEjectedId: string | null;
+          lastGuessCorrect: boolean | null;
+          matchScore: { civ: number; imp: number };
+        } = {
+          config: DEFAULT_CONFIG,
+          playerNames: [],
+          players: [],
+          round: null,
+          phase: 'setup' as Phase,
+          route: 'home' as Route,
+          recentWordIds: [],
+          revealIndex: 0,
+          clueIndex: 0,
+          voterIndex: 0,
+          needsImpostorGuess: false,
+          pendingEjectedId: null,
+          lastGuessCorrect: null,
+          matchScore: { civ: 0, imp: 0 },
+        };
+        return migrated;
+      },
       partialize: (s) => ({
         config: s.config,
         playerNames: s.playerNames,
@@ -393,6 +482,7 @@ export const useGame = create<GameState>()(
         needsImpostorGuess: s.needsImpostorGuess,
         pendingEjectedId: s.pendingEjectedId,
         lastGuessCorrect: s.lastGuessCorrect,
+        matchScore: s.matchScore,
       }),
     }
   )

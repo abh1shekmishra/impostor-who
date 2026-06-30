@@ -28,7 +28,7 @@ export function SegmentedControl<T extends string>({
     <div
       role="radiogroup"
       aria-label={ariaLabel}
-      className="relative flex p-1 rounded-2xl bg-surface-2 border"
+      className="relative flex p-1 rounded-2xl bg-surface/80 border backdrop-blur-xl"
     >
       {segments.map((seg) => {
         const active = seg.value === value;
@@ -44,16 +44,16 @@ export function SegmentedControl<T extends string>({
                 onChange(seg.value);
               }
             }}
-            className={cn(
-              'relative flex-1 h-10 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-medium transition-colors duration-200 z-10',
-              active ? 'text-brand-ink' : 'text-ink-3 hover:text-ink-2'
-            )}
+              className={cn(
+                'relative flex-1 h-10 inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-medium transition-colors duration-200 z-10',
+                active ? 'text-brand-ink' : 'text-ink-3 hover:text-ink-2'
+              )}
           >
             {active && (
               <motion.span
                 layoutId={`seg-${groupId}`}
                 transition={{ type: 'spring', stiffness: 500, damping: 36 }}
-                className="absolute inset-0 -z-10 rounded-xl bg-brand shadow-soft"
+                className="absolute inset-0 -z-10 rounded-xl bg-brand shadow-glow"
               />
             )}
             {seg.icon}
