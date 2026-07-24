@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:#e3d7bf;}
+  button{font-family:inherit;}
+  ::selection{background:#4f2fe0;color:#fff;}
+  .uc-view::-webkit-scrollbar{width:0;height:0;}
+  @keyframes screenIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes popIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+  @keyframes dangerGlow{0%,100%{box-shadow:0 0 0 1px #4f2fe055, 0 0 40px -8px #4f2fe088;}50%{box-shadow:0 0 0 1px #4f2fe0aa, 0 0 70px -4px #4f2fe0cc;}}
+  @keyframes ringPulse{0%,100%{opacity:.55;}50%{opacity:1;}}
+  @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}}
+  [data-anim="off"] *{animation:none!important;transition:none!important;}
+</style>
+</helmet>
+
+<div data-anim="{{ animAttr }}" style="min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center;background:radial-gradient(135% 95% at 50% -10%, #f3ecdc 0%, #ece2cd 55%, #e3d7bf 100%);padding:0;font-family:'Hanken Grotesk',system-ui,sans-serif;">
+  <div style="position:relative;width:min(100vw,412px);height:min(100vh,892px);background:radial-gradient(130% 80% at 50% -6%, #fffdf8 0%, #fbf5ea 55%, #f4ecdb 100%);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 70px -26px rgba(50,42,26,.45), 0 0 0 1px #00000010;">
+
+    <div class="uc-view" style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;">
+
+      <!-- ============ HOME ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Home" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),26px) 24px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <span style="width:13px;height:13px;border-radius:50%;background:#4f2fe0;box-shadow:0 0 16px #4f2fe0;display:inline-block;"></span>
+            <span style="font:700 12px 'JetBrains Mono';letter-spacing:.22em;color:#79705c;text-transform:uppercase;">No wifi needed</span>
+          </div>
+          <button onClick="{{ goSettings }}" aria-label="Settings" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9 19 19M19 5l-2.1 2.1M7.1 16.9 5 19"/></svg>
+          </button>
+        </div>
+
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:30px 0;">
+          <div style="display:inline-flex;align-self:flex-start;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;border:1px solid #ddd3bd;background:#ffffff06;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#36c98a;"></span>
+            <span style="font:600 12px 'Hanken Grotesk';color:#46412f;">{{ socialProof }}</span>
+          </div>
+          <h1 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:84px;line-height:.86;letter-spacing:.01em;color:#1c1914;text-transform:uppercase;">Under<br>cover</h1>
+          <p style="margin:0;max-width:300px;font-size:18px;line-height:1.4;color:#5a5343;">One word. One liar.<br>One phone going around the room.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <button onClick="{{ goCreate }}" style="width:100%;border:0;border-radius:18px;padding:21px;background:#4f2fe0;color:#fff;font:700 19px 'Hanken Grotesk';letter-spacing:.01em;cursor:pointer;box-shadow:3px 4px 0 #1c1914;display:flex;align-items:center;justify-content:center;gap:10px;">
+            Start a Game
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <sc-for list="{{ navCards }}" as="n" hint-placeholder-count="4">
+              <button onClick="{{ n.onClick }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px;border-radius:15px;border:1px solid #e6ddc9;background:#fffdf8;cursor:pointer;text-align:left;">
+                <span style="color:#4f2fe0;" data-icon="{{ n.key }}">{{ n.icon }}</span>
+                <span style="display:flex;flex-direction:column;gap:1px;">
+                  <span style="font:700 15px 'Hanken Grotesk';color:#1c1914;">{{ n.label }}</span>
+                  <span style="font:400 12px 'Hanken Grotesk';color:#8a8068;">{{ n.desc }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+
+          <button onClick="{{ goHowto }}" style="position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-radius:15px;border:1px dashed #c9bd9f;background:#f6f0e3;cursor:pointer;text-align:left;">
+            <span style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font:700 11px 'JetBrains Mono';letter-spacing:.18em;text-transform:uppercase;color:#b07d0a;">Coming soon</span>
+              <span style="font:600 15px 'Hanken Grotesk';color:#2a261d;">Online multiplayer</span>
+              <span style="font:400 12px 'Hanken Grotesk';color:#8a8068;">Play across the room — or across the world.</span>
+            </span>
+            <span style="flex:0 0 auto;width:38px;height:38px;border-radius:11px;border:1px solid #ddd3bd;display:grid;place-items:center;color:#9b9179;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            </span>
+          </button>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ CREATE ROOM ============ -->
+      <sc-if value="{{ isCreate }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Create Room" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),22px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <div style="display:flex;flex-direction:column;">
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;line-height:1;text-transform:uppercase;color:#1c1914;">New Game</h2>
+            <span style="font:500 12px 'JetBrains Mono';color:#8a8068;letter-spacing:.05em;">{{ wordCount }} words ready</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;flex:1;">
+          <!-- mode card -->
+          <button onClick="{{ openMode }}" style="position:relative;display:flex;align-items:center;gap:15px;padding:18px;border-radius:18px;border:1px solid #ddd3bd;background:linear-gradient(135deg,#ffffff,#fbf4e8);cursor:pointer;text-align:left;">
+            <span style="flex:0 0 auto;width:50px;height:50px;border-radius:14px;background:#4f2fe01f;border:1px solid #4f2fe044;display:grid;place-items:center;color:#4f2fe0;font-family:'Bricolage Grotesque';font-weight:800;font-size:24px;">{{ modeInitial }}</span>
+            <span style="flex:1;display:flex;flex-direction:column;gap:3px;">
+              <span style="font:700 11px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:#8a8068;">Mode</span>
+              <span style="font:700 18px 'Hanken Grotesk';color:#1c1914;">{{ modeName }}</span>
+              <span style="font:400 12px 'Hanken Grotesk';color:#79705c;line-height:1.35;">{{ modeDesc }}</span>
+            </span>
+            <span style="color:#9b9179;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></span>
+          </button>
+
+          <!-- steppers -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="padding:16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:13px;">
+              <span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Players</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button onClick="{{ decPlayers }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #ddd3bd;background:#efe7d6;color:#1c1914;font-size:22px;cursor:pointer;line-height:1;">−</button>
+                <span style="font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;color:#1c1914;">{{ playerCount }}</span>
+                <button onClick="{{ incPlayers }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #ddd3bd;background:#efe7d6;color:#1c1914;font-size:22px;cursor:pointer;line-height:1;">+</button>
+              </div>
+            </div>
+            <div style="padding:16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:13px;">
+              <span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Impostors</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button onClick="{{ decImp }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #ddd3bd;background:#efe7d6;color:#1c1914;font-size:22px;cursor:pointer;line-height:1;">−</button>
+                <span style="font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;color:#4f2fe0;">{{ impostorCount }}</span>
+                <button onClick="{{ incImp }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #ddd3bd;background:#efe7d6;color:#1c1914;font-size:22px;cursor:pointer;line-height:1;">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- timer -->
+          <div style="padding:16px 16px 18px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:13px;">
+            <span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Discussion timer</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <sc-for list="{{ timerChips }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- category -->
+          <div style="padding:16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Categories</span>
+              <span style="font:400 12px 'Hanken Grotesk';color:#9b9179;">More categories coming soon</span>
+            </div>
+            <span style="padding:10px 15px;border-radius:999px;border:1px solid #0e9f6e55;background:#0e9f6e1a;color:#2f8f6e;font:700 13px 'Hanken Grotesk';display:inline-flex;align-items:center;gap:7px;"><span style="width:6px;height:6px;border-radius:50%;background:#0e9f6e;"></span>Mix</span>
+          </div>
+
+          <!-- difficulty -->
+          <div style="padding:16px 16px 18px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:13px;">
+            <span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Difficulty</span>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ diffChips }}" as="d" hint-placeholder-count="3">
+                <button onClick="{{ d.onClick }}" style="{{ d.style }}">{{ d.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- toggles -->
+          <div style="padding:2px 16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;">
+            <sc-for list="{{ createToggles }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.onClick }}" style="{{ t.row }}">
+                <span style="display:flex;flex-direction:column;gap:2px;">
+                  <span style="font:600 15px 'Hanken Grotesk';color:#1c1914;">{{ t.label }}</span>
+                  <span style="font:400 12px 'Hanken Grotesk';color:#8a8068;">{{ t.desc }}</span>
+                </span>
+                <span style="{{ t.track }}"><span style="{{ t.knob }}"></span></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <button onClick="{{ toLobby }}" style="margin-top:18px;width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;display:flex;align-items:center;justify-content:center;gap:10px;">Add Players<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </section>
+      </sc-if>
+
+      <!-- ============ LOBBY ============ -->
+      <sc-if value="{{ isLobby }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Lobby" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),22px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+          <button onClick="{{ goCreate }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <div style="display:flex;flex-direction:column;">
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;line-height:1;text-transform:uppercase;color:#1c1914;">The Table</h2>
+            <span style="font:500 12px 'JetBrains Mono';color:#8a8068;">{{ lobbyStatus }}</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:9px;flex:1;">
+          <sc-for list="{{ seatList }}" as="p" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:14px;border:1px solid #e6ddc9;background:#fffdf8;">
+              <span style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font:700 17px 'Hanken Grotesk';color:#0b0a0f;background:{{ p.color }};">{{ p.initial }}</span>
+              <span style="flex:1;font:600 16px 'Hanken Grotesk';color:#1c1914;">{{ p.name }}</span>
+              <span style="font:500 11px 'JetBrains Mono';color:#9b9179;">{{ p.seat }}</span>
+              <button onClick="{{ p.remove }}" aria-label="Remove" style="width:30px;height:30px;border-radius:9px;border:1px solid #ddd3bd;background:transparent;color:#8a8068;cursor:pointer;display:grid;place-items:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+            </div>
+          </sc-for>
+
+          <div style="display:flex;gap:9px;margin-top:4px;">
+            <input value="{{ nameDraft }}" onInput="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Add a name…" style="flex:1;padding:14px 15px;border-radius:14px;border:1px solid #ddd3bd;background:#f6f0e3;color:#1c1914;font:600 15px 'Hanken Grotesk';outline:none;" />
+            <button onClick="{{ addDraft }}" aria-label="Add" style="flex:0 0 auto;width:52px;border-radius:14px;border:1px solid #4f2fe055;background:#4f2fe01f;color:#4f2fe0;font-size:26px;cursor:pointer;line-height:1;">+</button>
+          </div>
+
+          <sc-if value="{{ hasSuggestions }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:9px;">
+            <span style="font:600 11px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:#9b9179;">Saved players</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="5">
+                <button onClick="{{ s.onClick }}" style="padding:9px 14px;border-radius:999px;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;font:600 13px 'Hanken Grotesk';cursor:pointer;display:inline-flex;align-items:center;gap:6px;">+ {{ s.name }}</button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button onClick="{{ reshuffle }}" aria-label="Reshuffle seats" style="flex:0 0 auto;width:58px;border-radius:18px;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+          <button onClick="{{ startGame }}" disabled="{{ startDisabled }}" style="{{ startBtnStyle }}">{{ startLabel }}</button>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ REVEAL ============ -->
+      <sc-if value="{{ isReveal }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Reveal" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),24px) 24px max(env(safe-area-inset-bottom),24px);">
+        <!-- cover -->
+        <sc-if value="{{ revealCover }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px;">
+          <span style="font:700 12px 'JetBrains Mono';letter-spacing:.24em;text-transform:uppercase;color:#8a8068;">{{ revealCounter }}</span>
+          <div style="animation:floaty 3.4s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;gap:18px;">
+            <span style="width:96px;height:96px;border-radius:28px;display:grid;place-items:center;font:700 42px 'Hanken Grotesk';color:#0b0a0f;background:{{ revealColor }};box-shadow:0 18px 50px -12px {{ revealColor }};">{{ revealInitial }}</span>
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:46px;line-height:.95;text-transform:uppercase;color:#1c1914;">Pass to<br>{{ revealName }}</h2>
+          </div>
+          <p style="margin:0;max-width:240px;font-size:15px;line-height:1.45;color:#79705c;">Make sure no one's peeking, then hold the card to reveal your secret.</p>
+          <button onPointerDown="{{ holdStart }}" onPointerUp="{{ holdEnd }}" onPointerLeave="{{ holdEnd }}" style="margin-top:6px;width:100%;border:0;border-radius:18px;padding:20px;background:#efe7d6;border:1px solid #ddd3bd;color:#1c1914;font:700 17px 'Hanken Grotesk';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;user-select:none;touch-action:none;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M5 8a7 7 0 1 0 14 0"/></svg>{{ revealHoldLabel }}</button>
+        </div>
+        </sc-if>
+        <!-- revealed -->
+        <sc-if value="{{ revealShown }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;">
+          <!-- civilian -->
+          <sc-if value="{{ revealCivilian }}" hint-placeholder-val="{{ true }}">
+          <div style="animation:popIn .35s ease both;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:34px 22px;border-radius:26px;border:1px solid #0e9f6e55;background:radial-gradient(120% 90% at 50% 0%,#eafaf2,#d8f2e6);box-shadow:0 0 60px -18px #0e9f6e88;">
+            <span style="font:700 12px 'JetBrains Mono';letter-spacing:.24em;text-transform:uppercase;color:#0e9f6e;">Civilian</span>
+            <p style="margin:0;font-size:15px;color:#2f8f6e;">Your secret word is</p>
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:58px;line-height:.92;text-transform:uppercase;color:#1c1914;">{{ revealWord }}</h2>
+            <p style="margin:0;max-width:230px;font-size:14px;line-height:1.45;color:#3f7d66;">Memorize it. Drop a clue — never say it out loud.</p>
+          </div>
+          </sc-if>
+          <!-- impostor -->
+          <sc-if value="{{ revealImpostor }}" hint-placeholder-val="{{ true }}">
+          <div style="animation:popIn .35s ease both, dangerGlow 2.6s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:34px 22px;border-radius:26px;border:1px solid #4f2fe055;background:radial-gradient(120% 90% at 50% 0%,#efeaff,#ddd4ff);">
+            <span style="font:700 12px 'JetBrains Mono';letter-spacing:.24em;text-transform:uppercase;color:#4f2fe0;">You're the Impostor</span>
+            <p style="margin:0;font-size:15px;color:#6b5bd6;">{{ impostorLead }}</p>
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:54px;line-height:.92;text-transform:uppercase;color:#1c1914;">{{ impostorWordDisplay }}</h2>
+            <p style="margin:0;max-width:240px;font-size:14px;line-height:1.45;color:#7d6fd0;">Bluff your way through. Blend in. Don't get caught.</p>
+          </div>
+          </sc-if>
+          <button onClick="{{ nextReveal }}" style="margin-top:24px;width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;">{{ revealNextLabel }}</button>
+        </div>
+        </sc-if>
+      </section>
+      </sc-if>
+
+      <!-- ============ CLUE ============ -->
+      <sc-if value="{{ isClue }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Clue" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),26px) 24px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font:700 12px 'JetBrains Mono';letter-spacing:.22em;text-transform:uppercase;color:#b07d0a;">Clue round</span>
+          <span style="font:600 13px 'Hanken Grotesk';color:#8a8068;">{{ clueProgress }}</span>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:14px;">
+          <sc-for list="{{ clueDots }}" as="d" hint-placeholder-count="6">
+            <span style="{{ d.style }}"></span>
+          </sc-for>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:22px;">
+          <span style="font:600 13px 'Hanken Grotesk';color:#8a8068;">It's your turn,</span>
+          <span style="width:108px;height:108px;border-radius:32px;display:grid;place-items:center;font:700 48px 'Hanken Grotesk';color:#0b0a0f;background:{{ clueColor }};box-shadow:0 18px 50px -12px {{ clueColor }};">{{ clueInitial }}</span>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:60px;line-height:.9;text-transform:uppercase;color:#1c1914;">{{ clueName }}</h2>
+          <p style="margin:0;max-width:260px;font-size:16px;line-height:1.45;color:#5a5343;">Say <b style="color:#1c1914;">one word</b> that hints at your secret — clever enough to prove you know it, vague enough to survive.</p>
+        </div>
+        <button onClick="{{ nextClue }}" style="width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;">{{ clueNextLabel }}</button>
+      </section>
+      </sc-if>
+
+      <!-- ============ DISCUSS ============ -->
+      <sc-if value="{{ isDiscuss }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Discuss" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;align-items:center;padding:max(env(safe-area-inset-top),30px) 24px max(env(safe-area-inset-bottom),24px);">
+        <span style="font-family:'Bricolage Grotesque';font-weight:800;font-size:40px;text-transform:uppercase;color:#1c1914;letter-spacing:.02em;">Discuss</span>
+        <p style="margin:8px 0 0;font-size:15px;color:#79705c;text-align:center;max-width:250px;">{{ discussPrompt }}</p>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;">
+          <div style="position:relative;width:268px;height:268px;display:grid;place-items:center;">
+            <svg width="268" height="268" viewBox="0 0 300 300" style="position:absolute;inset:0;transform:rotate(-90deg);">
+              <circle cx="150" cy="150" r="132" fill="none" stroke="#e6ddc9" stroke-width="14"/>
+              <circle cx="150" cy="150" r="132" fill="none" stroke="{{ ringColor }}" stroke-width="14" stroke-linecap="round" stroke-dasharray="{{ ringDash }}" stroke-dashoffset="{{ ringOffset }}" style="transition:stroke-dashoffset 1s linear, stroke .3s;"/>
+            </svg>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <span style="font-family:'Bricolage Grotesque';font-weight:800;font-size:64px;line-height:1;color:#1c1914;">{{ timeLabel }}</span>
+              <span style="font:700 11px 'JetBrains Mono';letter-spacing:.2em;text-transform:uppercase;color:#8a8068;">{{ timeState }}</span>
+            </div>
+          </div>
+        </div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
+          <button onClick="{{ timerToggle }}" style="{{ timerBtnStyle }}">{{ timerBtnLabel }}</button>
+          <button onClick="{{ toVote }}" style="width:100%;border:0;border-radius:18px;padding:18px;background:transparent;border:1px solid #ddd3bd;color:#46412f;font:700 16px 'Hanken Grotesk';cursor:pointer;">Call the vote</button>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ VOTE ============ -->
+      <sc-if value="{{ isVote }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Vote" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),26px) 22px max(env(safe-area-inset-bottom),22px);">
+        <div style="text-align:center;display:flex;flex-direction:column;gap:6px;">
+          <span style="font:700 12px 'JetBrains Mono';letter-spacing:.22em;text-transform:uppercase;color:#4f2fe0;">{{ voteKicker }}</span>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:38px;line-height:.95;text-transform:uppercase;color:#1c1914;">{{ voteHeader }}</h2>
+          <span style="font:500 13px 'Hanken Grotesk';color:#79705c;">{{ voteSub }}</span>
+        </div>
+        <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;align-content:center;padding:22px 0;">
+          <sc-for list="{{ candidates }}" as="c" hint-placeholder-count="6">
+            <button onClick="{{ c.onClick }}" style="{{ c.style }}">
+              <span style="width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font:700 24px 'Hanken Grotesk';color:#0b0a0f;background:{{ c.color }};">{{ c.initial }}</span>
+              <span style="font:700 17px 'Hanken Grotesk';color:#1c1914;">{{ c.name }}</span>
+              <span style="{{ c.checkStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span>
+            </button>
+          </sc-for>
+        </div>
+        <button onClick="{{ confirmVote }}" disabled="{{ confirmDisabled }}" style="{{ confirmStyle }}">{{ confirmLabel }}</button>
+      </section>
+      </sc-if>
+
+      <!-- ============ IMPOSTOR GUESS ============ -->
+      <sc-if value="{{ isGuess }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Impostor Guess" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px;padding:max(env(safe-area-inset-top),26px) 26px max(env(safe-area-inset-bottom),26px);background:radial-gradient(120% 60% at 50% 0%,#ece7ff,transparent 70%);">
+        <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+          <span style="font:700 12px 'JetBrains Mono';letter-spacing:.24em;text-transform:uppercase;color:#4f2fe0;">{{ eliminatedName }} was innocent</span>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:50px;line-height:.92;text-transform:uppercase;color:#1c1914;">The impostor<br>survived</h2>
+          <p style="margin:0;max-width:270px;font-size:16px;line-height:1.45;color:#7d6fd0;">One word. One shot. Name the civilians' secret and steal the win.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <input value="{{ guess }}" onInput="{{ setGuess }}" placeholder="Type your guess…" style="width:100%;text-align:center;padding:22px;border-radius:18px;border:1px solid #4f2fe066;background:#f1edff;color:#1c1914;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;text-transform:uppercase;outline:none;" />
+          <span style="font:500 12px 'Hanken Grotesk';color:#8a8068;">One civilian word \u00b7 spelling doesn't have to be perfect</span>
+        </div>
+        <button onClick="{{ submitGuess }}" disabled="{{ guessDisabled }}" style="{{ guessBtnStyle }}">Lock in the guess</button>
+      </section>
+      </sc-if>
+
+      <!-- ============ RESULT ============ -->
+      <sc-if value="{{ isResult }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Result" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),28px) 24px max(env(safe-area-inset-bottom),22px);">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;">
+          <div style="text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;">
+            <span style="{{ resultBadgeStyle }}">{{ resultBadge }}</span>
+            <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:60px;line-height:.86;text-transform:uppercase;color:{{ resultColor }};">{{ resultHeadline }}</h2>
+            <p style="margin:0;max-width:280px;font-size:15px;line-height:1.45;color:#5a5343;">{{ resultReason }}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1px solid #4f2fe044;background:#f1edff;">
+              <span style="font:700 11px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:#4f2fe0;flex:1;">Impostor</span>
+              <span style="font:700 18px 'Hanken Grotesk';color:#1c1914;">{{ impostorReveal }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1px solid #0e9f6e44;background:#eafaf2;">
+              <span style="font:700 11px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:#0e9f6e;flex:1;">Secret word</span>
+              <span style="font:700 18px 'Hanken Grotesk';color:#1c1914;">{{ secretWordReveal }}</span>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div style="flex:1;padding:15px 16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:3px;">
+                <span style="font:600 11px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:#8a8068;">Voted out</span>
+                <span style="font:700 16px 'Hanken Grotesk';color:#1c1914;">{{ votedOut }}</span>
+              </div>
+              <div style="flex:1;padding:15px 16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:3px;">
+                <span style="font:600 11px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:#8a8068;">Score \u00b7 civ / imp</span>
+                <span style="font:700 16px 'Hanken Grotesk';color:#1c1914;">{{ scoreLabel }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button onClick="{{ nextRound }}" style="width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;">Next round</button>
+          <div style="display:flex;gap:10px;">
+            <button onClick="{{ newGame }}" style="flex:1;border-radius:16px;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;font:700 15px 'Hanken Grotesk';padding:16px;cursor:pointer;">New game</button>
+            <button onClick="{{ goHome }}" style="flex:1;border-radius:16px;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;font:700 15px 'Hanken Grotesk';padding:16px;cursor:pointer;">Home</button>
+          </div>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ SETTINGS ============ -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Settings" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;text-transform:uppercase;color:#1c1914;">Settings</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;flex:1;">
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span style="font:700 11px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:#9b9179;">Appearance</span>
+            <div style="padding:16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;flex-direction:column;gap:2px;"><span style="font:600 15px 'Hanken Grotesk';color:#1c1914;">Theme</span><span style="font:400 12px 'Hanken Grotesk';color:#8a8068;">Tuned for dark rooms</span></div>
+              <span style="display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;border:1px solid #ddd3bd;color:#46412f;font:600 13px 'Hanken Grotesk';"><span style="width:8px;height:8px;border-radius:50%;background:#0b0a0f;border:1px solid #555;"></span>Cinema dark</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span style="font:700 11px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:#9b9179;">Feel</span>
+            <div style="padding:2px 16px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;">
+              <sc-for list="{{ settingsToggles }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.onClick }}" style="{{ t.row }}">
+                  <span style="display:flex;flex-direction:column;gap:2px;"><span style="font:600 15px 'Hanken Grotesk';color:#1c1914;">{{ t.label }}</span><span style="font:400 12px 'Hanken Grotesk';color:#8a8068;">{{ t.desc }}</span></span>
+                  <span style="{{ t.track }}"><span style="{{ t.knob }}"></span></span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span style="font:700 11px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:#9b9179;">Data</span>
+            <p style="margin:0;font:400 12px 'Hanken Grotesk';color:#9b9179;line-height:1.5;">Everything stays on this phone. No accounts, no tracking, no internet required.</p>
+            <button style="width:100%;text-align:left;padding:16px;border-radius:16px;border:1px solid #cdbcff;background:#f1edff;color:#6b5bd6;font:600 15px 'Hanken Grotesk';cursor:pointer;">Reset stats &amp; saved players</button>
+          </div>
+        </div>
+        <span style="text-align:center;font:500 11px 'JetBrains Mono';color:#b3a98f;margin-top:14px;">Undercover \u00b7 v1.0 \u00b7 made for the room</span>
+      </section>
+      </sc-if>
+
+      <!-- ============ STATS ============ -->
+      <sc-if value="{{ isStats }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Stats" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;text-transform:uppercase;color:#1c1914;">Your Record</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;flex:1;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+            <div style="padding:18px;border-radius:18px;border:1px solid #0e9f6e33;background:linear-gradient(160deg,#eafaf2,#ffffff);display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Bricolage Grotesque';font-weight:800;font-size:40px;color:#0e9f6e;">63%</span><span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Civilian win rate</span></div>
+            <div style="padding:18px;border-radius:18px;border:1px solid #4f2fe033;background:linear-gradient(160deg,#f1edff,#ffffff);display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Bricolage Grotesque';font-weight:800;font-size:40px;color:#4f2fe0;">41%</span><span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Impostor escape rate</span></div>
+          </div>
+          <div style="padding:18px;border-radius:18px;border:1px solid #e6ddc9;background:#fffdf8;display:flex;flex-direction:column;gap:14px;">
+            <span style="font:600 13px 'Hanken Grotesk';color:#79705c;">Outcomes across 37 rounds</span>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <sc-for list="{{ outcomeBars }}" as="b" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="display:flex;justify-content:space-between;"><span style="font:600 13px 'Hanken Grotesk';color:#2a261d;">{{ b.label }}</span><span style="font:700 13px 'JetBrains Mono';color:#79705c;">{{ b.value }}</span></div>
+                  <div style="height:9px;border-radius:999px;background:#e6ddc9;overflow:hidden;"><div style="{{ b.fill }}"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;">
+            <div style="padding:15px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;text-align:center;"><div style="font-family:'Bricolage Grotesque';font-weight:800;font-size:28px;color:#1c1914;">37</div><div style="font:600 11px 'Hanken Grotesk';color:#8a8068;">Rounds</div></div>
+            <div style="padding:15px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;text-align:center;"><div style="font-family:'Bricolage Grotesque';font-weight:800;font-size:28px;color:#b07d0a;">6</div><div style="font:600 11px 'Hanken Grotesk';color:#8a8068;">Best streak</div></div>
+            <div style="padding:15px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;text-align:center;"><div style="font-family:'Bricolage Grotesque';font-weight:800;font-size:28px;color:#1c1914;">Mix</div><div style="font:600 11px 'Hanken Grotesk';color:#8a8068;">Most played</div></div>
+          </div>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ PACKS ============ -->
+      <sc-if value="{{ isPacks }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Packs" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;text-transform:uppercase;color:#1c1914;">Word Packs</h2>
+        </div>
+        <p style="margin:0 0 16px 56px;font:400 13px 'Hanken Grotesk';color:#8a8068;">A catalog that keeps growing.</p>
+        <div style="display:flex;flex-direction:column;gap:11px;flex:1;">
+          <sc-for list="{{ packs }}" as="p" hint-placeholder-count="5">
+            <div style="{{ p.card }}">
+              <span style="flex:0 0 auto;width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:26px;background:{{ p.tint }};border:1px solid {{ p.border }};">{{ p.emoji }}</span>
+              <span style="flex:1;display:flex;flex-direction:column;gap:3px;">
+                <span style="font:700 16px 'Hanken Grotesk';color:#1c1914;">{{ p.name }}</span>
+                <span style="font:400 12px 'Hanken Grotesk';color:#8a8068;line-height:1.35;">{{ p.desc }}</span>
+              </span>
+              <span style="{{ p.badge }}">{{ p.status }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ PEOPLE ============ -->
+      <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="People" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <div style="display:flex;flex-direction:column;"><h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;text-transform:uppercase;color:#1c1914;">People</h2><span style="font:500 12px 'JetBrains Mono';color:#8a8068;">{{ peopleStatus }}</span></div>
+        </div>
+        <div style="display:flex;gap:9px;margin-bottom:14px;">
+          <input value="{{ nameDraft }}" onInput="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Add someone…" style="flex:1;padding:14px 15px;border-radius:14px;border:1px solid #ddd3bd;background:#f6f0e3;color:#1c1914;font:600 15px 'Hanken Grotesk';outline:none;" />
+          <button onClick="{{ addDraft }}" aria-label="Add" style="flex:0 0 auto;width:52px;border-radius:14px;border:1px solid #4f2fe055;background:#4f2fe01f;color:#4f2fe0;font-size:26px;cursor:pointer;line-height:1;">+</button>
+        </div>
+        <sc-if value="{{ peopleEmpty }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
+          <span style="width:70px;height:70px;border-radius:22px;border:1px dashed #c9bd9f;display:grid;place-items:center;font-size:30px;">👋</span>
+          <span style="font:700 18px 'Hanken Grotesk';color:#1c1914;">No regulars yet</span>
+          <span style="font:400 14px 'Hanken Grotesk';color:#8a8068;max-width:230px;">Save the people you play with most so setup takes one tap next time.</span>
+        </div>
+        </sc-if>
+        <sc-if value="{{ peopleHas }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;gap:9px;">
+          <sc-for list="{{ peopleList }}" as="p" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:14px;border:1px solid #e6ddc9;background:#fffdf8;">
+              <span style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font:700 17px 'Hanken Grotesk';color:#0b0a0f;background:{{ p.color }};">{{ p.initial }}</span>
+              <span style="flex:1;font:600 16px 'Hanken Grotesk';color:#1c1914;">{{ p.name }}</span>
+              <button onClick="{{ p.remove }}" aria-label="Remove" style="width:32px;height:32px;border-radius:10px;border:1px solid #ddd3bd;background:transparent;color:#8a8068;cursor:pointer;display:grid;place-items:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+            </div>
+          </sc-for>
+        </div>
+        </sc-if>
+      </section>
+      </sc-if>
+
+      <!-- ============ HOW TO PLAY ============ -->
+      <sc-if value="{{ isHowto }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="How To Play" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #ddd3bd;background:#ffffff;color:#46412f;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;text-transform:uppercase;color:#1c1914;">How to Play</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:11px;flex:1;">
+          <sc-for list="{{ howSteps }}" as="s" hint-placeholder-count="5">
+            <div style="display:flex;gap:15px;padding:17px;border-radius:16px;border:1px solid #e6ddc9;background:#fffdf8;">
+              <span style="flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:{{ s.color }};border:1px solid {{ s.color }}55;background:{{ s.color }}1a;">{{ s.n }}</span>
+              <span style="display:flex;flex-direction:column;gap:3px;"><span style="font:700 16px 'Hanken Grotesk';color:#1c1914;">{{ s.title }}</span><span style="font:400 13px 'Hanken Grotesk';color:#79705c;line-height:1.4;">{{ s.body }}</span></span>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ goCreate }}" style="margin-top:16px;width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;">Got it \u2014 let's play</button>
+      </section>
+      </sc-if>
+
+      <!--SENTINEL-->
+    </div>
+
+    <!-- MODE SHEET -->
+    <sc-if value="{{ modeSheet }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeMode }}" style="position:absolute;inset:0;background:rgba(28,25,20,.42);backdrop-filter:blur(3px);z-index:20;display:flex;align-items:flex-end;animation:popIn .2s ease both;">
+      <div style="width:100%;background:#ffffff;border-top-left-radius:26px;border-top-right-radius:26px;border-top:1px solid #ddd3bd;padding:14px 20px max(env(safe-area-inset-bottom),22px);animation:screenIn .28s ease both;">
+        <div style="width:44px;height:5px;border-radius:999px;background:#c9bd9f;margin:0 auto 16px;"></div>
+        <h3 style="margin:0 0 4px;font-family:'Bricolage Grotesque';font-weight:800;font-size:26px;text-transform:uppercase;color:#1c1914;">Game Mode</h3>
+        <p style="margin:0 0 16px;font:400 13px 'Hanken Grotesk';color:#8a8068;">How cruel do you want it?</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{ modeOptions }}" as="m" hint-placeholder-count="3">
+            <button onClick="{{ m.onClick }}" style="{{ m.style }}">
+              <span style="flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;color:#4f2fe0;background:#4f2fe01a;border:1px solid #4f2fe044;">{{ m.initial }}</span>
+              <span style="flex:1;display:flex;flex-direction:column;gap:2px;text-align:left;"><span style="font:700 16px 'Hanken Grotesk';color:#1c1914;">{{ m.name }}</span><span style="font:400 12px 'Hanken Grotesk';color:#79705c;line-height:1.35;">{{ m.desc }}</span></span>
+              <span style="{{ m.check }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:412,&quot;height&quot;:892}}">
+class Component extends DCLogic {
+  state = {
+    route:'home', phase:'lobby',
+    mode:'classic', playerCount:6, impostorCount:1, timer:90,
+    difficulty:'normal', familySafe:true, adult:false, groupVote:false,
+    holdToReveal:true, soundOn:true, animOn:true, hapticsOn:true,
+    saved:['Maya','Theo','Priya','Diego','Jules','Sam','Noa','Kit','Rae','Ivo'],
+    players:[], nameDraft:'',
+    roles:[], pair:null, revealIndex:0, revealShown:false,
+    clueIndex:0, timeLeft:90, timerRunning:false,
+    voteIndex:0, votes:{}, voterChoice:null, selectedCandidate:null,
+    eliminated:null, eliminatedImpostor:false, guess:'', outcome:null, resultReason:'',
+    score:{civ:0,imp:0}, round:1, modeSheet:false,
+  };
+
+  PALETTE=['#4f2fe0','#b07d0a','#0e9f6e','#36c98a','#7c4dff','#ff7ab0','#ffa14a','#5ad1c4','#ff6347','#7ed957'];
+  WORDS=[{c:'Beach',i:'Desert'},{c:'Coffee',i:'Tea'},{c:'Vampire',i:'Zombie'},{c:'Guitar',i:'Violin'},{c:'Pizza',i:'Burger'},{c:'Winter',i:'Autumn'},{c:'Doctor',i:'Nurse'},{c:'Ocean',i:'Lake'},{c:'Robot',i:'Alien'},{c:'Castle',i:'Tower'},{c:'Detective',i:'Spy'},{c:'Volcano',i:'Geyser'}];
+  MODES=[
+    {key:'classic',name:'Classic',desc:'Everyone gets the word. The impostor gets a believable decoy.'},
+    {key:'blank',name:'Blackout',desc:'Civilians share a word. The impostor gets nothing but nerve.'},
+    {key:'rivals',name:'Rivals',desc:'More impostors, more decoys. Trust absolutely no one.'},
+  ];
+
+  componentDidMount(){
+    this._iv=setInterval(()=>{
+      if(this.state.timerRunning && this.state.timeLeft>0){
+        this.setState(s=>{const t=s.timeLeft-1;return {timeLeft:t,timerRunning:t>0};});
+      }
+    },1000);
+  }
+  componentWillUnmount(){ clearInterval(this._iv); }
+
+  color(i){ return this.PALETTE[i%this.PALETTE.length]; }
+  go=(r)=>this.setState({route:r});
+  goHome=()=>this.setState({route:'home',phase:'lobby',timerRunning:false});
+  goCreate=()=>this.setState({route:'create'});
+  goSettings=()=>this.setState({route:'settings'});
+  goStats=()=>this.setState({route:'stats'});
+  goPacks=()=>this.setState({route:'packs'});
+  goPeople=()=>this.setState({route:'people'});
+  goHowto=()=>this.setState({route:'howto'});
+
+  openMode=()=>this.setState({modeSheet:true});
+  closeMode=()=>this.setState({modeSheet:false});
+  pickMode=(key)=>this.setState({mode:key,modeSheet:false,impostorCount:key==='rivals'?2:1});
+
+  incPlayers=()=>this.setState(s=>({playerCount:Math.min(12,s.playerCount+1)}));
+  decPlayers=()=>this.setState(s=>({playerCount:Math.max(3,s.playerCount-1)}));
+  incImp=()=>this.setState(s=>({impostorCount:Math.min(Math.max(1,Math.floor(s.playerCount/2)-1),s.impostorCount+1)}));
+  decImp=()=>this.setState(s=>({impostorCount:Math.max(1,s.impostorCount-1)}));
+  setTimer=(v)=>this.setState({timer:v,timeLeft:v});
+  setDiff=(v)=>this.setState({difficulty:v});
+  toggle=(f)=>this.setState(s=>({[f]:!s[f]}));
+
+  toLobby=()=>{
+    const players = this.state.players.length>=3 ? this.state.players : this.state.saved.slice(0,this.state.playerCount);
+    this.setState({players:[...players],route:'play',phase:'lobby'});
+  };
+  setDraft=(e)=>this.setState({nameDraft:e.target.value});
+  addDraft=()=>{
+    const n=this.state.nameDraft.trim(); if(!n) return;
+    this.setState(s=>({players:[...s.players,n],saved:s.saved.includes(n)?s.saved:[...s.saved,n],nameDraft:''}));
+  };
+  draftKey=(e)=>{ if(e.key==='Enter') this.addDraft(); };
+  addSaved=(name)=>this.setState(s=>s.players.includes(name)?{}:{players:[...s.players,name]});
+  removePlayer=(name)=>this.setState(s=>({players:s.players.filter(p=>p!==name)}));
+  reshuffle=()=>this.setState(s=>({players:[...s.players].sort(()=>Math.random()-0.5)}));
+  removeSaved=(name)=>this.setState(s=>({saved:s.saved.filter(p=>p!==name)}));
+  timerToggle=()=>{ if(this.state.timer===0) return; this.state.timerRunning?this.pauseTimer():this.startTimer(); };
+
+  startGame=()=>{
+    const names=this.state.players;
+    if(names.length<3) return;
+    const pair=this.WORDS[Math.floor(Math.random()*this.WORDS.length)];
+    const impCount=Math.min(this.state.impostorCount,names.length-1);
+    const imp=new Set();
+    while(imp.size<impCount){ imp.add(Math.floor(Math.random()*names.length)); }
+    const roles=names.map((name,i)=>{
+      const impostor=imp.has(i);
+      const word=impostor?(this.state.mode==='blank'?'':pair.i):pair.c;
+      return {name,impostor,word};
+    });
+    this.setState({roles,pair,phase:'reveal',revealIndex:0,revealShown:false,clueIndex:0,timeLeft:this.state.timer,timerRunning:false,votes:{},voteIndex:0,voterChoice:null,selectedCandidate:null,eliminated:null,guess:'',outcome:null});
+  };
+
+  holdStart=()=>{ if(this.state.holdToReveal) this.setState({revealShown:true}); };
+  holdEnd=()=>{ if(this.state.holdToReveal) this.setState({revealShown:false}); };
+  nextReveal=()=>{
+    const ni=this.state.revealIndex+1;
+    if(ni>=this.state.roles.length) this.setState({phase:'clue',clueIndex:0,revealShown:false});
+    else this.setState({revealIndex:ni,revealShown:false});
+  };
+
+  nextClue=()=>{
+    const ni=this.state.clueIndex+1;
+    if(ni>=this.state.roles.length) this.setState({phase:'discuss',timeLeft:this.state.timer,timerRunning:false});
+    else this.setState({clueIndex:ni});
+  };
+
+  startTimer=()=>this.setState({timerRunning:true});
+  pauseTimer=()=>this.setState({timerRunning:false});
+  toVote=()=>this.setState({phase:'vote',timerRunning:false,voteIndex:0,votes:{},voterChoice:null,selectedCandidate:null});
+
+  pickCandidate=(name)=>{ if(this.state.groupVote) this.setState({selectedCandidate:name}); else this.setState({voterChoice:name}); };
+  confirmVote=()=>{
+    if(this.state.groupVote){
+      if(!this.state.selectedCandidate) return;
+      this.resolve(this.state.selectedCandidate);
+      return;
+    }
+    if(!this.state.voterChoice) return;
+    const votes={...this.state.votes};
+    votes[this.state.voterChoice]=(votes[this.state.voterChoice]||0)+1;
+    const ni=this.state.voteIndex+1;
+    if(ni>=this.state.players.length){
+      let best=null,bv=-1; Object.keys(votes).forEach(k=>{if(votes[k]>bv){bv=votes[k];best=k;}});
+      this.setState({votes},()=>this.resolve(best));
+    } else {
+      this.setState({votes,voteIndex:ni,voterChoice:null});
+    }
+  };
+  resolve=(name)=>{
+    const role=this.state.roles.find(r=>r.name===name)||{};
+    if(role.impostor){
+      this.setState(s=>({eliminated:name,eliminatedImpostor:true,outcome:'civ',resultReason:'The table unmasked the impostor.',score:{civ:s.score.civ+1,imp:s.score.imp},phase:'result'}));
+    } else {
+      this.setState({eliminated:name,eliminatedImpostor:false,phase:'guess',guess:''});
+    }
+  };
+
+  setGuess=(e)=>this.setState({guess:e.target.value});
+  submitGuess=()=>{
+    const target=this.state.pair?this.state.pair.c.toLowerCase():'';
+    const correct=this.state.guess.trim().toLowerCase()===target;
+    this.setState(s=>({outcome:correct?'imp':'civ',resultReason:correct?'The impostor stole the secret word.':'The impostor guessed wrong — civilians escape.',score:correct?{civ:s.score.civ,imp:s.score.imp+1}:{civ:s.score.civ+1,imp:s.score.imp},phase:'result'}));
+  };
+
+  nextRound=()=>{ this.setState(s=>({round:s.round+1}),this.startGame); };
+  newGame=()=>this.setState({route:'create'});
+
+  renderVals(){
+    const S=this.state;
+    const chip=(active,accent='#4f2fe0')=> active
+      ? `padding:11px 17px;border-radius:999px;border:1px solid ${accent};background:${accent}24;color:#1c1914;font:600 14px 'Hanken Grotesk';cursor:pointer;white-space:nowrap;`
+      : `padding:11px 17px;border-radius:999px;border:1px solid #ddd3bd;background:transparent;color:#79705c;font:600 14px 'Hanken Grotesk';cursor:pointer;white-space:nowrap;`;
+    const track=on=>`flex:0 0 auto;width:52px;height:31px;border-radius:999px;padding:3px;display:flex;align-items:center;transition:background .2s;background:${on?'#4f2fe0':'#ddd3bd'};`;
+    const knob=on=>`width:25px;height:25px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(${on?'21px':'0px'});box-shadow:0 2px 6px rgba(0,0,0,.4);`;
+    const togRow='display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;background:transparent;border:0;border-top:1px solid #e6ddc9;padding:16px 0;cursor:pointer;text-align:left;';
+
+    const mode=this.MODES.find(m=>m.key===S.mode)||this.MODES[0];
+    const cur=S.roles[S.revealIndex]||{};
+    const clue=S.roles[S.clueIndex]||{};
+    const voter=S.players[S.voteIndex]||'';
+    const sel=S.groupVote?S.selectedCandidate:S.voterChoice;
+
+    const candidates=S.players.filter(p=>S.groupVote?true:p!==voter).map((name,i)=>({
+      name, initial:(name[0]||'?').toUpperCase(), color:this.color(S.players.indexOf(name)),
+      selected: sel===name,
+      onClick:()=>this.pickCandidate(name),
+    }));
+
+    const navCards=[
+      {key:'people',label:'People',desc:'Saved names',icon:'👥',onClick:this.goPeople},
+      {key:'packs',label:'Packs',desc:'Word sets',icon:'📦',onClick:this.goPacks},
+      {key:'stats',label:'Stats',desc:'Your record',icon:'📊',onClick:this.goStats},
+      {key:'howto',label:'How to play',desc:'60 seconds',icon:'？',onClick:this.goHowto},
+    ];
+
+    return {
+      animAttr: S.animOn?'on':'off',
+      isHome:S.route==='home', isCreate:S.route==='create', isSettings:S.route==='settings',
+      isStats:S.route==='stats', isPacks:S.route==='packs', isPeople:S.route==='people', isHowto:S.route==='howto',
+      isLobby:S.route==='play'&&S.phase==='lobby',
+      isReveal:S.route==='play'&&S.phase==='reveal',
+      isClue:S.route==='play'&&S.phase==='clue',
+      isDiscuss:S.route==='play'&&S.phase==='discuss',
+      isVote:S.route==='play'&&S.phase==='vote',
+      isGuess:S.route==='play'&&S.phase==='guess',
+      isResult:S.route==='play'&&S.phase==='result',
+      goHome:this.goHome, goCreate:this.goCreate, goSettings:this.goSettings, goStats:this.goStats,
+      goPacks:this.goPacks, goPeople:this.goPeople, goHowto:this.goHowto,
+      socialProof:'You\u2019ve hosted 37 rounds', wordCount:248,
+      navCards: navCards.map(n=>({...n})),
+
+      // create
+      modeName:mode.name, modeDesc:mode.desc, modeInitial:mode.name[0],
+      playerCount:S.playerCount, impostorCount:S.impostorCount,
+      incPlayers:this.incPlayers, decPlayers:this.decPlayers, incImp:this.incImp, decImp:this.decImp,
+      openMode:this.openMode,
+      timerChips:[{v:45,l:'45s'},{v:90,l:'90s'},{v:180,l:'3 min'},{v:0,l:'Off'}].map(o=>({label:o.l,style:chip(S.timer===o.v),onClick:()=>this.setTimer(o.v)})),
+      diffChips:[{v:'chill',l:'Chill'},{v:'normal',l:'Normal'},{v:'ruthless',l:'Ruthless'}].map(o=>({label:o.l,style:chip(S.difficulty===o.v),onClick:()=>this.setDiff(o.v)})),
+      createToggles:[
+        {key:'familySafe',label:'Family-safe',desc:'Hide spicy words'},
+        {key:'adult',label:'18+ content',desc:'After-dark word pool'},
+        {key:'groupVote',label:'Group vote',desc:'Decide out loud, not in secret'},
+      ].map(t=>({label:t.label,desc:t.desc,track:track(S[t.key]),knob:knob(S[t.key]),row:togRow,onClick:()=>this.toggle(t.key)})),
+      toLobby:this.toLobby,
+
+      // lobby
+      lobbyStatus: S.players.length<3?`Add ${3-S.players.length} more to start`:`${S.players.length} seated \u00b7 ready when you are`,
+      seatList:S.players.map((name,i)=>({name,initial:(name[0]||'?').toUpperCase(),color:this.color(i),seat:`Seat ${i+1}`,remove:()=>this.removePlayer(name)})),
+      nameDraft:S.nameDraft, setDraft:this.setDraft, addDraft:this.addDraft, draftKey:this.draftKey,
+      suggestions:S.saved.filter(n=>!S.players.includes(n)).slice(0,6).map(name=>({name,onClick:()=>this.addSaved(name)})),
+      hasSuggestions:S.saved.filter(n=>!S.players.includes(n)).length>0,
+      reshuffle:this.reshuffle, startGame:this.startGame,
+      startDisabled:S.players.length<3,
+      startLabel:S.players.length<3?'Need 3+ players':'Start Game',
+      startBtnStyle:S.players.length<3
+        ? "flex:1;border:0;border-radius:18px;padding:20px;background:#efe7d6;color:#9b9179;font:700 18px 'Hanken Grotesk';cursor:not-allowed;"
+        : "flex:1;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;",
+
+      // reveal
+      revealCover: !S.revealShown,
+      revealShown: S.revealShown,
+      revealName:cur.name, revealInitial:(cur.name?cur.name[0]:'?').toUpperCase(),
+      revealColor:this.color(S.revealIndex),
+      revealCounter:`Player ${S.revealIndex+1} of ${S.roles.length}`,
+      revealHoldLabel:S.holdToReveal?'Hold to reveal':'Tap to reveal',
+      revealCivilian: S.revealShown && !cur.impostor,
+      revealImpostor: S.revealShown && !!cur.impostor,
+      revealWord:cur.word,
+      impostorLead: S.mode==='blank' ? 'You get no word.' : 'Your decoy word is',
+      impostorWordDisplay: S.mode==='blank' ? 'Improvise' : cur.word,
+      revealNextLabel: S.revealIndex+1>=S.roles.length ? 'Got it \u2014 start clues' : 'Got it \u2014 pass on',
+      nextReveal:this.nextReveal, holdStart:this.holdStart, holdEnd:this.holdEnd,
+
+      // clue
+      clueName:clue.name, clueInitial:(clue.name?clue.name[0]:'?').toUpperCase(), clueColor:this.color(S.clueIndex),
+      clueProgress:`${S.clueIndex+1} / ${S.roles.length}`,
+      clueNextLabel: S.clueIndex+1>=S.roles.length ? 'Start the discussion' : 'Next player',
+      nextClue:this.nextClue,
+      clueDots:S.roles.map((r,i)=>({style:`flex:1;height:6px;border-radius:999px;background:${i<S.clueIndex?'#b07d0a':i===S.clueIndex?'#1c1914':'#e6ddc9'};transition:background .3s;`})),
+
+      // discuss
+      discussPrompt:'Find the liar. Defend your word. Don\u2019t overshare.',
+      ringDash:'829.38',
+      ringOffset:`${829.38*(1-(S.timer?(S.timeLeft/S.timer):1))}`,
+      ringColor:(S.timeLeft<=10 && S.timer!==0)?'#4f2fe0':'#0e9f6e',
+      timeLabel: S.timer===0 ? '\u221e' : `${Math.floor(S.timeLeft/60)}:${String(S.timeLeft%60).padStart(2,'0')}`,
+      timeState: S.timer===0?'No timer':(S.timeLeft===0?'Time\u2019s up':S.timerRunning?'On the clock':'Paused'),
+      timerToggle:this.timerToggle, toVote:this.toVote,
+      timerBtnLabel: S.timer===0?'Talk it out':(S.timeLeft===0?'Time\u2019s up':S.timerRunning?'Pause':'Start timer'),
+      timerBtnStyle: "width:100%;border:0;border-radius:18px;padding:18px;background:#4f2fe0;color:#fff;font:700 17px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;",
+
+      // vote
+      voteKicker: S.groupVote?'Decide together':`Ballot ${S.voteIndex+1} of ${S.players.length}`,
+      voteHeader: S.groupVote?'Group Vote':(voter||'Vote'),
+      voteSub: S.groupVote?'One final tap. No takebacks.':'Tap who you suspect, then pass the phone on.',
+      candidates: candidates.map(c=>({
+        name:c.name, initial:c.initial, color:c.color, onClick:c.onClick,
+        style: c.selected
+          ? "position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;padding:18px 12px;border-radius:18px;border:1px solid #4f2fe0;background:#4f2fe01f;cursor:pointer;box-shadow:0 0 32px -8px #4f2fe0;"
+          : "position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;padding:18px 12px;border-radius:18px;border:1px solid #e6ddc9;background:#fffdf8;cursor:pointer;",
+        checkStyle: c.selected
+          ? "position:absolute;top:9px;right:9px;width:22px;height:22px;border-radius:50%;background:#4f2fe0;display:grid;place-items:center;"
+          : "display:none;",
+      })),
+      confirmVote:this.confirmVote,
+      confirmDisabled: S.groupVote ? !S.selectedCandidate : !S.voterChoice,
+      confirmLabel: !sel ? 'Tap a player' : (S.groupVote?`Vote out ${sel}`:'Lock in vote'),
+      confirmStyle: (S.groupVote?!S.selectedCandidate:!S.voterChoice)
+        ? "width:100%;border:0;border-radius:18px;padding:20px;background:#efe7d6;color:#9b9179;font:700 18px 'Hanken Grotesk';cursor:not-allowed;"
+        : "width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;",
+
+      // guess
+      eliminatedName:S.eliminated, guess:S.guess, setGuess:this.setGuess, submitGuess:this.submitGuess,
+      guessDisabled: !S.guess.trim(),
+      guessBtnStyle: !S.guess.trim()
+        ? "width:100%;border:0;border-radius:18px;padding:20px;background:#efe7d6;color:#9b9179;font:700 18px 'Hanken Grotesk';cursor:not-allowed;"
+        : "width:100%;border:0;border-radius:18px;padding:20px;background:#4f2fe0;color:#fff;font:700 18px 'Hanken Grotesk';cursor:pointer;box-shadow:3px 4px 0 #1c1914;",
+
+      // result
+      resultHeadline: S.outcome==='civ'?'Civilians Win':'Impostor Wins',
+      resultColor: S.outcome==='civ'?'#0e9f6e':'#4f2fe0',
+      resultBadge: S.outcome==='civ'?'Justice served':'Got away with it',
+      resultBadgeStyle: S.outcome==='civ'
+        ? "padding:7px 15px;border-radius:999px;border:1px solid #0e9f6e55;background:#0e9f6e1a;color:#0e9f6e;font:700 11px 'JetBrains Mono';letter-spacing:.18em;text-transform:uppercase;"
+        : "padding:7px 15px;border-radius:999px;border:1px solid #4f2fe055;background:#4f2fe01a;color:#4f2fe0;font:700 11px 'JetBrains Mono';letter-spacing:.18em;text-transform:uppercase;",
+      resultReason:S.resultReason,
+      impostorReveal:S.roles.filter(r=>r.impostor).map(r=>r.name).join(' & ')||'\u2014',
+      secretWordReveal:S.pair?S.pair.c:'\u2014',
+      votedOut:S.eliminated||'\u2014',
+      scoreLabel:`${S.score.civ} / ${S.score.imp}`,
+      nextRound:this.nextRound, newGame:this.newGame,
+
+      // settings
+      settingsToggles:[
+        {key:'soundOn',label:'Sound',desc:'Cues, stings and the timer beep'},
+        {key:'animOn',label:'Animations',desc:'Motion and screen transitions'},
+        {key:'hapticsOn',label:'Haptics',desc:'A buzz on the big moments'},
+        {key:'holdToReveal',label:'Hold to reveal',desc:'Press and hold to expose your role'},
+      ].map(t=>({label:t.label,desc:t.desc,track:track(S[t.key]),knob:knob(S[t.key]),row:togRow,onClick:()=>this.toggle(t.key)})),
+
+      // stats
+      outcomeBars:[
+        {label:'Civilians caught the impostor',value:'21',pct:57,c:'#0e9f6e'},
+        {label:'Impostor survived the vote',value:'10',pct:27,c:'#b07d0a'},
+        {label:'Impostor stole the word',value:'6',pct:16,c:'#4f2fe0'},
+      ].map(b=>({label:b.label,value:b.value,fill:`height:100%;width:${b.pct}%;border-radius:999px;background:${b.c};`})),
+
+      // packs
+      packs:[
+        {name:'Core Mix',desc:'The everyday party deck \u00b7 248 word pairs',emoji:'\uD83C\uDFB2',status:'Active',state:'active'},
+        {name:'Movies & TV',desc:'Blockbusters, binges and cult classics',emoji:'\uD83C\uDFAC',status:'Soon',state:'soon'},
+        {name:'After Dark',desc:'Spicier prompts for grown-up tables \u00b7 18+',emoji:'\uD83C\uDF19',status:'Soon',state:'soon'},
+        {name:'Frostbite',desc:'Limited seasonal winter drop',emoji:'\u2744\uFE0F',status:'Seasonal',state:'seasonal'},
+        {name:'Word Forge',desc:'AI-generated packs on any theme you name',emoji:'\u2728',status:'Beta',state:'ai'},
+      ].map(p=>{
+        const badgeC={active:'#36c98a',soon:'#8a8068',seasonal:'#0e9f6e',ai:'#7c4dff'}[p.state];
+        return {name:p.name,desc:p.desc,emoji:p.emoji,status:p.status,
+          card:p.state==='active'
+            ? "display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;border:1px solid #36c98a44;background:linear-gradient(135deg,#eafaf2,#ffffff);"
+            : "display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;border:1px dashed #d3c8ad;background:#f6f0e3;opacity:.85;",
+          tint:p.state==='active'?'#36c98a1a':'#efe7d6',
+          border:p.state==='active'?'#36c98a44':'#ddd3bd',
+          badge:`flex:0 0 auto;padding:6px 12px;border-radius:999px;font:700 10px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:${badgeC};border:1px solid ${badgeC}55;background:${badgeC}1a;`,
+        };
+      }),
+
+      // people
+      peopleStatus:`${S.saved.length} saved`,
+      peopleEmpty:S.saved.length===0, peopleHas:S.saved.length>0,
+      peopleList:S.saved.map((name,i)=>({name,initial:(name[0]||'?').toUpperCase(),color:this.color(i),remove:()=>this.removeSaved(name)})),
+
+      // how to play
+      howSteps:[
+        {n:'1',title:'Everyone gets a word',body:'All but one player share a secret word. The impostor gets a believable decoy \u2014 or nothing at all.',color:'#0e9f6e'},
+        {n:'2',title:'Drop a one-word clue',body:'Go around the table. Prove you know the word without ever saying it.',color:'#b07d0a'},
+        {n:'3',title:'Discuss & accuse',body:'Debate who\u2019s faking it. Beware clues that play it too safe.',color:'#4f2fe0'},
+        {n:'4',title:'Vote someone out',body:'In secret or as a group. Guess wrong and the impostor only gets bolder.',color:'#7c4dff'},
+        {n:'5',title:'The last chance',body:'If the impostor survives the vote, they can still steal the win by naming the word.',color:'#36c98a'},
+      ],
+
+      // mode sheet
+      modeSheet:S.modeSheet, closeMode:this.closeMode,
+      modeOptions:this.MODES.map(m=>({name:m.name,desc:m.desc,initial:m.name[0],onClick:()=>this.pickMode(m.key),
+        style:m.key===S.mode
+          ? "display:flex;align-items:center;gap:13px;padding:14px;border-radius:16px;border:1px solid #4f2fe0;background:#4f2fe014;cursor:pointer;width:100%;"
+          : "display:flex;align-items:center;gap:13px;padding:14px;border-radius:16px;border:1px solid #e6ddc9;background:#f6f0e3;cursor:pointer;width:100%;",
+        check:m.key===S.mode
+          ? "flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#4f2fe0;display:grid;place-items:center;"
+          : "display:none;",
+      })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,3 +1,5 @@
+export { LibraryScreen } from './LibraryScreen';
+export { GlyphScreen } from './GlyphScreen';
 export { HomeScreen } from './HomeScreen';
 export { CreateRoomScreen } from './CreateRoomScreen';
 export { SettingsScreen } from './SettingsScreen';

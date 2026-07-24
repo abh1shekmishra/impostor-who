@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  @page { margin: 0.5in; }
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, tr, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:#08070b;}
+  button{font-family:inherit;}
+  ::selection{background:#f5402e;color:#fff;}
+  .uc-view::-webkit-scrollbar{width:0;height:0;}
+  @keyframes screenIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  @keyframes popIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+  @keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+  @keyframes dangerGlow{0%,100%{box-shadow:0 0 0 1px #f5402e55, 0 0 40px -8px #f5402e88;}50%{box-shadow:0 0 0 1px #f5402eaa, 0 0 70px -4px #f5402ecc;}}
+  @keyframes ringPulse{0%,100%{opacity:.55;}50%{opacity:1;}}
+  @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}}
+  [data-anim="off"] *{animation:none!important;transition:none!important;}
+</style>
+</helmet>
+
+<div data-anim="{{ animAttr }}" style="min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center;background:radial-gradient(130% 90% at 50% -20%, #1a1822 0%, #0c0b10 52%, #08070b 100%);padding:0;font-family:'Space Grotesk',system-ui,sans-serif;">
+  <div style="position:relative;width:min(100vw,412px);height:min(100vh,892px);background:radial-gradient(125% 75% at 50% -8%, #1b1a24 0%, #110f16 55%, #0b0a0f 100%);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 120px -20px #000, 0 0 0 1px #ffffff0a;">
+
+    <div class="uc-view" style="flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;">
+
+      <!-- ============ HOME ============ -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Home" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),26px) 24px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <span style="width:13px;height:13px;border-radius:50%;background:#f5402e;box-shadow:0 0 16px #f5402e;display:inline-block;"></span>
+            <span style="font:700 12px 'Space Mono';letter-spacing:.22em;color:#9a97a8;text-transform:uppercase;">No wifi needed</span>
+          </div>
+          <button onClick="{{ goSettings }}" aria-label="Settings" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9 19 19M19 5l-2.1 2.1M7.1 16.9 5 19"/></svg>
+          </button>
+        </div>
+
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:30px 0;">
+          <div style="display:inline-flex;align-self:flex-start;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;border:1px solid #2a2935;background:#ffffff06;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#36c98a;"></span>
+            <span style="font:600 12px 'Space Grotesk';color:#c9c6d4;">{{ socialProof }}</span>
+          </div>
+          <h1 style="margin:0;font-family:'Anton';font-size:84px;line-height:.86;letter-spacing:.01em;color:#f4f2f7;text-transform:uppercase;">Under<br>cover</h1>
+          <p style="margin:0;max-width:300px;font-size:18px;line-height:1.4;color:#b6b3c2;">One word. One liar.<br>One phone going around the room.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <button onClick="{{ goCreate }}" style="width:100%;border:0;border-radius:18px;padding:21px;background:#f5402e;color:#fff;font:700 19px 'Space Grotesk';letter-spacing:.01em;cursor:pointer;box-shadow:0 14px 34px -10px #f5402ecc;display:flex;align-items:center;justify-content:center;gap:10px;">
+            Start a Game
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <sc-for list="{{ navCards }}" as="n" hint-placeholder-count="4">
+              <button onClick="{{ n.onClick }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:16px;border-radius:15px;border:1px solid #232230;background:#14131a;cursor:pointer;text-align:left;">
+                <span style="color:#f5402e;" data-icon="{{ n.key }}">{{ n.icon }}</span>
+                <span style="display:flex;flex-direction:column;gap:1px;">
+                  <span style="font:700 15px 'Space Grotesk';color:#f4f2f7;">{{ n.label }}</span>
+                  <span style="font:400 12px 'Space Grotesk';color:#8b8898;">{{ n.desc }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+
+          <button onClick="{{ goHowto }}" style="position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-radius:15px;border:1px dashed #3a3848;background:#100f15;cursor:pointer;text-align:left;">
+            <span style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font:700 11px 'Space Mono';letter-spacing:.18em;text-transform:uppercase;color:#e8b339;">Coming soon</span>
+              <span style="font:600 15px 'Space Grotesk';color:#d9d6e2;">Online multiplayer</span>
+              <span style="font:400 12px 'Space Grotesk';color:#8b8898;">Play across the room — or across the world.</span>
+            </span>
+            <span style="flex:0 0 auto;width:38px;height:38px;border-radius:11px;border:1px solid #2a2935;display:grid;place-items:center;color:#6b6878;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            </span>
+          </button>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ CREATE ROOM ============ -->
+      <sc-if value="{{ isCreate }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Create Room" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),22px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:22px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <div style="display:flex;flex-direction:column;">
+            <h2 style="margin:0;font-family:'Anton';font-size:30px;line-height:1;text-transform:uppercase;color:#f4f2f7;">New Game</h2>
+            <span style="font:500 12px 'Space Mono';color:#8b8898;letter-spacing:.05em;">{{ wordCount }} words ready</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;flex:1;">
+          <!-- mode card -->
+          <button onClick="{{ openMode }}" style="position:relative;display:flex;align-items:center;gap:15px;padding:18px;border-radius:18px;border:1px solid #2a2935;background:linear-gradient(135deg,#1c1a24,#141219);cursor:pointer;text-align:left;">
+            <span style="flex:0 0 auto;width:50px;height:50px;border-radius:14px;background:#f5402e1f;border:1px solid #f5402e44;display:grid;place-items:center;color:#f5402e;font-family:'Anton';font-size:24px;">{{ modeInitial }}</span>
+            <span style="flex:1;display:flex;flex-direction:column;gap:3px;">
+              <span style="font:700 11px 'Space Mono';letter-spacing:.16em;text-transform:uppercase;color:#8b8898;">Mode</span>
+              <span style="font:700 18px 'Space Grotesk';color:#f4f2f7;">{{ modeName }}</span>
+              <span style="font:400 12px 'Space Grotesk';color:#9a97a8;line-height:1.35;">{{ modeDesc }}</span>
+            </span>
+            <span style="color:#6b6878;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></span>
+          </button>
+
+          <!-- steppers -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="padding:16px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:13px;">
+              <span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Players</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button onClick="{{ decPlayers }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #2a2935;background:#1d1c25;color:#f4f2f7;font-size:22px;cursor:pointer;line-height:1;">−</button>
+                <span style="font-family:'Anton';font-size:30px;color:#f4f2f7;">{{ playerCount }}</span>
+                <button onClick="{{ incPlayers }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #2a2935;background:#1d1c25;color:#f4f2f7;font-size:22px;cursor:pointer;line-height:1;">+</button>
+              </div>
+            </div>
+            <div style="padding:16px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:13px;">
+              <span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Impostors</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button onClick="{{ decImp }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #2a2935;background:#1d1c25;color:#f4f2f7;font-size:22px;cursor:pointer;line-height:1;">−</button>
+                <span style="font-family:'Anton';font-size:30px;color:#f5402e;">{{ impostorCount }}</span>
+                <button onClick="{{ incImp }}" style="width:36px;height:36px;border-radius:11px;border:1px solid #2a2935;background:#1d1c25;color:#f4f2f7;font-size:22px;cursor:pointer;line-height:1;">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- timer -->
+          <div style="padding:16px 16px 18px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:13px;">
+            <span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Discussion timer</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <sc-for list="{{ timerChips }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- category -->
+          <div style="padding:16px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              <span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Categories</span>
+              <span style="font:400 12px 'Space Grotesk';color:#6b6878;">More categories coming soon</span>
+            </div>
+            <span style="padding:10px 15px;border-radius:999px;border:1px solid #46c2ff55;background:#46c2ff1a;color:#9fd9ff;font:700 13px 'Space Grotesk';display:inline-flex;align-items:center;gap:7px;"><span style="width:6px;height:6px;border-radius:50%;background:#46c2ff;"></span>Mix</span>
+          </div>
+
+          <!-- difficulty -->
+          <div style="padding:16px 16px 18px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:13px;">
+            <span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Difficulty</span>
+            <div style="display:flex;gap:8px;">
+              <sc-for list="{{ diffChips }}" as="d" hint-placeholder-count="3">
+                <button onClick="{{ d.onClick }}" style="{{ d.style }}">{{ d.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- toggles -->
+          <div style="padding:2px 16px;border-radius:16px;border:1px solid #232230;background:#14131a;">
+            <sc-for list="{{ createToggles }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.onClick }}" style="{{ t.row }}">
+                <span style="display:flex;flex-direction:column;gap:2px;">
+                  <span style="font:600 15px 'Space Grotesk';color:#f4f2f7;">{{ t.label }}</span>
+                  <span style="font:400 12px 'Space Grotesk';color:#8b8898;">{{ t.desc }}</span>
+                </span>
+                <span style="{{ t.track }}"><span style="{{ t.knob }}"></span></span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+
+        <button onClick="{{ toLobby }}" style="margin-top:18px;width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;display:flex;align-items:center;justify-content:center;gap:10px;">Add Players<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </section>
+      </sc-if>
+
+      <!-- ============ LOBBY ============ -->
+      <sc-if value="{{ isLobby }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Lobby" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),22px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+          <button onClick="{{ goCreate }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <div style="display:flex;flex-direction:column;">
+            <h2 style="margin:0;font-family:'Anton';font-size:30px;line-height:1;text-transform:uppercase;color:#f4f2f7;">The Table</h2>
+            <span style="font:500 12px 'Space Mono';color:#8b8898;">{{ lobbyStatus }}</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:9px;flex:1;">
+          <sc-for list="{{ seatList }}" as="p" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:14px;border:1px solid #232230;background:#14131a;">
+              <span style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font:700 17px 'Space Grotesk';color:#0b0a0f;background:{{ p.color }};">{{ p.initial }}</span>
+              <span style="flex:1;font:600 16px 'Space Grotesk';color:#f4f2f7;">{{ p.name }}</span>
+              <span style="font:500 11px 'Space Mono';color:#6b6878;">{{ p.seat }}</span>
+              <button onClick="{{ p.remove }}" aria-label="Remove" style="width:30px;height:30px;border-radius:9px;border:1px solid #2a2935;background:transparent;color:#8b8898;cursor:pointer;display:grid;place-items:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+            </div>
+          </sc-for>
+
+          <div style="display:flex;gap:9px;margin-top:4px;">
+            <input value="{{ nameDraft }}" onInput="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Add a name…" style="flex:1;padding:14px 15px;border-radius:14px;border:1px solid #2a2935;background:#100f15;color:#f4f2f7;font:600 15px 'Space Grotesk';outline:none;" />
+            <button onClick="{{ addDraft }}" aria-label="Add" style="flex:0 0 auto;width:52px;border-radius:14px;border:1px solid #f5402e55;background:#f5402e1f;color:#f5402e;font-size:26px;cursor:pointer;line-height:1;">+</button>
+          </div>
+
+          <sc-if value="{{ hasSuggestions }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:8px;display:flex;flex-direction:column;gap:9px;">
+            <span style="font:600 11px 'Space Mono';letter-spacing:.14em;text-transform:uppercase;color:#6b6878;">Saved players</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <sc-for list="{{ suggestions }}" as="s" hint-placeholder-count="5">
+                <button onClick="{{ s.onClick }}" style="padding:9px 14px;border-radius:999px;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;font:600 13px 'Space Grotesk';cursor:pointer;display:inline-flex;align-items:center;gap:6px;">+ {{ s.name }}</button>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:16px;">
+          <button onClick="{{ reshuffle }}" aria-label="Reshuffle seats" style="flex:0 0 auto;width:58px;border-radius:18px;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+          <button onClick="{{ startGame }}" disabled="{{ startDisabled }}" style="{{ startBtnStyle }}">{{ startLabel }}</button>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ REVEAL ============ -->
+      <sc-if value="{{ isReveal }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Reveal" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),24px) 24px max(env(safe-area-inset-bottom),24px);">
+        <!-- cover -->
+        <sc-if value="{{ revealCover }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px;">
+          <span style="font:700 12px 'Space Mono';letter-spacing:.24em;text-transform:uppercase;color:#8b8898;">{{ revealCounter }}</span>
+          <div style="animation:floaty 3.4s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;gap:18px;">
+            <span style="width:96px;height:96px;border-radius:28px;display:grid;place-items:center;font:700 42px 'Space Grotesk';color:#0b0a0f;background:{{ revealColor }};box-shadow:0 18px 50px -12px {{ revealColor }};">{{ revealInitial }}</span>
+            <h2 style="margin:0;font-family:'Anton';font-size:46px;line-height:.95;text-transform:uppercase;color:#f4f2f7;">Pass to<br>{{ revealName }}</h2>
+          </div>
+          <p style="margin:0;max-width:240px;font-size:15px;line-height:1.45;color:#9a97a8;">Make sure no one's peeking, then hold the card to reveal your secret.</p>
+          <button onPointerDown="{{ holdStart }}" onPointerUp="{{ holdEnd }}" onPointerLeave="{{ holdEnd }}" style="margin-top:6px;width:100%;border:0;border-radius:18px;padding:20px;background:#1d1c25;border:1px solid #2a2935;color:#f4f2f7;font:700 17px 'Space Grotesk';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;user-select:none;touch-action:none;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M5 8a7 7 0 1 0 14 0"/></svg>{{ revealHoldLabel }}</button>
+        </div>
+        </sc-if>
+        <!-- revealed -->
+        <sc-if value="{{ revealShown }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;">
+          <!-- civilian -->
+          <sc-if value="{{ revealCivilian }}" hint-placeholder-val="{{ true }}">
+          <div style="animation:popIn .35s ease both;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:34px 22px;border-radius:26px;border:1px solid #46c2ff55;background:radial-gradient(120% 90% at 50% 0%,#13212e,#101019);box-shadow:0 0 60px -18px #46c2ff88;">
+            <span style="font:700 12px 'Space Mono';letter-spacing:.24em;text-transform:uppercase;color:#46c2ff;">Civilian</span>
+            <p style="margin:0;font-size:15px;color:#9fd9ff;">Your secret word is</p>
+            <h2 style="margin:0;font-family:'Anton';font-size:58px;line-height:.92;text-transform:uppercase;color:#f4f2f7;">{{ revealWord }}</h2>
+            <p style="margin:0;max-width:230px;font-size:14px;line-height:1.45;color:#8fb8cf;">Memorize it. Drop a clue — never say it out loud.</p>
+          </div>
+          </sc-if>
+          <!-- impostor -->
+          <sc-if value="{{ revealImpostor }}" hint-placeholder-val="{{ true }}">
+          <div style="animation:popIn .35s ease both, dangerGlow 2.6s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;padding:34px 22px;border-radius:26px;border:1px solid #f5402e55;background:radial-gradient(120% 90% at 50% 0%,#2a1213,#15090b);">
+            <span style="font:700 12px 'Space Mono';letter-spacing:.24em;text-transform:uppercase;color:#f5402e;">You're the Impostor</span>
+            <p style="margin:0;font-size:15px;color:#f3a59c;">{{ impostorLead }}</p>
+            <h2 style="margin:0;font-family:'Anton';font-size:54px;line-height:.92;text-transform:uppercase;color:#f4f2f7;">{{ impostorWordDisplay }}</h2>
+            <p style="margin:0;max-width:240px;font-size:14px;line-height:1.45;color:#cf938c;">Bluff your way through. Blend in. Don't get caught.</p>
+          </div>
+          </sc-if>
+          <button onClick="{{ nextReveal }}" style="margin-top:24px;width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;">{{ revealNextLabel }}</button>
+        </div>
+        </sc-if>
+      </section>
+      </sc-if>
+
+      <!-- ============ CLUE ============ -->
+      <sc-if value="{{ isClue }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Clue" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),26px) 24px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font:700 12px 'Space Mono';letter-spacing:.22em;text-transform:uppercase;color:#e8b339;">Clue round</span>
+          <span style="font:600 13px 'Space Grotesk';color:#8b8898;">{{ clueProgress }}</span>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:14px;">
+          <sc-for list="{{ clueDots }}" as="d" hint-placeholder-count="6">
+            <span style="{{ d.style }}"></span>
+          </sc-for>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:22px;">
+          <span style="font:600 13px 'Space Grotesk';color:#8b8898;">It's your turn,</span>
+          <span style="width:108px;height:108px;border-radius:32px;display:grid;place-items:center;font:700 48px 'Space Grotesk';color:#0b0a0f;background:{{ clueColor }};box-shadow:0 18px 50px -12px {{ clueColor }};">{{ clueInitial }}</span>
+          <h2 style="margin:0;font-family:'Anton';font-size:60px;line-height:.9;text-transform:uppercase;color:#f4f2f7;">{{ clueName }}</h2>
+          <p style="margin:0;max-width:260px;font-size:16px;line-height:1.45;color:#b6b3c2;">Say <b style="color:#f4f2f7;">one word</b> that hints at your secret — clever enough to prove you know it, vague enough to survive.</p>
+        </div>
+        <button onClick="{{ nextClue }}" style="width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;">{{ clueNextLabel }}</button>
+      </section>
+      </sc-if>
+
+      <!-- ============ DISCUSS ============ -->
+      <sc-if value="{{ isDiscuss }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Discuss" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;align-items:center;padding:max(env(safe-area-inset-top),30px) 24px max(env(safe-area-inset-bottom),24px);">
+        <span style="font-family:'Anton';font-size:40px;text-transform:uppercase;color:#f4f2f7;letter-spacing:.02em;">Discuss</span>
+        <p style="margin:8px 0 0;font-size:15px;color:#9a97a8;text-align:center;max-width:250px;">{{ discussPrompt }}</p>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;width:100%;">
+          <div style="position:relative;width:268px;height:268px;display:grid;place-items:center;">
+            <svg width="268" height="268" viewBox="0 0 300 300" style="position:absolute;inset:0;transform:rotate(-90deg);">
+              <circle cx="150" cy="150" r="132" fill="none" stroke="#232230" stroke-width="14"/>
+              <circle cx="150" cy="150" r="132" fill="none" stroke="{{ ringColor }}" stroke-width="14" stroke-linecap="round" stroke-dasharray="{{ ringDash }}" stroke-dashoffset="{{ ringOffset }}" style="transition:stroke-dashoffset 1s linear, stroke .3s;"/>
+            </svg>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+              <span style="font-family:'Anton';font-size:64px;line-height:1;color:#f4f2f7;">{{ timeLabel }}</span>
+              <span style="font:700 11px 'Space Mono';letter-spacing:.2em;text-transform:uppercase;color:#8b8898;">{{ timeState }}</span>
+            </div>
+          </div>
+        </div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
+          <button onClick="{{ timerToggle }}" style="{{ timerBtnStyle }}">{{ timerBtnLabel }}</button>
+          <button onClick="{{ toVote }}" style="width:100%;border:0;border-radius:18px;padding:18px;background:transparent;border:1px solid #2a2935;color:#c9c6d4;font:700 16px 'Space Grotesk';cursor:pointer;">Call the vote</button>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ VOTE ============ -->
+      <sc-if value="{{ isVote }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Vote" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),26px) 22px max(env(safe-area-inset-bottom),22px);">
+        <div style="text-align:center;display:flex;flex-direction:column;gap:6px;">
+          <span style="font:700 12px 'Space Mono';letter-spacing:.22em;text-transform:uppercase;color:#f5402e;">{{ voteKicker }}</span>
+          <h2 style="margin:0;font-family:'Anton';font-size:38px;line-height:.95;text-transform:uppercase;color:#f4f2f7;">{{ voteHeader }}</h2>
+          <span style="font:500 13px 'Space Grotesk';color:#9a97a8;">{{ voteSub }}</span>
+        </div>
+        <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;align-content:center;padding:22px 0;">
+          <sc-for list="{{ candidates }}" as="c" hint-placeholder-count="6">
+            <button onClick="{{ c.onClick }}" style="{{ c.style }}">
+              <span style="width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font:700 24px 'Space Grotesk';color:#0b0a0f;background:{{ c.color }};">{{ c.initial }}</span>
+              <span style="font:700 17px 'Space Grotesk';color:#f4f2f7;">{{ c.name }}</span>
+              <span style="{{ c.checkStyle }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span>
+            </button>
+          </sc-for>
+        </div>
+        <button onClick="{{ confirmVote }}" disabled="{{ confirmDisabled }}" style="{{ confirmStyle }}">{{ confirmLabel }}</button>
+      </section>
+      </sc-if>
+
+      <!-- ============ IMPOSTOR GUESS ============ -->
+      <sc-if value="{{ isGuess }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Impostor Guess" style="animation:screenIn .35s ease both;flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:22px;padding:max(env(safe-area-inset-top),26px) 26px max(env(safe-area-inset-bottom),26px);background:radial-gradient(120% 60% at 50% 0%,#220f10,transparent 70%);">
+        <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+          <span style="font:700 12px 'Space Mono';letter-spacing:.24em;text-transform:uppercase;color:#f5402e;">{{ eliminatedName }} was innocent</span>
+          <h2 style="margin:0;font-family:'Anton';font-size:50px;line-height:.92;text-transform:uppercase;color:#f4f2f7;">The impostor<br>survived</h2>
+          <p style="margin:0;max-width:270px;font-size:16px;line-height:1.45;color:#cf938c;">One word. One shot. Name the civilians' secret and steal the win.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <input value="{{ guess }}" onInput="{{ setGuess }}" placeholder="Type your guess…" style="width:100%;text-align:center;padding:22px;border-radius:18px;border:1px solid #f5402e66;background:#160b0c;color:#f4f2f7;font-family:'Anton';font-size:30px;text-transform:uppercase;outline:none;" />
+          <span style="font:500 12px 'Space Grotesk';color:#8b8898;">One civilian word \u00b7 spelling doesn't have to be perfect</span>
+        </div>
+        <button onClick="{{ submitGuess }}" disabled="{{ guessDisabled }}" style="{{ guessBtnStyle }}">Lock in the guess</button>
+      </section>
+      </sc-if>
+
+      <!-- ============ RESULT ============ -->
+      <sc-if value="{{ isResult }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Result" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),28px) 24px max(env(safe-area-inset-bottom),22px);">
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;">
+          <div style="text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;">
+            <span style="{{ resultBadgeStyle }}">{{ resultBadge }}</span>
+            <h2 style="margin:0;font-family:'Anton';font-size:60px;line-height:.86;text-transform:uppercase;color:{{ resultColor }};">{{ resultHeadline }}</h2>
+            <p style="margin:0;max-width:280px;font-size:15px;line-height:1.45;color:#b6b3c2;">{{ resultReason }}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1px solid #f5402e44;background:#1a0e0f;">
+              <span style="font:700 11px 'Space Mono';letter-spacing:.14em;text-transform:uppercase;color:#f5402e;flex:1;">Impostor</span>
+              <span style="font:700 18px 'Space Grotesk';color:#f4f2f7;">{{ impostorReveal }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;border:1px solid #46c2ff44;background:#0e1a22;">
+              <span style="font:700 11px 'Space Mono';letter-spacing:.14em;text-transform:uppercase;color:#46c2ff;flex:1;">Secret word</span>
+              <span style="font:700 18px 'Space Grotesk';color:#f4f2f7;">{{ secretWordReveal }}</span>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <div style="flex:1;padding:15px 16px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:3px;">
+                <span style="font:600 11px 'Space Mono';letter-spacing:.1em;text-transform:uppercase;color:#8b8898;">Voted out</span>
+                <span style="font:700 16px 'Space Grotesk';color:#f4f2f7;">{{ votedOut }}</span>
+              </div>
+              <div style="flex:1;padding:15px 16px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:3px;">
+                <span style="font:600 11px 'Space Mono';letter-spacing:.1em;text-transform:uppercase;color:#8b8898;">Score \u00b7 civ / imp</span>
+                <span style="font:700 16px 'Space Grotesk';color:#f4f2f7;">{{ scoreLabel }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button onClick="{{ nextRound }}" style="width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;">Next round</button>
+          <div style="display:flex;gap:10px;">
+            <button onClick="{{ newGame }}" style="flex:1;border-radius:16px;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;font:700 15px 'Space Grotesk';padding:16px;cursor:pointer;">New game</button>
+            <button onClick="{{ goHome }}" style="flex:1;border-radius:16px;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;font:700 15px 'Space Grotesk';padding:16px;cursor:pointer;">Home</button>
+          </div>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ SETTINGS ============ -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Settings" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Anton';font-size:30px;text-transform:uppercase;color:#f4f2f7;">Settings</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:18px;flex:1;">
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span style="font:700 11px 'Space Mono';letter-spacing:.16em;text-transform:uppercase;color:#6b6878;">Appearance</span>
+            <div style="padding:16px;border-radius:16px;border:1px solid #232230;background:#14131a;display:flex;align-items:center;justify-content:space-between;">
+              <div style="display:flex;flex-direction:column;gap:2px;"><span style="font:600 15px 'Space Grotesk';color:#f4f2f7;">Theme</span><span style="font:400 12px 'Space Grotesk';color:#8b8898;">Tuned for dark rooms</span></div>
+              <span style="display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;border:1px solid #2a2935;color:#c9c6d4;font:600 13px 'Space Grotesk';"><span style="width:8px;height:8px;border-radius:50%;background:#0b0a0f;border:1px solid #555;"></span>Cinema dark</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span style="font:700 11px 'Space Mono';letter-spacing:.16em;text-transform:uppercase;color:#6b6878;">Feel</span>
+            <div style="padding:2px 16px;border-radius:16px;border:1px solid #232230;background:#14131a;">
+              <sc-for list="{{ settingsToggles }}" as="t" hint-placeholder-count="4">
+                <button onClick="{{ t.onClick }}" style="{{ t.row }}">
+                  <span style="display:flex;flex-direction:column;gap:2px;"><span style="font:600 15px 'Space Grotesk';color:#f4f2f7;">{{ t.label }}</span><span style="font:400 12px 'Space Grotesk';color:#8b8898;">{{ t.desc }}</span></span>
+                  <span style="{{ t.track }}"><span style="{{ t.knob }}"></span></span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <span style="font:700 11px 'Space Mono';letter-spacing:.16em;text-transform:uppercase;color:#6b6878;">Data</span>
+            <p style="margin:0;font:400 12px 'Space Grotesk';color:#6b6878;line-height:1.5;">Everything stays on this phone. No accounts, no tracking, no internet required.</p>
+            <button style="width:100%;text-align:left;padding:16px;border-radius:16px;border:1px solid #3a2526;background:#1a0e0f;color:#f3a59c;font:600 15px 'Space Grotesk';cursor:pointer;">Reset stats &amp; saved players</button>
+          </div>
+        </div>
+        <span style="text-align:center;font:500 11px 'Space Mono';color:#4f4d5a;margin-top:14px;">Undercover \u00b7 v1.0 \u00b7 made for the room</span>
+      </section>
+      </sc-if>
+
+      <!-- ============ STATS ============ -->
+      <sc-if value="{{ isStats }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Stats" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Anton';font-size:30px;text-transform:uppercase;color:#f4f2f7;">Your Record</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;flex:1;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+            <div style="padding:18px;border-radius:18px;border:1px solid #46c2ff33;background:linear-gradient(160deg,#0e1a22,#11131a);display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Anton';font-size:40px;color:#46c2ff;">63%</span><span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Civilian win rate</span></div>
+            <div style="padding:18px;border-radius:18px;border:1px solid #f5402e33;background:linear-gradient(160deg,#1a0e0f,#14111a);display:flex;flex-direction:column;gap:4px;"><span style="font-family:'Anton';font-size:40px;color:#f5402e;">41%</span><span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Impostor escape rate</span></div>
+          </div>
+          <div style="padding:18px;border-radius:18px;border:1px solid #232230;background:#14131a;display:flex;flex-direction:column;gap:14px;">
+            <span style="font:600 13px 'Space Grotesk';color:#9a97a8;">Outcomes across 37 rounds</span>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <sc-for list="{{ outcomeBars }}" as="b" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <div style="display:flex;justify-content:space-between;"><span style="font:600 13px 'Space Grotesk';color:#d9d6e2;">{{ b.label }}</span><span style="font:700 13px 'Space Mono';color:#9a97a8;">{{ b.value }}</span></div>
+                  <div style="height:9px;border-radius:999px;background:#232230;overflow:hidden;"><div style="{{ b.fill }}"></div></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;">
+            <div style="padding:15px;border-radius:16px;border:1px solid #232230;background:#14131a;text-align:center;"><div style="font-family:'Anton';font-size:28px;color:#f4f2f7;">37</div><div style="font:600 11px 'Space Grotesk';color:#8b8898;">Rounds</div></div>
+            <div style="padding:15px;border-radius:16px;border:1px solid #232230;background:#14131a;text-align:center;"><div style="font-family:'Anton';font-size:28px;color:#e8b339;">6</div><div style="font:600 11px 'Space Grotesk';color:#8b8898;">Best streak</div></div>
+            <div style="padding:15px;border-radius:16px;border:1px solid #232230;background:#14131a;text-align:center;"><div style="font-family:'Anton';font-size:28px;color:#f4f2f7;">Mix</div><div style="font:600 11px 'Space Grotesk';color:#8b8898;">Most played</div></div>
+          </div>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ PACKS ============ -->
+      <sc-if value="{{ isPacks }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="Packs" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Anton';font-size:30px;text-transform:uppercase;color:#f4f2f7;">Word Packs</h2>
+        </div>
+        <p style="margin:0 0 16px 56px;font:400 13px 'Space Grotesk';color:#8b8898;">A catalog that keeps growing.</p>
+        <div style="display:flex;flex-direction:column;gap:11px;flex:1;">
+          <sc-for list="{{ packs }}" as="p" hint-placeholder-count="5">
+            <div style="{{ p.card }}">
+              <span style="flex:0 0 auto;width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:26px;background:{{ p.tint }};border:1px solid {{ p.border }};">{{ p.emoji }}</span>
+              <span style="flex:1;display:flex;flex-direction:column;gap:3px;">
+                <span style="font:700 16px 'Space Grotesk';color:#f4f2f7;">{{ p.name }}</span>
+                <span style="font:400 12px 'Space Grotesk';color:#8b8898;line-height:1.35;">{{ p.desc }}</span>
+              </span>
+              <span style="{{ p.badge }}">{{ p.status }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      </sc-if>
+
+      <!-- ============ PEOPLE ============ -->
+      <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="People" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <div style="display:flex;flex-direction:column;"><h2 style="margin:0;font-family:'Anton';font-size:30px;text-transform:uppercase;color:#f4f2f7;">People</h2><span style="font:500 12px 'Space Mono';color:#8b8898;">{{ peopleStatus }}</span></div>
+        </div>
+        <div style="display:flex;gap:9px;margin-bottom:14px;">
+          <input value="{{ nameDraft }}" onInput="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Add someone…" style="flex:1;padding:14px 15px;border-radius:14px;border:1px solid #2a2935;background:#100f15;color:#f4f2f7;font:600 15px 'Space Grotesk';outline:none;" />
+          <button onClick="{{ addDraft }}" aria-label="Add" style="flex:0 0 auto;width:52px;border-radius:14px;border:1px solid #f5402e55;background:#f5402e1f;color:#f5402e;font-size:26px;cursor:pointer;line-height:1;">+</button>
+        </div>
+        <sc-if value="{{ peopleEmpty }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
+          <span style="width:70px;height:70px;border-radius:22px;border:1px dashed #3a3848;display:grid;place-items:center;font-size:30px;">👋</span>
+          <span style="font:700 18px 'Space Grotesk';color:#f4f2f7;">No regulars yet</span>
+          <span style="font:400 14px 'Space Grotesk';color:#8b8898;max-width:230px;">Save the people you play with most so setup takes one tap next time.</span>
+        </div>
+        </sc-if>
+        <sc-if value="{{ peopleHas }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:1;display:flex;flex-direction:column;gap:9px;">
+          <sc-for list="{{ peopleList }}" as="p" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:13px;padding:12px 14px;border-radius:14px;border:1px solid #232230;background:#14131a;">
+              <span style="flex:0 0 auto;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font:700 17px 'Space Grotesk';color:#0b0a0f;background:{{ p.color }};">{{ p.initial }}</span>
+              <span style="flex:1;font:600 16px 'Space Grotesk';color:#f4f2f7;">{{ p.name }}</span>
+              <button onClick="{{ p.remove }}" aria-label="Remove" style="width:32px;height:32px;border-radius:10px;border:1px solid #2a2935;background:transparent;color:#8b8898;cursor:pointer;display:grid;place-items:center;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+            </div>
+          </sc-for>
+        </div>
+        </sc-if>
+      </section>
+      </sc-if>
+
+      <!-- ============ HOW TO PLAY ============ -->
+      <sc-if value="{{ isHowto }}" hint-placeholder-val="{{ true }}">
+      <section data-screen-label="How To Play" style="animation:screenIn .4s ease both;flex:1;display:flex;flex-direction:column;padding:max(env(safe-area-inset-top),22px) 22px max(env(safe-area-inset-bottom),24px);">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+          <button onClick="{{ goHome }}" aria-label="Back" style="width:42px;height:42px;border-radius:50%;border:1px solid #2a2935;background:#16151c;color:#c9c6d4;cursor:pointer;display:grid;place-items:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg></button>
+          <h2 style="margin:0;font-family:'Anton';font-size:30px;text-transform:uppercase;color:#f4f2f7;">How to Play</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:11px;flex:1;">
+          <sc-for list="{{ howSteps }}" as="s" hint-placeholder-count="5">
+            <div style="display:flex;gap:15px;padding:17px;border-radius:16px;border:1px solid #232230;background:#14131a;">
+              <span style="flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-family:'Anton';font-size:22px;color:{{ s.color }};border:1px solid {{ s.color }}55;background:{{ s.color }}1a;">{{ s.n }}</span>
+              <span style="display:flex;flex-direction:column;gap:3px;"><span style="font:700 16px 'Space Grotesk';color:#f4f2f7;">{{ s.title }}</span><span style="font:400 13px 'Space Grotesk';color:#9a97a8;line-height:1.4;">{{ s.body }}</span></span>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ goCreate }}" style="margin-top:16px;width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;">Got it \u2014 let's play</button>
+      </section>
+      </sc-if>
+
+      <!--SENTINEL-->
+    </div>
+
+    <!-- MODE SHEET -->
+    <sc-if value="{{ modeSheet }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeMode }}" style="position:absolute;inset:0;background:rgba(6,5,9,.72);backdrop-filter:blur(3px);z-index:20;display:flex;align-items:flex-end;animation:popIn .2s ease both;">
+      <div style="width:100%;background:#16151c;border-top-left-radius:26px;border-top-right-radius:26px;border-top:1px solid #2a2935;padding:14px 20px max(env(safe-area-inset-bottom),22px);animation:screenIn .28s ease both;">
+        <div style="width:44px;height:5px;border-radius:999px;background:#3a3848;margin:0 auto 16px;"></div>
+        <h3 style="margin:0 0 4px;font-family:'Anton';font-size:26px;text-transform:uppercase;color:#f4f2f7;">Game Mode</h3>
+        <p style="margin:0 0 16px;font:400 13px 'Space Grotesk';color:#8b8898;">How cruel do you want it?</p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{ modeOptions }}" as="m" hint-placeholder-count="3">
+            <button onClick="{{ m.onClick }}" style="{{ m.style }}">
+              <span style="flex:0 0 auto;width:46px;height:46px;border-radius:13px;display:grid;place-items:center;font-family:'Anton';font-size:22px;color:#f5402e;background:#f5402e1a;border:1px solid #f5402e44;">{{ m.initial }}</span>
+              <span style="flex:1;display:flex;flex-direction:column;gap:2px;text-align:left;"><span style="font:700 16px 'Space Grotesk';color:#f4f2f7;">{{ m.name }}</span><span style="font:400 12px 'Space Grotesk';color:#9a97a8;line-height:1.35;">{{ m.desc }}</span></span>
+              <span style="{{ m.check }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5 9-11"/></svg></span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:412,&quot;height&quot;:892}}">
+class Component extends DCLogic {
+  state = {
+    route:'home', phase:'lobby',
+    mode:'classic', playerCount:6, impostorCount:1, timer:90,
+    difficulty:'normal', familySafe:true, adult:false, groupVote:false,
+    holdToReveal:true, soundOn:true, animOn:true, hapticsOn:true,
+    saved:['Maya','Theo','Priya','Diego','Jules','Sam','Noa','Kit','Rae','Ivo'],
+    players:[], nameDraft:'',
+    roles:[], pair:null, revealIndex:0, revealShown:false,
+    clueIndex:0, timeLeft:90, timerRunning:false,
+    voteIndex:0, votes:{}, voterChoice:null, selectedCandidate:null,
+    eliminated:null, eliminatedImpostor:false, guess:'', outcome:null, resultReason:'',
+    score:{civ:0,imp:0}, round:1, modeSheet:false,
+  };
+
+  PALETTE=['#f5402e','#e8b339','#46c2ff','#36c98a','#b083ff','#ff7ab0','#ffa14a','#5ad1c4','#ff6347','#7ed957'];
+  WORDS=[{c:'Beach',i:'Desert'},{c:'Coffee',i:'Tea'},{c:'Vampire',i:'Zombie'},{c:'Guitar',i:'Violin'},{c:'Pizza',i:'Burger'},{c:'Winter',i:'Autumn'},{c:'Doctor',i:'Nurse'},{c:'Ocean',i:'Lake'},{c:'Robot',i:'Alien'},{c:'Castle',i:'Tower'},{c:'Detective',i:'Spy'},{c:'Volcano',i:'Geyser'}];
+  MODES=[
+    {key:'classic',name:'Classic',desc:'Everyone gets the word. The impostor gets a believable decoy.'},
+    {key:'blank',name:'Blackout',desc:'Civilians share a word. The impostor gets nothing but nerve.'},
+    {key:'rivals',name:'Rivals',desc:'More impostors, more decoys. Trust absolutely no one.'},
+  ];
+
+  componentDidMount(){
+    this._iv=setInterval(()=>{
+      if(this.state.timerRunning && this.state.timeLeft>0){
+        this.setState(s=>{const t=s.timeLeft-1;return {timeLeft:t,timerRunning:t>0};});
+      }
+    },1000);
+  }
+  componentWillUnmount(){ clearInterval(this._iv); }
+
+  color(i){ return this.PALETTE[i%this.PALETTE.length]; }
+  go=(r)=>this.setState({route:r});
+  goHome=()=>this.setState({route:'home',phase:'lobby',timerRunning:false});
+  goCreate=()=>this.setState({route:'create'});
+  goSettings=()=>this.setState({route:'settings'});
+  goStats=()=>this.setState({route:'stats'});
+  goPacks=()=>this.setState({route:'packs'});
+  goPeople=()=>this.setState({route:'people'});
+  goHowto=()=>this.setState({route:'howto'});
+
+  openMode=()=>this.setState({modeSheet:true});
+  closeMode=()=>this.setState({modeSheet:false});
+  pickMode=(key)=>this.setState({mode:key,modeSheet:false,impostorCount:key==='rivals'?2:1});
+
+  incPlayers=()=>this.setState(s=>({playerCount:Math.min(12,s.playerCount+1)}));
+  decPlayers=()=>this.setState(s=>({playerCount:Math.max(3,s.playerCount-1)}));
+  incImp=()=>this.setState(s=>({impostorCount:Math.min(Math.max(1,Math.floor(s.playerCount/2)-1),s.impostorCount+1)}));
+  decImp=()=>this.setState(s=>({impostorCount:Math.max(1,s.impostorCount-1)}));
+  setTimer=(v)=>this.setState({timer:v,timeLeft:v});
+  setDiff=(v)=>this.setState({difficulty:v});
+  toggle=(f)=>this.setState(s=>({[f]:!s[f]}));
+
+  toLobby=()=>{
+    const players = this.state.players.length>=3 ? this.state.players : this.state.saved.slice(0,this.state.playerCount);
+    this.setState({players:[...players],route:'play',phase:'lobby'});
+  };
+  setDraft=(e)=>this.setState({nameDraft:e.target.value});
+  addDraft=()=>{
+    const n=this.state.nameDraft.trim(); if(!n) return;
+    this.setState(s=>({players:[...s.players,n],saved:s.saved.includes(n)?s.saved:[...s.saved,n],nameDraft:''}));
+  };
+  draftKey=(e)=>{ if(e.key==='Enter') this.addDraft(); };
+  addSaved=(name)=>this.setState(s=>s.players.includes(name)?{}:{players:[...s.players,name]});
+  removePlayer=(name)=>this.setState(s=>({players:s.players.filter(p=>p!==name)}));
+  reshuffle=()=>this.setState(s=>({players:[...s.players].sort(()=>Math.random()-0.5)}));
+  removeSaved=(name)=>this.setState(s=>({saved:s.saved.filter(p=>p!==name)}));
+  timerToggle=()=>{ if(this.state.timer===0) return; this.state.timerRunning?this.pauseTimer():this.startTimer(); };
+
+  startGame=()=>{
+    const names=this.state.players;
+    if(names.length<3) return;
+    const pair=this.WORDS[Math.floor(Math.random()*this.WORDS.length)];
+    const impCount=Math.min(this.state.impostorCount,names.length-1);
+    const imp=new Set();
+    while(imp.size<impCount){ imp.add(Math.floor(Math.random()*names.length)); }
+    const roles=names.map((name,i)=>{
+      const impostor=imp.has(i);
+      const word=impostor?(this.state.mode==='blank'?'':pair.i):pair.c;
+      return {name,impostor,word};
+    });
+    this.setState({roles,pair,phase:'reveal',revealIndex:0,revealShown:false,clueIndex:0,timeLeft:this.state.timer,timerRunning:false,votes:{},voteIndex:0,voterChoice:null,selectedCandidate:null,eliminated:null,guess:'',outcome:null});
+  };
+
+  holdStart=()=>{ if(this.state.holdToReveal) this.setState({revealShown:true}); };
+  holdEnd=()=>{ if(this.state.holdToReveal) this.setState({revealShown:false}); };
+  nextReveal=()=>{
+    const ni=this.state.revealIndex+1;
+    if(ni>=this.state.roles.length) this.setState({phase:'clue',clueIndex:0,revealShown:false});
+    else this.setState({revealIndex:ni,revealShown:false});
+  };
+
+  nextClue=()=>{
+    const ni=this.state.clueIndex+1;
+    if(ni>=this.state.roles.length) this.setState({phase:'discuss',timeLeft:this.state.timer,timerRunning:false});
+    else this.setState({clueIndex:ni});
+  };
+
+  startTimer=()=>this.setState({timerRunning:true});
+  pauseTimer=()=>this.setState({timerRunning:false});
+  toVote=()=>this.setState({phase:'vote',timerRunning:false,voteIndex:0,votes:{},voterChoice:null,selectedCandidate:null});
+
+  pickCandidate=(name)=>{ if(this.state.groupVote) this.setState({selectedCandidate:name}); else this.setState({voterChoice:name}); };
+  confirmVote=()=>{
+    if(this.state.groupVote){
+      if(!this.state.selectedCandidate) return;
+      this.resolve(this.state.selectedCandidate);
+      return;
+    }
+    if(!this.state.voterChoice) return;
+    const votes={...this.state.votes};
+    votes[this.state.voterChoice]=(votes[this.state.voterChoice]||0)+1;
+    const ni=this.state.voteIndex+1;
+    if(ni>=this.state.players.length){
+      let best=null,bv=-1; Object.keys(votes).forEach(k=>{if(votes[k]>bv){bv=votes[k];best=k;}});
+      this.setState({votes},()=>this.resolve(best));
+    } else {
+      this.setState({votes,voteIndex:ni,voterChoice:null});
+    }
+  };
+  resolve=(name)=>{
+    const role=this.state.roles.find(r=>r.name===name)||{};
+    if(role.impostor){
+      this.setState(s=>({eliminated:name,eliminatedImpostor:true,outcome:'civ',resultReason:'The table unmasked the impostor.',score:{civ:s.score.civ+1,imp:s.score.imp},phase:'result'}));
+    } else {
+      this.setState({eliminated:name,eliminatedImpostor:false,phase:'guess',guess:''});
+    }
+  };
+
+  setGuess=(e)=>this.setState({guess:e.target.value});
+  submitGuess=()=>{
+    const target=this.state.pair?this.state.pair.c.toLowerCase():'';
+    const correct=this.state.guess.trim().toLowerCase()===target;
+    this.setState(s=>({outcome:correct?'imp':'civ',resultReason:correct?'The impostor stole the secret word.':'The impostor guessed wrong — civilians escape.',score:correct?{civ:s.score.civ,imp:s.score.imp+1}:{civ:s.score.civ+1,imp:s.score.imp},phase:'result'}));
+  };
+
+  nextRound=()=>{ this.setState(s=>({round:s.round+1}),this.startGame); };
+  newGame=()=>this.setState({route:'create'});
+
+  renderVals(){
+    const S=this.state;
+    const chip=(active,accent='#f5402e')=> active
+      ? `padding:11px 17px;border-radius:999px;border:1px solid ${accent};background:${accent}24;color:#f4f2f7;font:600 14px 'Space Grotesk';cursor:pointer;white-space:nowrap;`
+      : `padding:11px 17px;border-radius:999px;border:1px solid #2a2935;background:transparent;color:#9a97a8;font:600 14px 'Space Grotesk';cursor:pointer;white-space:nowrap;`;
+    const track=on=>`flex:0 0 auto;width:52px;height:31px;border-radius:999px;padding:3px;display:flex;align-items:center;transition:background .2s;background:${on?'#f5402e':'#2a2935'};`;
+    const knob=on=>`width:25px;height:25px;border-radius:50%;background:#fff;transition:transform .2s;transform:translateX(${on?'21px':'0px'});box-shadow:0 2px 6px rgba(0,0,0,.4);`;
+    const togRow='display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;background:transparent;border:0;border-top:1px solid #232230;padding:16px 0;cursor:pointer;text-align:left;';
+
+    const mode=this.MODES.find(m=>m.key===S.mode)||this.MODES[0];
+    const cur=S.roles[S.revealIndex]||{};
+    const clue=S.roles[S.clueIndex]||{};
+    const voter=S.players[S.voteIndex]||'';
+    const sel=S.groupVote?S.selectedCandidate:S.voterChoice;
+
+    const candidates=S.players.filter(p=>S.groupVote?true:p!==voter).map((name,i)=>({
+      name, initial:(name[0]||'?').toUpperCase(), color:this.color(S.players.indexOf(name)),
+      selected: sel===name,
+      onClick:()=>this.pickCandidate(name),
+    }));
+
+    const navCards=[
+      {key:'people',label:'People',desc:'Saved names',icon:'👥',onClick:this.goPeople},
+      {key:'packs',label:'Packs',desc:'Word sets',icon:'📦',onClick:this.goPacks},
+      {key:'stats',label:'Stats',desc:'Your record',icon:'📊',onClick:this.goStats},
+      {key:'howto',label:'How to play',desc:'60 seconds',icon:'？',onClick:this.goHowto},
+    ];
+
+    return {
+      animAttr: S.animOn?'on':'off',
+      isHome:S.route==='home', isCreate:S.route==='create', isSettings:S.route==='settings',
+      isStats:S.route==='stats', isPacks:S.route==='packs', isPeople:S.route==='people', isHowto:S.route==='howto',
+      isLobby:S.route==='play'&&S.phase==='lobby',
+      isReveal:S.route==='play'&&S.phase==='reveal',
+      isClue:S.route==='play'&&S.phase==='clue',
+      isDiscuss:S.route==='play'&&S.phase==='discuss',
+      isVote:S.route==='play'&&S.phase==='vote',
+      isGuess:S.route==='play'&&S.phase==='guess',
+      isResult:S.route==='play'&&S.phase==='result',
+      goHome:this.goHome, goCreate:this.goCreate, goSettings:this.goSettings, goStats:this.goStats,
+      goPacks:this.goPacks, goPeople:this.goPeople, goHowto:this.goHowto,
+      socialProof:'You\u2019ve hosted 37 rounds', wordCount:248,
+      navCards: navCards.map(n=>({...n})),
+
+      // create
+      modeName:mode.name, modeDesc:mode.desc, modeInitial:mode.name[0],
+      playerCount:S.playerCount, impostorCount:S.impostorCount,
+      incPlayers:this.incPlayers, decPlayers:this.decPlayers, incImp:this.incImp, decImp:this.decImp,
+      openMode:this.openMode,
+      timerChips:[{v:45,l:'45s'},{v:90,l:'90s'},{v:180,l:'3 min'},{v:0,l:'Off'}].map(o=>({label:o.l,style:chip(S.timer===o.v),onClick:()=>this.setTimer(o.v)})),
+      diffChips:[{v:'chill',l:'Chill'},{v:'normal',l:'Normal'},{v:'ruthless',l:'Ruthless'}].map(o=>({label:o.l,style:chip(S.difficulty===o.v),onClick:()=>this.setDiff(o.v)})),
+      createToggles:[
+        {key:'familySafe',label:'Family-safe',desc:'Hide spicy words'},
+        {key:'adult',label:'18+ content',desc:'After-dark word pool'},
+        {key:'groupVote',label:'Group vote',desc:'Decide out loud, not in secret'},
+      ].map(t=>({label:t.label,desc:t.desc,track:track(S[t.key]),knob:knob(S[t.key]),row:togRow,onClick:()=>this.toggle(t.key)})),
+      toLobby:this.toLobby,
+
+      // lobby
+      lobbyStatus: S.players.length<3?`Add ${3-S.players.length} more to start`:`${S.players.length} seated \u00b7 ready when you are`,
+      seatList:S.players.map((name,i)=>({name,initial:(name[0]||'?').toUpperCase(),color:this.color(i),seat:`Seat ${i+1}`,remove:()=>this.removePlayer(name)})),
+      nameDraft:S.nameDraft, setDraft:this.setDraft, addDraft:this.addDraft, draftKey:this.draftKey,
+      suggestions:S.saved.filter(n=>!S.players.includes(n)).slice(0,6).map(name=>({name,onClick:()=>this.addSaved(name)})),
+      hasSuggestions:S.saved.filter(n=>!S.players.includes(n)).length>0,
+      reshuffle:this.reshuffle, startGame:this.startGame,
+      startDisabled:S.players.length<3,
+      startLabel:S.players.length<3?'Need 3+ players':'Start Game',
+      startBtnStyle:S.players.length<3
+        ? "flex:1;border:0;border-radius:18px;padding:20px;background:#1d1c25;color:#6b6878;font:700 18px 'Space Grotesk';cursor:not-allowed;"
+        : "flex:1;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;",
+
+      // reveal
+      revealCover: !S.revealShown,
+      revealShown: S.revealShown,
+      revealName:cur.name, revealInitial:(cur.name?cur.name[0]:'?').toUpperCase(),
+      revealColor:this.color(S.revealIndex),
+      revealCounter:`Player ${S.revealIndex+1} of ${S.roles.length}`,
+      revealHoldLabel:S.holdToReveal?'Hold to reveal':'Tap to reveal',
+      revealCivilian: S.revealShown && !cur.impostor,
+      revealImpostor: S.revealShown && !!cur.impostor,
+      revealWord:cur.word,
+      impostorLead: S.mode==='blank' ? 'You get no word.' : 'Your decoy word is',
+      impostorWordDisplay: S.mode==='blank' ? 'Improvise' : cur.word,
+      revealNextLabel: S.revealIndex+1>=S.roles.length ? 'Got it \u2014 start clues' : 'Got it \u2014 pass on',
+      nextReveal:this.nextReveal, holdStart:this.holdStart, holdEnd:this.holdEnd,
+
+      // clue
+      clueName:clue.name, clueInitial:(clue.name?clue.name[0]:'?').toUpperCase(), clueColor:this.color(S.clueIndex),
+      clueProgress:`${S.clueIndex+1} / ${S.roles.length}`,
+      clueNextLabel: S.clueIndex+1>=S.roles.length ? 'Start the discussion' : 'Next player',
+      nextClue:this.nextClue,
+      clueDots:S.roles.map((r,i)=>({style:`flex:1;height:6px;border-radius:999px;background:${i<S.clueIndex?'#e8b339':i===S.clueIndex?'#f4f2f7':'#232230'};transition:background .3s;`})),
+
+      // discuss
+      discussPrompt:'Find the liar. Defend your word. Don\u2019t overshare.',
+      ringDash:'829.38',
+      ringOffset:`${829.38*(1-(S.timer?(S.timeLeft/S.timer):1))}`,
+      ringColor:(S.timeLeft<=10 && S.timer!==0)?'#f5402e':'#46c2ff',
+      timeLabel: S.timer===0 ? '\u221e' : `${Math.floor(S.timeLeft/60)}:${String(S.timeLeft%60).padStart(2,'0')}`,
+      timeState: S.timer===0?'No timer':(S.timeLeft===0?'Time\u2019s up':S.timerRunning?'On the clock':'Paused'),
+      timerToggle:this.timerToggle, toVote:this.toVote,
+      timerBtnLabel: S.timer===0?'Talk it out':(S.timeLeft===0?'Time\u2019s up':S.timerRunning?'Pause':'Start timer'),
+      timerBtnStyle: "width:100%;border:0;border-radius:18px;padding:18px;background:#f5402e;color:#fff;font:700 17px 'Space Grotesk';cursor:pointer;box-shadow:0 12px 30px -12px #f5402ecc;",
+
+      // vote
+      voteKicker: S.groupVote?'Decide together':`Ballot ${S.voteIndex+1} of ${S.players.length}`,
+      voteHeader: S.groupVote?'Group Vote':(voter||'Vote'),
+      voteSub: S.groupVote?'One final tap. No takebacks.':'Tap who you suspect, then pass the phone on.',
+      candidates: candidates.map(c=>({
+        name:c.name, initial:c.initial, color:c.color, onClick:c.onClick,
+        style: c.selected
+          ? "position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;padding:18px 12px;border-radius:18px;border:1px solid #f5402e;background:#f5402e1f;cursor:pointer;box-shadow:0 0 32px -8px #f5402e;"
+          : "position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;padding:18px 12px;border-radius:18px;border:1px solid #232230;background:#14131a;cursor:pointer;",
+        checkStyle: c.selected
+          ? "position:absolute;top:9px;right:9px;width:22px;height:22px;border-radius:50%;background:#f5402e;display:grid;place-items:center;"
+          : "display:none;",
+      })),
+      confirmVote:this.confirmVote,
+      confirmDisabled: S.groupVote ? !S.selectedCandidate : !S.voterChoice,
+      confirmLabel: !sel ? 'Tap a player' : (S.groupVote?`Vote out ${sel}`:'Lock in vote'),
+      confirmStyle: (S.groupVote?!S.selectedCandidate:!S.voterChoice)
+        ? "width:100%;border:0;border-radius:18px;padding:20px;background:#1d1c25;color:#6b6878;font:700 18px 'Space Grotesk';cursor:not-allowed;"
+        : "width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;",
+
+      // guess
+      eliminatedName:S.eliminated, guess:S.guess, setGuess:this.setGuess, submitGuess:this.submitGuess,
+      guessDisabled: !S.guess.trim(),
+      guessBtnStyle: !S.guess.trim()
+        ? "width:100%;border:0;border-radius:18px;padding:20px;background:#1d1c25;color:#6b6878;font:700 18px 'Space Grotesk';cursor:not-allowed;"
+        : "width:100%;border:0;border-radius:18px;padding:20px;background:#f5402e;color:#fff;font:700 18px 'Space Grotesk';cursor:pointer;box-shadow:0 14px 34px -12px #f5402ecc;",
+
+      // result
+      resultHeadline: S.outcome==='civ'?'Civilians Win':'Impostor Wins',
+      resultColor: S.outcome==='civ'?'#46c2ff':'#f5402e',
+      resultBadge: S.outcome==='civ'?'Justice served':'Got away with it',
+      resultBadgeStyle: S.outcome==='civ'
+        ? "padding:7px 15px;border-radius:999px;border:1px solid #46c2ff55;background:#46c2ff1a;color:#46c2ff;font:700 11px 'Space Mono';letter-spacing:.18em;text-transform:uppercase;"
+        : "padding:7px 15px;border-radius:999px;border:1px solid #f5402e55;background:#f5402e1a;color:#f5402e;font:700 11px 'Space Mono';letter-spacing:.18em;text-transform:uppercase;",
+      resultReason:S.resultReason,
+      impostorReveal:S.roles.filter(r=>r.impostor).map(r=>r.name).join(' & ')||'\u2014',
+      secretWordReveal:S.pair?S.pair.c:'\u2014',
+      votedOut:S.eliminated||'\u2014',
+      scoreLabel:`${S.score.civ} / ${S.score.imp}`,
+      nextRound:this.nextRound, newGame:this.newGame,
+
+      // settings
+      settingsToggles:[
+        {key:'soundOn',label:'Sound',desc:'Cues, stings and the timer beep'},
+        {key:'animOn',label:'Animations',desc:'Motion and screen transitions'},
+        {key:'hapticsOn',label:'Haptics',desc:'A buzz on the big moments'},
+        {key:'holdToReveal',label:'Hold to reveal',desc:'Press and hold to expose your role'},
+      ].map(t=>({label:t.label,desc:t.desc,track:track(S[t.key]),knob:knob(S[t.key]),row:togRow,onClick:()=>this.toggle(t.key)})),
+
+      // stats
+      outcomeBars:[
+        {label:'Civilians caught the impostor',value:'21',pct:57,c:'#46c2ff'},
+        {label:'Impostor survived the vote',value:'10',pct:27,c:'#e8b339'},
+        {label:'Impostor stole the word',value:'6',pct:16,c:'#f5402e'},
+      ].map(b=>({label:b.label,value:b.value,fill:`height:100%;width:${b.pct}%;border-radius:999px;background:${b.c};`})),
+
+      // packs
+      packs:[
+        {name:'Core Mix',desc:'The everyday party deck \u00b7 248 word pairs',emoji:'\uD83C\uDFB2',status:'Active',state:'active'},
+        {name:'Movies & TV',desc:'Blockbusters, binges and cult classics',emoji:'\uD83C\uDFAC',status:'Soon',state:'soon'},
+        {name:'After Dark',desc:'Spicier prompts for grown-up tables \u00b7 18+',emoji:'\uD83C\uDF19',status:'Soon',state:'soon'},
+        {name:'Frostbite',desc:'Limited seasonal winter drop',emoji:'\u2744\uFE0F',status:'Seasonal',state:'seasonal'},
+        {name:'Word Forge',desc:'AI-generated packs on any theme you name',emoji:'\u2728',status:'Beta',state:'ai'},
+      ].map(p=>{
+        const badgeC={active:'#36c98a',soon:'#8b8898',seasonal:'#46c2ff',ai:'#b083ff'}[p.state];
+        return {name:p.name,desc:p.desc,emoji:p.emoji,status:p.status,
+          card:p.state==='active'
+            ? "display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;border:1px solid #36c98a44;background:linear-gradient(135deg,#102018,#12131a);"
+            : "display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;border:1px dashed #2f2d3a;background:#100f15;opacity:.85;",
+          tint:p.state==='active'?'#36c98a1a':'#1d1c25',
+          border:p.state==='active'?'#36c98a44':'#2a2935',
+          badge:`flex:0 0 auto;padding:6px 12px;border-radius:999px;font:700 10px 'Space Mono';letter-spacing:.1em;text-transform:uppercase;color:${badgeC};border:1px solid ${badgeC}55;background:${badgeC}1a;`,
+        };
+      }),
+
+      // people
+      peopleStatus:`${S.saved.length} saved`,
+      peopleEmpty:S.saved.length===0, peopleHas:S.saved.length>0,
+      peopleList:S.saved.map((name,i)=>({name,initial:(name[0]||'?').toUpperCase(),color:this.color(i),remove:()=>this.removeSaved(name)})),
+
+      // how to play
+      howSteps:[
+        {n:'1',title:'Everyone gets a word',body:'All but one player share a secret word. The impostor gets a believable decoy \u2014 or nothing at all.',color:'#46c2ff'},
+        {n:'2',title:'Drop a one-word clue',body:'Go around the table. Prove you know the word without ever saying it.',color:'#e8b339'},
+        {n:'3',title:'Discuss & accuse',body:'Debate who\u2019s faking it. Beware clues that play it too safe.',color:'#f5402e'},
+        {n:'4',title:'Vote someone out',body:'In secret or as a group. Guess wrong and the impostor only gets bolder.',color:'#b083ff'},
+        {n:'5',title:'The last chance',body:'If the impostor survives the vote, they can still steal the win by naming the word.',color:'#36c98a'},
+      ],
+
+      // mode sheet
+      modeSheet:S.modeSheet, closeMode:this.closeMode,
+      modeOptions:this.MODES.map(m=>({name:m.name,desc:m.desc,initial:m.name[0],onClick:()=>this.pickMode(m.key),
+        style:m.key===S.mode
+          ? "display:flex;align-items:center;gap:13px;padding:14px;border-radius:16px;border:1px solid #f5402e;background:#f5402e14;cursor:pointer;width:100%;"
+          : "display:flex;align-items:center;gap:13px;padding:14px;border-radius:16px;border:1px solid #232230;background:#100f15;cursor:pointer;width:100%;",
+        check:m.key===S.mode
+          ? "flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#f5402e;display:grid;place-items:center;"
+          : "display:none;",
+      })),
+    };
+  }
+}
+</script>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "Undercover";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Project support.js may predate runtime default-seeding; push via bridge.
+  if (isDc && window.__dcSetProps && window.__dcRootName) {
+    try {
+      const dpEl = document.querySelector('script[data-dc-script]');
+      const meta = JSON.parse((dpEl && dpEl.getAttribute('data-props')) || '{}');
+      const bag = {};
+      for (const k in meta)
+        if (k[0] !== '$' && meta[k] && meta[k].default !== undefined)
+          bag[k] = meta[k].default;
+      if (Object.keys(bag).length) {
+        window.__dcSetProps(window.__dcRootName(), bag);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } catch (e) {}
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Size the PDF page to the rendered design unless the file opted into
+  // standard paper via @page{size:letter|A4|…}. Decks own their own @page.
+  // Wrappers (body, …) lose padding+margin so the frame sits at (0,0); the
+  // frame itself loses only margin — its padding is INSIDE the measured
+  // rect and must stay, or content shifts and leaves a gap at bottom/right.
+  var __m = null;
+  try { __m = (() => {
+  var docEl = document.documentElement;
+  var doc = { width: docEl.scrollWidth, height: docEl.scrollHeight };
+
+  var ds = document.querySelector('deck-stage');
+  if (ds) {
+    var dw = Number(ds.getAttribute('width')) || 1920;
+    var dh = Number(ds.getAttribute('height')) || 1080;
+    var n = typeof ds.length === 'number' ? ds.length : ds.children.length;
+    var idx = typeof ds.index === 'number' ? ds.index : 0;
+    var frames = [];
+    for (var i = 0; i < n; i++) frames.push({ left: 0, top: 0, width: dw, height: dh });
+    return { kind: 'deck', doc: doc, frames: frames,
+      authored: frames.map(function(){return{width:true,height:true}}),
+      deck: { width: dw, height: dh, slideCount: n, index: idx },
+      signals: { paperPage: false, pxPage: false } };
+  }
+
+  var paperPage = false, pxPage = false;
+  var eachRule = function (fn) {
+    for (var s = 0; s < document.styleSheets.length; s++) {
+      var rs; try { rs = document.styleSheets[s].cssRules; } catch (e) { continue; }
+      for (var r = 0; r < rs.length; r++) {
+        fn(rs[r]);
+        if (rs[r].cssRules) for (var n = 0; n < rs[r].cssRules.length; n++) fn(rs[r].cssRules[n]);
+      }
+    }
+  };
+  eachRule(function (r) {
+    if (r.type !== 6) return;
+    var m = /\bsize\s*:\s*([^;}]+)/i.exec(r.cssText || '');
+    if (!m) return;
+    if (/\b(letter|a[3-5]|legal|ledger)\b/i.test(m[1])) paperPage = true;
+    if (/\d+(?:\.\d+)?px\b/i.test(m[1])) pxPage = true;
+  });
+  var signals = { paperPage: paperPage, pxPage: pxPage };
+
+  var pxVal = function (v) {
+    var m = /^(\d+(?:\.\d+)?)px$/.exec(v || ''); return m ? +m[1] : 0;
+  };
+  var authoredPx = function (el, prop) {
+    if (pxVal(el.style[prop])) return true;
+    var attr = el.getAttribute(prop);
+    if (attr && /^\d+$/.test(attr)) return true;
+    var hit = false;
+    eachRule(function (r) {
+      if (hit || r.type !== 1 || !r.style) return;
+      try { if (el.matches(r.selectorText) && pxVal(r.style[prop])) hit = true; } catch (e) {}
+    });
+    return hit;
+  };
+
+  var el = document.body, rootPxW = false;
+  for (;;) {
+    var kids = [];
+    for (var c = 0; c < el.children.length; c++) {
+      var t = el.children[c].tagName;
+      if (t !== 'SCRIPT' && t !== 'STYLE' && t !== 'TEMPLATE') kids.push(el.children[c]);
+    }
+    if (kids.length !== 1 || !(kids[0] instanceof HTMLElement)) break;
+    el.setAttribute('data-om-frame-wrap', '');
+    el = kids[0];
+    rootPxW = authoredPx(el, 'width');
+    if (rootPxW) break;
+  }
+  if (!rootPxW) rootPxW = authoredPx(el, 'width');
+
+  // @page{size:letter} alone is a flowing doc; with a px-width root it's a
+  // fixed sheet pretending to be paper — fall through and size to render.
+  if (paperPage && !rootPxW) {
+    return { kind: 'paper-doc', doc: doc, signals: signals,
+      frames: [{ left: 0, top: 0, width: doc.width, height: doc.height }],
+      authored: [{ width: false, height: false }] };
+  }
+
+  var sx = window.scrollX || 0, sy = window.scrollY || 0;
+  var rectOf = function (e) {
+    var r = e.getBoundingClientRect();
+    var oy; try { oy = getComputedStyle(e).overflowY; } catch (err) {}
+    var h = oy === 'visible' ? Math.max(r.height, e.scrollHeight || 0) : r.height;
+    return { left: r.left + sx, top: r.top + sy, width: r.width, height: h };
+  };
+
+  // Multi-frame: ≥2 visible non-fixed children, each with authored px width
+  // AND height, all within ±2px of each other. Off unless the page opts in
+  // via data-om-multi-frame on the stop element — guards against card grids
+  // and pricing tables that match the geometry but aren't separate canvases.
+  if (el.hasAttribute('data-om-multi-frame')) {
+    var cands = [];
+    for (var k = 0; k < el.children.length; k++) {
+      var ch = el.children[k];
+      var cs; try { cs = getComputedStyle(ch); } catch (e) { continue; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') continue;
+      var rc = rectOf(ch);
+      if (rc.width < 2 || rc.height < 2) continue;
+      if (!authoredPx(ch, 'width') || !authoredPx(ch, 'height')) continue;
+      cands.push(rc);
+    }
+    if (cands.length >= 2) {
+      var w0 = cands[0].width, h0 = cands[0].height, ok = true;
+      for (var q = 1; q < cands.length; q++)
+        if (Math.abs(cands[q].width - w0) > 2 || Math.abs(cands[q].height - h0) > 2) ok = false;
+      if (ok) return { kind: 'multi-frame', doc: doc, signals: signals,
+        frames: cands, authored: cands.map(function(){return{width:true,height:true}}) };
+    }
+  }
+
+  el.setAttribute('data-om-frame', '');
+  return { kind: 'single-canvas', doc: doc, signals: signals,
+    frames: [rectOf(el)],
+    authored: [{ width: rootPxW, height: authoredPx(el, 'height') }] };
+})(); } catch (e) {}
+  var frame = null;
+  if (__m && __m.kind === 'single-canvas') {
+    var f = __m.frames && __m.frames[0];
+    if (f && f.width >= 200 && f.height >= 200) {
+      frame = f;
+      var fst = document.createElement('style');
+      fst.textContent = '@media print{@page{size:' + Math.ceil(f.width) + 'px ' +
+        Math.ceil(f.height) + 'px;margin:0}' +
+        'html,body,[data-om-frame-wrap]{padding:0!important;margin:0!important;background:none!important}' +
+        '[data-om-frame]{margin:0!important}}';
+      document.body.appendChild(fst);
+    }
+  }
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks (slides
+  // are sized to the page) and for fixed-size canvases (frame set, or an author
+  // px-based @page) — runs as before for flowing docs on letter/A4.
+  try {
+    if (!ds && !frame && !(__m && __m.signals && __m.signals.pxPage)) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a real @page margin only when the source has
+      // no @page of its own; computed style can't tell us (it reports screen
+      // media), so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /@page\s*\{[^}]*margin/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>

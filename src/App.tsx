@@ -5,8 +5,10 @@ import { page } from '@/lib/analytics';
 import { useGame, type Route } from '@/store/gameStore';
 import {
   CreateRoomScreen,
+  GlyphScreen,
   HomeScreen,
   HowToScreen,
+  LibraryScreen,
   PacksScreen,
   PeopleScreen,
   PlayScreen,
@@ -27,8 +29,12 @@ export default function App() {
     page(route);
   }, [route]);
 
+  // The library is a full-width landing that uses the whole screen on desktop;
+  // every game runs inside the centered phone canvas.
+  const fullBleed = route === 'library';
+
   return (
-    <div className="app-frame">
+    <div className={fullBleed ? 'landing-shell' : 'app-frame'}>
       <AnimatePresence mode="wait" initial={false}>
         <RouteView key={route} route={route} />
       </AnimatePresence>
@@ -38,6 +44,10 @@ export default function App() {
 
 function RouteView({ route }: { route: Route }) {
   switch (route) {
+    case 'library':
+      return <LibraryScreen />;
+    case 'glyph':
+      return <GlyphScreen />;
     case 'home':
       return <HomeScreen />;
     case 'create':
@@ -55,6 +65,6 @@ function RouteView({ route }: { route: Route }) {
     case 'how-to':
       return <HowToScreen />;
     default:
-      return <HomeScreen />;
+      return <LibraryScreen />;
   }
 }

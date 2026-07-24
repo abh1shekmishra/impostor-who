@@ -276,6 +276,27 @@ export const indianFood = buildWords(
       clusters: ['dessert', 'beverage'],
       difficulty: 'medium', popularity: 78, discussion: 76, chaos: 48, guess: 54,
     },
+    {
+      text: 'Tiffin',
+      tags: ['dabba', 'lunch break', 'steel box', 'home food', 'shared bite', 'office desk', 'school bell', 'chapati roll', 'snack swap', 'morning pack'],
+      related: ['Lunch Box', 'Meal Prep', 'Canteen'],
+      clusters: ['meal', 'daily-food'],
+      difficulty: 'easy', popularity: 86, discussion: 80, chaos: 40, guess: 44,
+    },
+    {
+      text: 'Coffee',
+      tags: ['morning', 'mug', 'caffeine', 'kickstart', 'work break', 'black', 'latte', 'aroma', 'late night', 'cafe'],
+      related: ['Chai', 'Espresso', 'Filter Coffee'],
+      clusters: ['beverage', 'daily-food'],
+      difficulty: 'easy', popularity: 90, discussion: 78, chaos: 42, guess: 42,
+    },
+    {
+      text: 'Brownie',
+      tags: ['craving', 'chocolate', 'fudge', 'warm plate', 'dessert', 'ice cream combo', 'gooey center', 'bakery', 'sweet tooth', 'midnight'],
+      related: ['Cake', 'Cookie', 'Muffin'],
+      clusters: ['dessert', 'baked'],
+      difficulty: 'easy', popularity: 84, discussion: 78, chaos: 42, guess: 46,
+    },
     // ── Expansion batch 2 ──
     {
       text: 'Papdi Chaat',

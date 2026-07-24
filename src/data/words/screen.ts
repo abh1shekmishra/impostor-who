@@ -119,4 +119,88 @@ export const cartoons = buildWords(
   ]
 );
 
-export const screenWords = [...hollywood, ...anime, ...cartoons];
+export const entertainment = buildWords(
+  'entertainment',
+  { culture: 'internet', year: 'modern' },
+  [
+    {
+      text: 'Playlist',
+      tags: ['mood', 'shuffle', 'commute', 'repeat', 'vibe', 'queue', 'favorite', 'late night', 'skip', 'headphones'],
+      related: ['Song', 'Album', 'DJ'],
+      clusters: ['music', 'daily-media'],
+      difficulty: 'easy',
+      popularity: 88,
+      discussion: 80,
+      chaos: 44,
+      guess: 46,
+    },
+    {
+      text: 'Instagram',
+      tags: ['mark', 'stories', 'reel', 'dm', 'follow', 'streak', 'profile', 'highlight', 'explore', 'aesthetic'],
+      related: ['Social Media', 'Reels', 'Stories'],
+      clusters: ['social', 'app'],
+      difficulty: 'easy',
+      popularity: 94,
+      discussion: 80,
+      chaos: 46,
+      guess: 42,
+    },
+    {
+      text: 'Netflix',
+      tags: ['binge', 'subscription', 'series night', 'account share', 'skip intro', 'watchlist', 'streaming', 'episode', 'couch', 'weekend'],
+      related: ['Prime Video', 'Hotstar', 'Series'],
+      clusters: ['streaming', 'shows'],
+      difficulty: 'easy',
+      popularity: 92,
+      discussion: 82,
+      chaos: 44,
+      guess: 44,
+    },
+    {
+      text: 'Series',
+      tags: ['episode', 'season finale', 'spoiler', 'cliffhanger', 'watch together', 'theory', 'fanbase', 'slow burn', 'next episode', 'fandom'],
+      related: ['Netflix', 'Web Show', 'Binge'],
+      clusters: ['streaming', 'shows'],
+      difficulty: 'easy',
+      popularity: 86,
+      discussion: 84,
+      chaos: 42,
+      guess: 48,
+    },
+    {
+      text: 'Karaoke',
+      tags: ['tunes', 'mic', 'off key', 'lyrics', 'friends night', 'stage', 'duet', 'cheering', 'spotlight', 'embarrassing'],
+      related: ['Singing', 'Playlist', 'Party'],
+      clusters: ['music', 'social'],
+      difficulty: 'medium',
+      popularity: 74,
+      discussion: 82,
+      chaos: 56,
+      guess: 58,
+    },
+    {
+      text: 'Meme',
+      tags: ['caption', 'template', 'relatable', 'viral', 'inside joke', 'comment section', 'share', 'reaction', 'trend', 'humor'],
+      related: ['Meme Page', 'Template', 'Reel'],
+      clusters: ['internet', 'humour'],
+      difficulty: 'easy',
+      popularity: 90,
+      discussion: 86,
+      chaos: 56,
+      guess: 44,
+    },
+    {
+      text: 'Domino',
+      tags: ['dots', 'half', 'tiles', 'chain', 'table game', 'falling pattern', 'counting', 'strategy', 'turns', 'match ends'],
+      related: ['Board Game', 'Ludo', 'Cards'],
+      clusters: ['game-night', 'social'],
+      difficulty: 'medium',
+      popularity: 64,
+      discussion: 74,
+      chaos: 50,
+      guess: 58,
+    },
+  ]
+);
+
+export const screenWords = [...entertainment, ...hollywood, ...anime, ...cartoons];

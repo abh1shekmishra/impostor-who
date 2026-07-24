@@ -33,6 +33,7 @@ export type CategoryId =
   | 'global-food'
   | 'festivals'
   | 'bollywood'
+  | 'entertainment'
   | 'hollywood'
   | 'anime'
   | 'games'

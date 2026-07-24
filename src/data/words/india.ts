@@ -334,6 +334,17 @@ export const cricket = buildWords(
       difficulty: 'hard',
       popularity: 50,
     },
+    {
+      text: 'Cricket',
+      tags: ['eleven', 'bat', 'wicket', 'over', 'appeal', 'sixer', 'boundary rope', 'stadium roar', 'jersey', 'coin toss'],
+      related: ['Match', 'Gully Cricket', 'IPL'],
+      clusters: ['cricket-life', 'sport'],
+      difficulty: 'easy',
+      popularity: 94,
+      discussion: 84,
+      chaos: 46,
+      guess: 44,
+    },
   ]
 );
 

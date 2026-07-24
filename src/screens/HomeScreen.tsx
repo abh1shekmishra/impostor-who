@@ -1,5 +1,5 @@
 import { Screen } from '@/components/Screen';
-import { UC, ArrowRight } from '@/components/uc';
+import { UC, ArrowRight, BackButton } from '@/components/uc';
 import { useGame } from '@/store/gameStore';
 import { useStats } from '@/store/statsStore';
 import { feedback } from '@/lib/feedback';
@@ -32,17 +32,8 @@ export function HomeScreen() {
       >
         {/* Top row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-            <span
-              style={{
-                width: 13,
-                height: 13,
-                borderRadius: '50%',
-                background: UC.brand,
-                boxShadow: `0 0 16px ${UC.brand}`,
-                display: 'inline-block',
-              }}
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <BackButton onClick={() => navigate('library')} />
             <span
               style={{
                 font: "700 12px 'Space Mono'",
@@ -51,7 +42,7 @@ export function HomeScreen() {
                 textTransform: 'uppercase',
               }}
             >
-              No wifi needed
+              Library
             </span>
           </div>
           <button
@@ -108,7 +99,7 @@ export function HomeScreen() {
             style={{
               margin: 0,
               fontFamily: "'Anton'",
-              fontSize: 84,
+              fontSize: 'clamp(3.4rem, 21vw, 5.25rem)',
               lineHeight: 0.86,
               letterSpacing: '.01em',
               color: UC.ink,

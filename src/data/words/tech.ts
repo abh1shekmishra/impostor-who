@@ -151,6 +151,28 @@ export const office = buildWords(
       clusters: ['office-life', 'remote'],
       difficulty: 'easy',
     },
+    {
+      text: 'Deadline',
+      tags: ['clock', 'urgent', 'last minute', 'follow up', 'deliverable', 'late evening', 'tracker', 'red flag', 'submission', 'stress'],
+      related: ['Due Date', 'Task', 'Escalation'],
+      clusters: ['office-life', 'delivery'],
+      difficulty: 'easy',
+      popularity: 88,
+      discussion: 82,
+      chaos: 48,
+      guess: 48,
+    },
+    {
+      text: 'Promotion',
+      tags: ['boss', 'new title', 'salary band', 'manager call', 'celebration', 'team lead', 'career ladder', 'performance cycle', 'expectation', 'announcement'],
+      related: ['Appraisal', 'Hike', 'Role Change'],
+      clusters: ['office-life', 'career'],
+      difficulty: 'easy',
+      popularity: 84,
+      discussion: 80,
+      chaos: 42,
+      guess: 46,
+    },
   ]
 );
 

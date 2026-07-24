@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>GLYPH</title>
+</head>
+<body>
+<style>
+  :root {
+    --ground: #f4f1fb;
+    --surface: #ffffff;
+    --elevated: #ffffff;
+    --line: #e6e0f2;
+    --ink: #1c1530;
+    --muted: #6d6188;
+    --faint: #9a8fb5;
+    --gold: #f0a500;
+    --gold-ink: #7a5400;
+    --magenta: #e0338a;
+    --good: #12a150;
+    --bad: #e5484d;
+    --shadow: 0 8px 30px -12px rgba(40, 20, 70, .28);
+    --shadow-sm: 0 2px 10px -4px rgba(40, 20, 70, .22);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #120e1d;
+      --surface: #1b1630;
+      --elevated: #241d3c;
+      --line: #322a4d;
+      --ink: #f4eefe;
+      --muted: #a89cc4;
+      --faint: #776e94;
+      --gold: #ffc24b;
+      --gold-ink: #ffc24b;
+      --magenta: #ff5c9d;
+      --good: #4ade80;
+      --bad: #fb6f6f;
+      --shadow: 0 20px 50px -20px rgba(0, 0, 0, .7);
+      --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, .6);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #f4f1fb; --surface: #ffffff; --elevated: #ffffff; --line: #e6e0f2;
+    --ink: #1c1530; --muted: #6d6188; --faint: #9a8fb5;
+    --gold: #f0a500; --gold-ink: #7a5400; --magenta: #e0338a; --good: #12a150; --bad: #e5484d;
+    --shadow: 0 8px 30px -12px rgba(40,20,70,.28); --shadow-sm: 0 2px 10px -4px rgba(40,20,70,.22);
+  }
+  :root[data-theme="dark"] {
+    --ground: #120e1d; --surface: #1b1630; --elevated: #241d3c; --line: #322a4d;
+    --ink: #f4eefe; --muted: #a89cc4; --faint: #776e94;
+    --gold: #ffc24b; --gold-ink: #ffc24b; --magenta: #ff5c9d; --good: #4ade80; --bad: #fb6f6f;
+    --shadow: 0 20px 50px -20px rgba(0,0,0,.7); --shadow-sm: 0 6px 18px -10px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex; justify-content: center;
+    overflow-x: hidden;
+  }
+  #app {
+    width: 100%; max-width: 460px; min-height: 100dvh;
+    background: var(--ground);
+    display: flex; flex-direction: column;
+    position: relative;
+    border-left: 1px solid var(--line); border-right: 1px solid var(--line);
+  }
+  @media (max-width: 461px) { #app { border: none; } }
+
+  /* ---------- top bar ---------- */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px 12px;
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--ground) 86%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .brand { display: flex; align-items: baseline; gap: 2px; }
+  .brand b {
+    font-size: 22px; font-weight: 900; letter-spacing: -.06em;
+    color: var(--ink);
+  }
+  .brand b i { color: var(--gold-ink); font-style: normal; }
+  .brand small {
+    font-size: 9px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--faint); margin-left: 6px; align-self: center;
+  }
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .streak {
+    display: flex; align-items: center; gap: 4px;
+    font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums;
+    padding: 5px 10px; border-radius: 999px;
+    background: var(--surface); box-shadow: var(--shadow-sm);
+  }
+  .streak span { font-size: 15px; }
+  .iconbtn {
+    width: 34px; height: 34px; border-radius: 999px; border: none;
+    background: var(--surface); box-shadow: var(--shadow-sm);
+    color: var(--ink); font-size: 15px; cursor: pointer;
+    display: grid; place-items: center;
+  }
+
+  main { flex: 1; padding: 4px 18px 108px; }
+
+  /* ---------- segmented ---------- */
+  .seg {
+    display: flex; gap: 4px; padding: 4px; border-radius: 14px;
+    background: var(--surface); box-shadow: inset 0 0 0 1px var(--line);
+    margin: 8px 0 18px;
+  }
+  .seg button {
+    flex: 1; border: none; background: transparent; cursor: pointer;
+    padding: 9px 0; border-radius: 10px; font-weight: 700; font-size: 13px;
+    color: var(--muted); transition: .18s;
+  }
+  .seg button.on { background: var(--elevated); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+  .filters { display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 8px; margin: -6px 0 12px; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters button {
+    border: 1.5px solid var(--line); background: var(--surface); color: var(--muted);
+    padding: 7px 13px; border-radius: 999px; font-weight: 700; font-size: 12.5px;
+    cursor: pointer; white-space: nowrap; flex: 0 0 auto;
+  }
+  .filters button.on { background: var(--gold); border-color: var(--gold); color: #2a1c00; }
+
+  /* ---------- puzzle card ---------- */
+  .card {
+    background: var(--surface); border-radius: 24px; box-shadow: var(--shadow);
+    padding: 22px; text-align: center; position: relative; overflow: hidden;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+    padding: 6px 12px; border-radius: 999px;
+    background: color-mix(in srgb, var(--gold) 16%, transparent);
+    color: var(--gold-ink);
+  }
+  .counter { position: absolute; top: 20px; right: 20px; font-size: 12px; font-weight: 800; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .emojis {
+    font-size: clamp(46px, 15vw, 66px); line-height: 1.1;
+    margin: 22px 0 6px; letter-spacing: 6px;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    min-height: 74px;
+  }
+  .hint {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 18px; font-weight: 700; letter-spacing: 3px; color: var(--muted);
+    min-height: 26px; margin: 6px 0 4px;
+  }
+  .hint b { color: var(--gold-ink); }
+  .dots { display: flex; gap: 7px; justify-content: center; margin: 14px 0 4px; }
+  .dot { width: 9px; height: 9px; border-radius: 999px; background: var(--line); transition: .2s; }
+  .dot.used { background: var(--bad); }
+  .dot.good { background: var(--good); }
+
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+  .choices button {
+    padding: 15px 10px; border-radius: 14px; border: 1.5px solid var(--line);
+    background: var(--ground); color: var(--ink); font-weight: 700; font-size: 13px;
+    cursor: pointer; line-height: 1.3; transition: transform .1s, border-color .15s, background .15s;
+    min-height: 62px;
+  }
+  .choices button:active { transform: scale(.96); }
+  .choices button.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); color: var(--bad); opacity: .6; }
+  .choices button.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+  .choices button:disabled { cursor: default; }
+
+  .guessrow { display: flex; gap: 8px; margin-top: 18px; }
+  .guessrow input {
+    flex: 1 1 auto; min-width: 0; border: 1.5px solid var(--line); background: var(--ground);
+    border-radius: 14px; padding: 14px 16px; font-size: 16px; color: var(--ink);
+    outline: none; transition: border-color .15s; font-weight: 600;
+  }
+  .guessrow .btn { flex: 0 0 auto; white-space: nowrap; }
+  .guessrow input:focus { border-color: var(--gold); }
+  .guessrow input.shake { animation: shake .35s; border-color: var(--bad); }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(4px)} }
+  .btn {
+    border: none; cursor: pointer; font-weight: 800; font-size: 15px;
+    border-radius: 14px; padding: 14px 20px; transition: transform .1s, filter .15s;
+    background: var(--gold); color: #2a1c00;
+  }
+  .btn:active { transform: scale(.96); }
+  .btn.wide { width: 100%; margin-top: 14px; }
+  .btn.ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+  .btn.pink { background: var(--magenta); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  /* ---------- result ---------- */
+  .result { text-align: center; padding: 8px 0 0; animation: pop .4s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes pop { from { opacity:0; transform: scale(.8) } to { opacity:1; transform: scale(1) } }
+  .result .verdict { font-size: 26px; font-weight: 900; letter-spacing: -.03em; }
+  .result .verdict.win { color: var(--good); }
+  .result .verdict.lose { color: var(--bad); }
+  .result .answer { font-size: 20px; font-weight: 800; margin: 8px 0 2px; }
+  .result .pct {
+    display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700;
+    color: var(--muted); background: var(--ground); padding: 8px 14px; border-radius: 999px;
+  }
+  .result .pct b { color: var(--gold-ink); }
+
+  /* daily summary */
+  .summary { text-align: center; }
+  .grid5 { display: flex; gap: 8px; justify-content: center; margin: 20px 0; font-size: 30px; }
+  .summary h2 { font-size: 24px; font-weight: 900; letter-spacing: -.03em; margin-bottom: 4px; }
+  .summary p { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+  /* ---------- create ---------- */
+  .label { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); margin: 20px 0 8px; display:block; }
+  .preview {
+    background: var(--surface); border-radius: 20px; box-shadow: var(--shadow-sm);
+    min-height: 92px; display: grid; place-items: center;
+    font-size: 46px; letter-spacing: 6px; padding: 14px;
+    font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", sans-serif;
+    position: relative;
+  }
+  .preview .ph { font-size: 14px; color: var(--faint); font-family: system-ui, sans-serif; letter-spacing: 0; font-weight: 600; }
+  .preview .clr { position: absolute; top: 8px; right: 10px; font-size: 12px; color: var(--faint); cursor: pointer; background: none; border: none; font-weight: 700; }
+  .emojigrid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-top: 10px; }
+  .emojigrid button {
+    aspect-ratio: 1; border: none; background: var(--surface); border-radius: 10px;
+    font-size: 21px; cursor: pointer; transition: transform .08s;
+    font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", sans-serif;
+  }
+  .emojigrid button:active { transform: scale(.85); }
+  .field {
+    width: 100%; border: 1.5px solid var(--line); background: var(--surface);
+    border-radius: 14px; padding: 14px 16px; font-size: 16px; color: var(--ink);
+    outline: none; font-weight: 600;
+  }
+  .field:focus { border-color: var(--magenta); }
+  .cats { display: flex; flex-wrap: wrap; gap: 7px; }
+  .cats button {
+    border: 1.5px solid var(--line); background: var(--surface); color: var(--muted);
+    padding: 8px 14px; border-radius: 999px; font-weight: 700; font-size: 13px; cursor: pointer;
+  }
+  .cats button.on { background: var(--magenta); border-color: var(--magenta); color: #fff; }
+  .read { font-size: 13px; font-weight: 700; margin-top: 12px; min-height: 18px; color: var(--muted); }
+
+  /* ---------- profile ---------- */
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .stat { background: var(--surface); border-radius: 18px; padding: 16px 10px; text-align: center; box-shadow: var(--shadow-sm); }
+  .stat b { display: block; font-size: 26px; font-weight: 900; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .stat.gold b { color: var(--gold-ink); }
+  .stat.pink b { color: var(--magenta); }
+  .stat small { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+  .myp { background: var(--surface); border-radius: 16px; padding: 14px 16px; margin-top: 10px; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 14px; }
+  .myp .e { font-size: 26px; font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", sans-serif; }
+  .myp .meta { flex: 1; min-width: 0; }
+  .myp .meta b { font-size: 15px; }
+  .myp .meta span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .myp .rate { text-align: right; font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .myp .rate small { display: block; font-size: 10px; color: var(--faint); font-weight: 700; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 14px; line-height: 1.6; }
+
+  .sectiontitle { font-size: 18px; font-weight: 900; letter-spacing: -.02em; margin: 24px 0 6px; }
+
+  /* ---------- bottom nav ---------- */
+  nav {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 460px; z-index: 6;
+    display: flex; padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: blur(14px); border-top: 1px solid var(--line);
+  }
+  nav button {
+    flex: 1; border: none; background: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 6px 0; color: var(--faint); font-weight: 700; font-size: 10.5px;
+    letter-spacing: .03em;
+  }
+  nav button .ic { font-size: 21px; line-height: 1; filter: grayscale(1) opacity(.55); transition: .15s; }
+  nav button.on { color: var(--ink); }
+  nav button.on .ic { filter: none; transform: translateY(-1px); }
+
+  /* confetti */
+  .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; overflow: hidden; }
+  .confetti span { position: absolute; font-size: 26px; will-change: transform, opacity; animation: rise 1.5s ease-out forwards; }
+  @keyframes rise { 0% { opacity: 0; transform: translateY(0) scale(.4) rotate(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-70vh) scale(1.2) rotate(var(--r)); } }
+
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; } }
+  .toast {
+    position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--ground); padding: 11px 18px; border-radius: 999px;
+    font-weight: 700; font-size: 13px; z-index: 30; opacity: 0; transition: .25s; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+
+<div id="app">
+  <header>
+    <div class="brand"><b>GL<i>Y</i>PH</b><small>decode it</small></div>
+    <div class="top-right">
+      <div class="streak" title="Daily streak">🔥 <span id="streakN">0</span></div>
+      <button class="iconbtn" id="themeBtn" aria-label="Toggle theme">◑</button>
+    </div>
+  </header>
+  <main id="view"></main>
+  <nav id="nav">
+    <button data-tab="play" class="on"><span class="ic">🎯</span>Play</button>
+    <button data-tab="create"><span class="ic">✏️</span>Create</button>
+    <button data-tab="you"><span class="ic">🏆</span>You</button>
+  </nav>
+</div>
+<div class="confetti" id="confetti"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ---------------- puzzle bank ---------------- */
+const BANK = [
+  // ---- Bollywood ----
+  { e:"3️⃣🤡", c:"Movie", a:"3 Idiots", ok:["3 idiots","three idiots","3idiots"] },
+  { e:"🏏💰", c:"Movie", a:"Lagaan", ok:["lagaan"] },
+  { e:"👽📻", c:"Movie", a:"PK", ok:["pk","peekay"] },
+  { e:"🎤👦", c:"Movie", a:"Gully Boy", ok:["gully boy","gullyboy"] },
+  { e:"🕶️🎹", c:"Movie", a:"Andhadhun", ok:["andhadhun","andhadhoon"] },
+  { e:"🤼‍♀️👧", c:"Movie", a:"Dangal", ok:["dangal"] },
+  { e:"🚂❤️", c:"Movie", a:"DDLJ", ok:["ddlj","dilwale dulhania le jayenge","dilwale"] },
+  { e:"🔥🔫", c:"Movie", a:"Sholay", ok:["sholay"] },
+  // ---- Songs ----
+  { e:"🙏✨", c:"Song", a:"Jai Ho", ok:["jai ho","jaiho"] },
+  { e:"🚂💃", c:"Song", a:"Chaiyya Chaiyya", ok:["chaiyya chaiyya","chaiya chaiya"] },
+  { e:"🫵❤️", c:"Song", a:"Tum Hi Ho", ok:["tum hi ho","tumhiho"] },
+  // ---- Cricket ----
+  { e:"🏏👑", c:"Cricket", a:"Virat Kohli", ok:["virat kohli","kohli","virat"] },
+  { e:"🧊👨‍✈️", c:"Cricket", a:"Dhoni", ok:["dhoni","ms dhoni","captain cool","mahi"] },
+  { e:"🏏🐐", c:"Cricket", a:"Sachin Tendulkar", ok:["sachin tendulkar","sachin","tendulkar"] },
+  { e:"🏏🏆", c:"Cricket", a:"World Cup", ok:["world cup","worldcup"] },
+  { e:"🔵🇮🇳", c:"Cricket", a:"Team India", ok:["team india","india","men in blue"] },
+  // ---- Food ----
+  { e:"🔺🥔", c:"Food", a:"Samosa", ok:["samosa"] },
+  { e:"🍚🍗", c:"Food", a:"Biryani", ok:["biryani","biriyani"] },
+  { e:"🍔🇮🇳", c:"Food", a:"Vada Pav", ok:["vada pav","vadapav"] },
+  { e:"☕🫖", c:"Food", a:"Chai", ok:["chai","masala chai"] },
+  { e:"🧈🍗", c:"Food", a:"Butter Chicken", ok:["butter chicken","murg makhani"] },
+  { e:"💦🥟", c:"Food", a:"Pani Puri", ok:["pani puri","panipuri","golgappa","puchka"] },
+  // ---- Festivals ----
+  { e:"🪔🎆", c:"Festival", a:"Diwali", ok:["diwali","deepavali"] },
+  { e:"🎨💦", c:"Festival", a:"Holi", ok:["holi"] },
+  { e:"🐘🙏", c:"Festival", a:"Ganesh Chaturthi", ok:["ganesh chaturthi","ganpati","ganesh"] },
+  { e:"🧵👫", c:"Festival", a:"Raksha Bandhan", ok:["raksha bandhan","rakhi","rakshabandhan"] },
+  // ---- Brands / apps ----
+  { e:"🛵🍽️", c:"Brand", a:"Swiggy", ok:["swiggy"] },
+  { e:"🔴🍴", c:"Brand", a:"Zomato", ok:["zomato"] },
+  { e:"🧈🐄", c:"Brand", a:"Amul", ok:["amul"] },
+  { e:"📶🔵", c:"Brand", a:"Jio", ok:["jio"] },
+  { e:"💳📱", c:"Brand", a:"Paytm", ok:["paytm"] },
+  // ---- Mythology ----
+  { e:"🏹🐒", c:"Myth", a:"Hanuman", ok:["hanuman","bajrangbali"] },
+  { e:"🦚🪈", c:"Myth", a:"Krishna", ok:["krishna","kanha","kanhaiya"] },
+  { e:"🏹👑", c:"Myth", a:"Ram", ok:["ram","rama","shri ram"] },
+  { e:"🧘🌳", c:"Myth", a:"Buddha", ok:["buddha","gautam buddha"] },
+  // ---- Muhavare (idioms — type the signature words) ----
+  { e:"🐫👄🌱", c:"Muhavare", a:"Oont ke muh mein jeera", m:"Way too little for the need",
+    keys:[["oont","unt","ont","oonth","unth"],["jeera","zeera","jira","zira"]] },
+  { e:"🌱➡️🏔️", c:"Muhavare", a:"Rai ka pahad banana", m:"Making a mountain out of a molehill",
+    keys:[["rai","raai","rye"],["pahad","pahar","pahaad","pahadh"]] },
+  { e:"🐃🪈", c:"Muhavare", a:"Bhains ke aage been bajana", m:"Effort wasted on someone who won't get it",
+    keys:[["bhains","bhens","bhes"],["been","bin","beenn"]] },
+  { e:"⛏️🏔️🐁", c:"Muhavare", a:"Khoda pahad nikli chuhiya", m:"Huge effort, tiny result",
+    keys:[["khoda","khodha","khoja"],["chuhiya","chuhia","chuhi","chooha","chuha","chuiya"]] },
+  { e:"🏹🎯🎯", c:"Muhavare", a:"Ek teer se do nishane", m:"Two goals with one move",
+    keys:[["teer","tir","teerr"],["nishane","nishana","nishaane","nishaana"]] },
+  { e:"🐒🫚", c:"Muhavare", a:"Bandar kya jaane adrak ka swad", m:"No appreciation for something's true worth",
+    keys:[["bandar","bander","bandarr"],["adrak","adarak","adrakh"]] },
+  { e:"💃🏚️", c:"Muhavare", a:"Naach na jaane aangan tedha", m:"A bad workman blames his tools",
+    keys:[["naach","nach","na:ch"],["tedha","teda","tedhi","teda","terha"]] },
+  { e:"☁️⬇️🌴", c:"Muhavare", a:"Aasman se gira khajoor mein atka", m:"Out of the frying pan, into the fire",
+    keys:[["aasman","asman","aasmaan","aasman"],["khajoor","khajur","khajoorr"]] },
+  { e:"🥢🐃", c:"Muhavare", a:"Jiski laathi uski bhains", m:"Might is right",
+    keys:[["laathi","lathi","laathhi"],["bhains","bhens","bhes"]] },
+  { e:"🏠🐔🍲", c:"Muhavare", a:"Ghar ki murgi daal barabar", m:"We undervalue what we have at home",
+    keys:[["murgi","murghi","murgii"],["daal","dal","dhal"]] },
+];
+
+const PICK_EMOJI = "😀😂😍😎😭🥳🔥💧⚡✨🌈⭐🌙☀️❤️💛💜🙏👑🐐🏏🏆🎤🎬🎵🎹🕶️🚂💃🪔🎆🎨🐘🦚🏹🐒🧘🌳🛵🍽️🍴🧈🐄📱📶💳🔺🥔🍚🍗🍔🍗☕🫖💦🥟🍬🌀🇮🇳".split(/(?=[\s\S])/u).filter(x=>x.trim());
+
+/* ---------------- state ---------------- */
+const KEY = "glyph.v1";
+const todayStr = () => new Date().toISOString().slice(0,10);
+let S = load();
+function load(){
+  try { return Object.assign(base(), JSON.parse(localStorage.getItem(KEY)||"{}")); }
+  catch(e){ return base(); }
+}
+function base(){ return { streak:0, lastDaily:null, totalSolved:0, created:[], daily:null }; }
+function save(){ localStorage.setItem(KEY, JSON.stringify(S)); }
+
+/* ---------------- helpers ---------------- */
+const norm = s => (s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+function lev(a,b){
+  const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
+  for(let j=0;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)
+    d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[m][n];
+}
+function matches(guess, p){
+  const g = norm(guess); if(!g) return false;
+  if(p.keys){ return p.keys.every(group => group.some(v => g.includes(norm(v)))); }
+  const targets = [norm(p.a), ...(p.ok||[]).map(norm)];
+  for(const t of targets){
+    if(g===t) return true;
+    if(t.length>=5 && lev(g,t)<=1) return true;
+  }
+  return false;
+}
+function hashDate(str){ let h=0; for(let i=0;i<str.length;i++){h=(h*31+str.charCodeAt(i))>>>0;} return h; }
+function dailySet(){
+  const seed = hashDate(todayStr());
+  const idx=[], used=new Set(); let x=seed;
+  while(idx.length<5){ x=(x*1103515245+12345)>>>0; const i=x%BANK.length; if(!used.has(i)){used.add(i);idx.push(i);} }
+  return idx.map(i=>BANK[i]);
+}
+const dailyNumber = () => Math.floor((Date.parse(todayStr())-Date.parse("2026-01-01"))/864e5)+1;
+
+/* ---------------- app shell ---------------- */
+let tab = "play";
+let playMode = "daily";
+let endlessCat = "All";
+document.getElementById("streakN").textContent = S.streak;
+
+document.getElementById("nav").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  tab = b.dataset.tab;
+  [...document.querySelectorAll("#nav button")].forEach(x=>x.classList.toggle("on", x===b));
+  render();
+});
+
+/* theme */
+const themeBtn = document.getElementById("themeBtn");
+themeBtn.addEventListener("click", ()=>{
+  const cur = document.documentElement.getAttribute("data-theme")
+    || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light");
+  const next = cur==="dark" ? "light":"dark";
+  document.documentElement.setAttribute("data-theme", next);
+});
+
+function render(){
+  const v = document.getElementById("view");
+  if(tab==="play") return renderPlay(v);
+  if(tab==="create") return renderCreate(v);
+  if(tab==="you") return renderYou(v);
+}
+
+/* ---------------- PLAY ---------------- */
+let session = null; // {mode, list, i, puzzle, guesses, hint, done, results}
+
+function ensureDaily(){
+  if(!S.daily || S.daily.date!==todayStr()){
+    S.daily = { date: todayStr(), i:0, results:[] };
+    save();
+  }
+}
+function startSession(mode){
+  playMode = mode;
+  if(mode==="daily"){
+    ensureDaily();
+    const list = dailySet();
+    session = { mode, list, results: S.daily.results.slice() };
+    session.i = session.results.length;
+  } else {
+    let pool = BANK.concat(S.created);
+    if(endlessCat && endlessCat!=="All") pool = pool.filter(p=>p.c===endlessCat);
+    if(!pool.length) pool = BANK.concat(S.created);
+    const list = shuffle(pool.slice());
+    session = { mode, list, i:0, results:[] };
+  }
+  loadPuzzle();
+}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+function loadPuzzle(){
+  if(session.mode==="daily" && session.i>=5){ session.puzzle=null; return; }
+  if(session.mode==="endless" && session.i>=session.list.length){ session.list = shuffle(session.list); session.i = 0; }
+  session.puzzle = session.list[session.i];
+  session.guesses = 0; session.hintLvl = 0; session.done = false;
+  session.choices = session.puzzle && session.puzzle.choices ? shuffle(session.puzzle.choices.slice()) : null;
+}
+
+function renderPlay(v){
+  if(!session || session.mode!==playMode) startSession(playMode);
+  const seg = `<div class="seg">
+    <button class="${playMode==='daily'?'on':''}" data-m="daily">Daily Five</button>
+    <button class="${playMode==='endless'?'on':''}" data-m="endless">Endless</button>
+  </div>`;
+
+  const FILT = ["All","Muhavare","Movie","Cricket","Food","Festival","Song","Brand","Myth"];
+  const filterHTML = playMode==="endless" ? `<div class="filters" id="filters">
+    ${FILT.map(c=>`<button data-f="${c}" class="${endlessCat===c?'on':''}">${c==='All'?'✨ All':catIcon(c)+' '+c}</button>`).join("")}
+  </div>` : "";
+
+  // daily complete?
+  if(session.mode==="daily" && session.i>=5){
+    v.innerHTML = seg + dailySummaryHTML();
+    wireSeg(v);
+    const sb=document.getElementById("shareBtn");
+    if(sb) sb.onclick = shareDaily;
+    return;
+  }
+  const p = session.puzzle;
+  const total = session.mode==="daily" ? 5 : "∞";
+  const num = session.mode==="daily" ? session.i+1 : session.i+1;
+
+  const answerHTML = p.choices
+    ? `<div class="choices" id="choices">
+        ${session.choices.map(ch=>`<button data-v="${ch.replace(/"/g,'&quot;')}">${ch}</button>`).join("")}
+      </div>`
+    : `<div class="guessrow">
+        <input id="guess" placeholder="${p.c==='Muhavare'?'Muhavara likho…':'Type your answer…'}" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+        <button class="btn" id="go">Guess</button>
+      </div>`;
+
+  v.innerHTML = seg + filterHTML + `
+    <div class="card" id="card">
+      <div class="counter">${num}${session.mode==='daily'?' / '+total:''}</div>
+      <span class="pill">${catIcon(p.c)} ${p.c}</span>
+      <div class="emojis">${p.e}</div>
+      <div class="hint" id="hint">${p.choices?'<span style="color:var(--faint);font-size:13px;letter-spacing:0;font-family:system-ui,sans-serif">Konsa muhavara hai?</span>':''}</div>
+      <div class="dots">${[0,1,2].map(i=>`<span class="dot" data-i="${i}"></span>`).join("")}</div>
+      ${answerHTML}
+    </div>`;
+  wireSeg(v);
+  if(playMode==="endless"){
+    v.querySelectorAll("#filters button").forEach(b=> b.onclick=()=>{ endlessCat=b.dataset.f; startSession("endless"); renderPlay(v); });
+  }
+  if(p.choices){
+    document.querySelectorAll("#choices button").forEach(b=> b.onclick=()=>handleChoice(b, b.dataset.v));
+  } else {
+    const input = document.getElementById("guess");
+    const go = document.getElementById("go");
+    input.focus();
+    const submit = ()=>handleGuess(input.value);
+    go.onclick = submit;
+    input.addEventListener("keydown", e=>{ if(e.key==="Enter") submit(); });
+  }
+}
+
+function catIcon(c){ return {Movie:"🎬",Song:"🎵",Cricket:"🏏",Food:"🍛",Festival:"🪔",Brand:"🏷️",Myth:"🕉️",Muhavare:"🗣️"}[c]||"🧩"; }
+
+function handleGuess(val){
+  const p = session.puzzle;
+  if(!val.trim() || session.done) return;
+  const input = document.getElementById("guess");
+  if(matches(val, p)){ win(); return; }
+  // wrong
+  session.guesses++;
+  buzz(20);
+  document.querySelector(`.dot[data-i="${session.guesses-1}"]`).classList.add("used");
+  input.classList.add("shake"); setTimeout(()=>input.classList.remove("shake"),350);
+  input.value=""; input.focus();
+  if(session.guesses>=3){ lose(); return; }
+  session.hintLvl = session.guesses; // 1 then 2
+  showHint();
+}
+
+function handleChoice(btn, val){
+  const p = session.puzzle;
+  if(session.done) return;
+  if(val === p.a){
+    btn.classList.add("right");
+    session.done = true;
+    document.querySelectorAll("#choices button").forEach(b=>b.disabled=true);
+    setTimeout(win, 280);
+    return;
+  }
+  session.guesses++;
+  buzz(20);
+  btn.classList.add("wrong"); btn.disabled = true;
+  const d = document.querySelector(`.dot[data-i="${session.guesses-1}"]`); if(d) d.classList.add("used");
+  if(session.guesses>=3){
+    document.querySelectorAll("#choices button").forEach(b=>{ if(b.dataset.v===p.a) b.classList.add("right"); b.disabled=true; });
+    setTimeout(lose, 320);
+  }
+}
+
+function showHint(){
+  const p = session.puzzle, h = document.getElementById("hint");
+  if(!h) return;
+  if(p.keys){
+    if(session.hintLvl===1){
+      h.innerHTML = `<span style="font-family:system-ui,sans-serif;letter-spacing:0;font-size:14px;color:var(--muted)">💡 matlab: ${p.m}</span>`;
+    } else {
+      const w = p.a.split(" ");
+      h.innerHTML = w.map(x=>`<b>${x[0]}</b>`).join(" ") + `<span style="font-family:system-ui,sans-serif;letter-spacing:0;font-size:12px;color:var(--faint)"> · ${w.length} words</span>`;
+    }
+    return;
+  }
+  const words = p.a.split(" ");
+  if(session.hintLvl===1){
+    h.innerHTML = words.map(w=>[...w].map(ch=> /[a-z0-9]/i.test(ch)?"_":ch).join(" ")).join("&nbsp;&nbsp;&nbsp;");
+  } else if(session.hintLvl>=2){
+    h.innerHTML = words.map(w=>[...w].map((ch,i)=> i===0?`<b>${ch}</b>`:(/[a-z0-9]/i.test(ch)?"_":ch)).join(" ")).join("&nbsp;&nbsp;&nbsp;");
+  }
+}
+
+function win(){
+  session.done = true;
+  const used = session.guesses+1; // guesses were wrong count; +1 for the winning try
+  markResult(used);
+  buzz(40); confetti(session.puzzle.e);
+  const pct = [null,"top 9%","top 41%","top 74%"][used] || "solved";
+  showResult(true, session.puzzle, `Nailed it in ${used} ${used===1?'guess':'guesses'} — <b>${pct}</b> of solvers`);
+}
+function lose(){
+  session.done = true;
+  markResult("fail");
+  showResult(false, session.puzzle, `Only 22% missed this one — you'll get the next.`);
+}
+function markResult(r){
+  session.results = session.results || [];
+  session.results.push(r);
+  if(r!=="fail") S.totalSolved++;
+  // register a "play" against a community/created puzzle
+  registerPlay(session.puzzle, r!=="fail");
+  if(session.mode==="daily"){
+    S.daily.results = session.results.slice();
+    S.daily.i = session.results.length;
+    if(session.results.length>=5) finishDaily();
+  }
+  save(); refreshStreakUI();
+}
+function finishDaily(){
+  if(S.lastDaily===todayStr()) return;
+  const solvedAny = S.daily.results.some(r=>r!=="fail");
+  // streak: continue if yesterday, else reset to 1
+  const y = new Date(Date.now()-864e5).toISOString().slice(0,10);
+  S.streak = (S.lastDaily===y ? S.streak : 0) + 1;
+  S.lastDaily = todayStr();
+  save();
+}
+function refreshStreakUI(){ document.getElementById("streakN").textContent = S.streak; }
+
+function showResult(win, p, sub){
+  const card = document.getElementById("card");
+  card.innerHTML = `<div class="result">
+    <div class="emojis" style="margin:4px 0 8px">${p.e}</div>
+    <div class="verdict ${win?'win':'lose'}">${win?'Correct!':'So close'}</div>
+    <div class="answer">${p.a}</div>
+    <span class="pct">${sub}</span>
+    <button class="btn wide" id="next">${nextLabel()}</button>
+  </div>`;
+  document.getElementById("next").onclick = next;
+}
+function nextLabel(){
+  if(session.mode==="daily") return session.i>=4 ? "See results" : "Next puzzle →";
+  return "Next puzzle →";
+}
+function next(){
+  session.i++;
+  loadPuzzle();
+  renderPlay(document.getElementById("view"));
+}
+
+function dailySummaryHTML(){
+  const res = S.daily.results;
+  const emoji = res.map(r=> r==="fail"?"⬛": r===1?"🟩": r===2?"🟨":"🟧").join("");
+  const solved = res.filter(r=>r!=="fail").length;
+  return `<div class="card summary">
+    <span class="pill">${catIcon('')}GLYPH · Daily #${dailyNumber()}</span>
+    <div class="grid5">${emoji}</div>
+    <h2>${solved} / 5 decoded</h2>
+    <p>Streak 🔥 <b>${S.streak}</b> · come back tomorrow for five fresh ones.<br>🟩 1 guess &nbsp; 🟨 2 &nbsp; 🟧 3 &nbsp; ⬛ missed</p>
+    <button class="btn wide" id="shareBtn">Share result</button>
+  </div>`;
+}
+function shareDaily(){
+  const res = S.daily.results;
+  const emoji = res.map(r=> r==="fail"?"⬛": r===1?"🟩": r===2?"🟨":"🟧").join("");
+  const solved = res.filter(r=>r!=="fail").length;
+  const txt = `GLYPH Daily #${dailyNumber()}\n${emoji}  ${solved}/5\n🔥${S.streak} · glyph.game`;
+  copy(txt, "Result copied — go flex 😎");
+}
+
+function wireSeg(v){
+  v.querySelectorAll(".seg button").forEach(b=>{
+    b.onclick = ()=>{ startSession(b.dataset.m); renderPlay(v); };
+  });
+}
+
+/* register plays against community/created puzzles for living stats */
+function registerPlay(p, solved){
+  if(!p || !p._cid) return;
+  const c = S.created.find(x=>x.id===p._cid); if(!c) return;
+  c.plays++; if(solved) c.solves++;
+  save();
+}
+
+/* ---------------- CREATE ---------------- */
+let draft = { e:"", a:"", c:"Movie" };
+function renderCreate(v){
+  v.innerHTML = `
+    <div style="margin:10px 0 2px">
+      <div class="sectiontitle" style="margin:6px 0 2px">Build a puzzle</div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.5">Stump the world. Land a <b style="color:var(--magenta)">40–70% solve rate</b> and your puzzle graduates into the daily rotation.</p>
+    </div>
+    <span class="label">Your clue</span>
+    <div class="preview">
+      ${draft.e ? `<span>${draft.e}</span><button class="clr" id="clr">clear</button>` : `<span class="ph">tap emoji below to build your clue</span>`}
+    </div>
+    <div class="emojigrid" id="egrid">
+      ${PICK_EMOJI.map(x=>`<button data-e="${x}">${x}</button>`).join("")}
+    </div>
+    <span class="label">The answer</span>
+    <input class="field" id="ans" placeholder="e.g. The Lion King" value="${draft.a.replace(/"/g,'&quot;')}" autocomplete="off">
+    <span class="label">Category</span>
+    <div class="cats" id="cats">
+      ${["Movie","Song","Cricket","Food","Festival","Brand","Myth"].map(c=>`<button data-c="${c}" class="${draft.c===c?'on':''}">${catIcon(c)} ${c}</button>`).join("")}
+    </div>
+    <div class="read" id="read"></div>
+    <button class="btn pink wide" id="pub">Publish puzzle</button>
+  `;
+  const clr=document.getElementById("clr"); if(clr) clr.onclick=()=>{draft.e="";renderCreate(v);};
+  document.getElementById("egrid").querySelectorAll("button").forEach(b=>{
+    b.onclick=()=>{ draft.e+=b.dataset.e; document.querySelector(".preview span").textContent=draft.e; readOut(); buzz(8); };
+  });
+  const ans=document.getElementById("ans");
+  ans.oninput=()=>{ draft.a=ans.value; readOut(); };
+  document.getElementById("cats").querySelectorAll("button").forEach(b=>{
+    b.onclick=()=>{ draft.c=b.dataset.c; document.querySelectorAll("#cats button").forEach(x=>x.classList.toggle("on",x===b)); };
+  });
+  document.getElementById("pub").onclick=()=>publish(v);
+  readOut();
+
+  if(S.created.length){
+    const list = document.createElement("div");
+    list.innerHTML = `<div class="sectiontitle">Your puzzles</div>` + S.created.slice().reverse().map(myPuzzleHTML).join("");
+    v.appendChild(list);
+  }
+}
+function readOut(){
+  const r=document.getElementById("read"); if(!r) return;
+  const eCount=[...draft.e].length, aLen=norm(draft.a).length;
+  if(!draft.e || !draft.a){ r.textContent=""; return; }
+  let msg, col;
+  if(eCount<=1 && aLen>6){ msg="🌶️ Looks brutal — maybe add an emoji"; col="var(--bad)"; }
+  else if(eCount>=aLen){ msg="🥱 Might be too easy — try trimming a clue"; col="var(--muted)"; }
+  else { msg="✨ Spicy but fair — this could climb the board"; col="var(--good)"; }
+  r.innerHTML=`<span style="color:${col}">${msg}</span>`;
+}
+function publish(v){
+  if(![...draft.e].length) return toast("Add at least one emoji");
+  if(!draft.a.trim()) return toast("Add the answer");
+  const p = { id:"c"+Date.now(), e:draft.e, a:draft.a.trim(), c:draft.c, ok:[norm(draft.a)],
+              _cid:"c"+Date.now(), plays:0, solves:0, born:todayStr() };
+  p._cid=p.id;
+  S.created.push(p); save();
+  draft={ e:"", a:"", c:"Movie" };
+  confetti("✨🎉🏆✏️💜");
+  toast("Published! It's live in Endless 🎉");
+  renderCreate(v);
+}
+function myPuzzleHTML(p){
+  const rate = p.plays ? Math.round(p.solves/p.plays*100) : null;
+  const rateTxt = rate===null ? "—" : rate+"%";
+  return `<div class="myp">
+    <div class="e">${p.e}</div>
+    <div class="meta"><b>${p.a}</b><span>${catIcon(p.c)} ${p.c} · ${p.plays} play${p.plays===1?'':'s'}</span></div>
+    <div class="rate">${rateTxt}<small>solve rate</small></div>
+  </div>`;
+}
+
+/* ---------------- YOU ---------------- */
+function renderYou(v){
+  const totalPlays = S.created.reduce((a,c)=>a+c.plays,0);
+  const clout = S.created.length*20 + totalPlays*5 + S.totalSolved*2;
+  v.innerHTML = `
+    <div class="sectiontitle" style="margin-top:14px">Your run</div>
+    <div class="stats">
+      <div class="stat"><b>${S.streak}</b><small>🔥 streak</small></div>
+      <div class="stat gold"><b>${S.totalSolved}</b><small>decoded</small></div>
+      <div class="stat pink"><b>${clout}</b><small>creator score</small></div>
+    </div>
+    <div class="sectiontitle">Creator standings</div>
+    ${S.created.length ? "" : `<div class="empty">You haven't published a puzzle yet.<br>Head to <b style="color:var(--magenta)">Create</b> and stump the world — every play others give your puzzles lifts your creator score.</div>`}
+    <div id="leader"></div>
+  `;
+  if(S.created.length){
+    const rows = S.created.slice()
+      .sort((a,b)=>b.plays-a.plays)
+      .map((p,i)=>`<div class="myp">
+        <div class="e">${["🥇","🥈","🥉"][i]||"·&nbsp;"}</div>
+        <div class="meta"><b>${p.a}</b><span>${p.e} · ${p.plays} play${p.plays===1?'':'s'}</span></div>
+        <div class="rate">${p.plays?Math.round(p.solves/p.plays*100)+"%":"—"}<small>solved</small></div>
+      </div>`).join("");
+    document.getElementById("leader").innerHTML = rows;
+  }
+}
+
+/* ---------------- juice ---------------- */
+function confetti(chars){
+  const arr=[...chars]; const box=document.getElementById("confetti");
+  for(let i=0;i<18;i++){
+    const s=document.createElement("span");
+    s.textContent=arr[i%arr.length];
+    s.style.left=(10+Math.random()*80)+"%";
+    s.style.bottom=(10+Math.random()*30)+"%";
+    s.style.setProperty("--r",(Math.random()*720-360)+"deg");
+    s.style.animationDelay=(Math.random()*.25)+"s";
+    s.style.fontSize=(20+Math.random()*22)+"px";
+    box.appendChild(s);
+    setTimeout(()=>s.remove(),1800);
+  }
+}
+function buzz(ms){ try{ navigator.vibrate && navigator.vibrate(ms);}catch(e){} }
+let toastT;
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),1900);
+}
+function copy(txt, msg){
+  try{ navigator.clipboard.writeText(txt).then(()=>toast(msg), ()=>toast("Copy failed")); }
+  catch(e){ toast("Copy failed"); }
+}
+
+render();
+</script>
+</body>
+</html>

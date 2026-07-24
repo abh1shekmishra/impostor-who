@@ -12,6 +12,7 @@ export const CATEGORIES: CategoryMeta[] = [
   { id: 'bollywood', label: 'Bollywood', emoji: '🎬', group: 'india', blurb: 'Filmy feels' },
   { id: 'cricket', label: 'Cricket', emoji: '🏏', group: 'india', blurb: 'Gully to IPL' },
   // Screen
+  { id: 'entertainment', label: 'Entertainment', emoji: '🎭', group: 'screen', blurb: 'Shows, songs, and streams' },
   { id: 'hollywood', label: 'Hollywood', emoji: '🎞️', group: 'screen', blurb: 'Big screen' },
   { id: 'anime', label: 'Anime', emoji: '🍙', group: 'screen', blurb: 'Believe it' },
   { id: 'cartoons', label: 'Cartoons', emoji: '📺', group: 'screen', blurb: 'Sunday mornings' },
@@ -91,7 +92,7 @@ export function wordsForCategory(id: CategoryId): string[] {
  * A category becomes "live" once it has enough words to be playable without
  * instant repeats. Below this it stays hidden from the UI and is never dealt.
  */
-export const LIVE_MIN_WORDS = 25;
+export const LIVE_MIN_WORDS = 5;
 
 /**
  * Categories forced live regardless of word count — an explicit product

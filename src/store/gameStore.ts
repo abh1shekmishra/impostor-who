@@ -26,7 +26,9 @@ import { track } from '@/lib/analytics';
 import { useStats } from './statsStore';
 
 export type Route =
+  | 'library'
   | 'home'
+  | 'glyph'
   | 'create'
   | 'play'
   | 'settings'
@@ -110,7 +112,7 @@ function sanitizeNames(names: string[], count: number): string[] {
 export const useGame = create<GameState>()(
   persist(
     (set, get) => ({
-      route: 'home',
+      route: 'library',
       phase: 'setup',
       config: DEFAULT_CONFIG,
       playerNames: [],
@@ -431,9 +433,9 @@ export const useGame = create<GameState>()(
     }),
     {
       name: 'uc.game',
-      // v5: reduced to the three Undercover.dc modes (classic/blind/double-impostor)
-      // and added matchScore. Bumped so any stale modeId/config resets cleanly.
-      version: 5,
+      // v6: added the games library as the app's landing route; every launch now
+      // opens on 'library'. Bumped so stale persisted routes reset to the hub.
+      version: 6,
       migrate: (_persistedState, _version) => {
         const migrated: {
           config: RoundConfig;
@@ -456,7 +458,7 @@ export const useGame = create<GameState>()(
           players: [],
           round: null,
           phase: 'setup' as Phase,
-          route: 'home' as Route,
+          route: 'library' as Route,
           recentWordIds: [],
           revealIndex: 0,
           clueIndex: 0,
