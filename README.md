@@ -1,5 +1,6 @@
 # Undercover — Party Impostor Game
 
+[![CI](https://github.com/abh1shekmishra/impostor-who/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/abh1shekmishra/impostor-who/actions/workflows/ci.yml)
 [![Live demo](https://img.shields.io/badge/demo-live-22c55e)](https://impostor-who-mu.vercel.app)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 ![React 18](https://img.shields.io/badge/React-18-149eca)
