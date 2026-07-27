@@ -21,12 +21,11 @@ the first load.
 React 18 · TypeScript (strict) · Vite 5 · Tailwind 3 · Zustand · Framer Motion · PWA · Vitest
 ```
 
-<!-- SCREENSHOTS: drop images in docs/screenshots/ and swap the paths below. -->
 <p align="center">
-  <img src="docs/screenshots/home.png" alt="Home screen" width="24%" />
-  <img src="docs/screenshots/reveal.png" alt="Role reveal" width="24%" />
-  <img src="docs/screenshots/vote.png" alt="Voting" width="24%" />
-  <img src="docs/screenshots/result.png" alt="Result" width="24%" />
+  <img src="docs/screenshots/home.png" alt="Undercover home screen" width="24%" />
+  <img src="docs/screenshots/reveal.png" alt="Secret word reveal" width="24%" />
+  <img src="docs/screenshots/vote.png" alt="Voting screen" width="24%" />
+  <img src="docs/screenshots/result.png" alt="Round result" width="24%" />
 </p>
 
 ---
