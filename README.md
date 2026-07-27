@@ -1,16 +1,33 @@
 # Undercover — Party Impostor Game
 
-A premium **pass-and-play social deduction game** for one device in a room full of
-people. Everyone gets a secret word — except the impostor. Give clues, argue,
-vote, and unmask the faker. If the impostor survives the vote, they get one shot
-to guess the word and steal the win.
+[![CI](https://github.com/abh1shekmishra/impostor-who/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/abh1shekmishra/impostor-who/actions/workflows/ci.yml)
+[![Live demo](https://img.shields.io/badge/demo-live-22c55e)](https://impostor-who-mu.vercel.app)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
+![React 18](https://img.shields.io/badge/React-18-149eca)
+![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178c6)
+![PWA](https://img.shields.io/badge/PWA-offline-5a0fc8)
 
-Built to feel like _Linear + Notion + Arc_ made a party game: calm surfaces,
-soft depth, decisive motion. No login, no account, instant play, fully offline.
+A pass-and-play social deduction game for a group sharing one phone. Everyone
+gets the same secret word except the impostor. You take turns giving one-word
+clues, argue about who's faking, then vote. If the impostor survives the vote,
+they get one guess at the word to steal the win.
+
+No login, no accounts, no backend. It installs as a PWA and works offline after
+the first load.
+
+**Play it live: [impostor-who-mu.vercel.app](https://impostor-who-mu.vercel.app)**
 
 ```
-React 18 · TypeScript (strict) · Vite 5 · Tailwind 3 · Zustand · Framer Motion · PWA
+React 18 · TypeScript (strict) · Vite 5 · Tailwind 3 · Zustand · Framer Motion · PWA · Vitest
 ```
+
+<!-- SCREENSHOTS: drop images in docs/screenshots/ and swap the paths below. -->
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="Home screen" width="24%" />
+  <img src="docs/screenshots/reveal.png" alt="Role reveal" width="24%" />
+  <img src="docs/screenshots/vote.png" alt="Voting" width="24%" />
+  <img src="docs/screenshots/result.png" alt="Result" width="24%" />
+</p>
 
 ---
 
@@ -22,9 +39,29 @@ npm run dev        # http://localhost:5173
 npm run build      # typecheck + production bundle (dist/)
 npm run preview    # serve the production build
 npm run typecheck  # strict tsc, no emit
+npm test           # run the unit test suite (Vitest)
+npm run lint       # ESLint (flat config)
 ```
 
 Installable as a PWA (Add to Home Screen). Works offline after first load.
+
+---
+
+## Testing
+
+The game rules live in a **pure, side-effect-free engine** ([`src/lib/game.ts`](src/lib/game.ts))
+and a **seedable PRNG** ([`src/lib/random.ts`](src/lib/random.ts)), which makes the
+core logic fully unit-testable without a DOM. The suite ([Vitest](https://vitest.dev))
+covers role dealing, deterministic seeding, vote tallies and ties, win/loss
+resolution, the impostor's fuzzy final guess (Levenshtein-tolerant), and scoring.
+
+```bash
+npm test           # single run
+npm run test:watch # watch mode
+```
+
+Every push runs **lint → type-check → test → build** in CI
+([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ---
 
@@ -38,7 +75,7 @@ Create a `.env` (or `.env.local`) file in the project root:
 ```bash
 VITE_POSTHOG_KEY=phc_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # Optional (defaults to PostHog Cloud)
-VITE_POSTHOG_HOST=https://app.posthog.com
+VITE_POSTHOG_HOST=https://us.i.posthog.com
 ```
 
 No key set = analytics disabled (safe for local/dev).
@@ -61,27 +98,27 @@ No key set = analytics disabled (safe for local/dev).
 
 ---
 
-## What's in the box
+## Features
 
-- **Full game loop** — Home → Create Room → Lobby → Reveal → Clue → Discuss →
+- **Full game loop:** Home → Create Room → Lobby → Reveal → Clue → Discuss →
   Vote → Impostor's last guess → Result, with a running scoreboard across rounds.
 - **11 game modes** (Classic, Double Agents, Blind, Chaos, Reverse, Hot Seat,
-  Rapid Fire, One Word, No Talking, Emoji Clues, Act It Out) — driven entirely by
-  declarative rule flags, so the engine never branches on a mode id.
-- **Rich content engine** — 130+ hand-authored seed words across 34 categories,
-  each with associative tags, semantic clusters, difficulty, and discussion /
-  chaos / guess-difficulty scores. A weighted selector balances freshness,
-  recognizability and mode fit, and finds smart decoys for Reverse mode.
-- **9 curated + seasonal/AI content packs**, with a "today's pack" that surfaces
-  automatically by date.
-- **Premium feel** — card flips, spring transitions, canvas confetti, a drift-free
-  timer ring, synthesized sound cues (zero audio files), and haptics.
-- **Settings** — light/dark/auto theme, sound, animations, haptics, hold-to-reveal,
-  language, reset stats. **Statistics** — games, win rates, impostor record,
+  Rapid Fire, One Word, No Talking, Emoji Clues, Act It Out). Each mode is a set
+  of declarative rule flags, so the engine never branches on a mode id.
+- **Content engine:** 130+ hand-authored words across 34 categories, each tagged
+  with associations, semantic clusters, difficulty, and discussion/chaos/guess
+  scores. A weighted selector balances freshness, recognizability and mode fit,
+  and picks decoys for Reverse mode.
+- **9 content packs** (curated and seasonal), including a "today's pack" chosen
+  by date.
+- **Feel:** card flips, spring transitions, canvas confetti, a drift-free timer
+  ring, synthesized sound cues (no audio files), and haptics.
+- **Settings:** light/dark/auto theme, sound, animations, haptics, hold-to-reveal,
+  language, reset stats. **Stats:** games played, win rates, impostor record,
   favorite category.
-- **Accessible & resilient** — keyboard focus styles, ARIA roles/labels, 44px
-  touch targets, reduced-motion support, screen wake-lock during play, and an
-  error boundary that recovers to home without losing settings or stats.
+- **Accessibility and resilience:** keyboard focus styles, ARIA roles/labels,
+  44px touch targets, reduced-motion support, screen wake-lock during play, and
+  an error boundary that recovers to home without losing settings or stats.
 
 ---
 
@@ -123,11 +160,11 @@ engine in `lib/game.ts` is a set of pure functions (`dealRound`, `tallyVotes`,
 deterministic given a seed. The whole game, settings, and stats persist to
 `localStorage`, so a refresh mid-round resumes exactly where you left off.
 
-### The content system (the heart)
+### The content system
 
-Words are **not** authored with a literal hint — that produces lazy giveaways.
-Instead each entry carries _associative_ metadata describing the world around the
-word, which is what makes players speak about adjacent concepts:
+Words are not authored with a literal hint, because that produces lazy
+giveaways. Instead each entry carries associative metadata describing the world
+around the word, which is what pushes players to talk about adjacent concepts:
 
 ```ts
 {
@@ -185,5 +222,5 @@ and **Inter** (body); the app falls back to system UI fonts cleanly if absent.
 
 ## License
 
-Prototype for demonstration. All word content is original/parody and culturally
-referential for gameplay.
+Released under the [MIT License](./LICENSE). Word content is original or parody,
+written for gameplay.

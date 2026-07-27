@@ -30,7 +30,8 @@ export function DiscussPhase() {
   const toggle = () => {
     if (noTimer) return;
     feedback('tap');
-    running ? pause() : start();
+    if (running) pause();
+    else start();
   };
 
   return (

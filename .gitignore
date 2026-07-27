@@ -32,3 +32,7 @@ pnpm-debug.log*
 dev-dist
 .vite
 .env
+
+# local tooling / scratch
+.claude
+.handoff_extract
